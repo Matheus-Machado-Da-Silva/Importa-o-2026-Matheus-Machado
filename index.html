@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Geral de Pedidos & Consumo de Peças ELOCA</title>
+  
+  <!-- Tailwind CSS (Estilização e Layout Responsivo) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js (Gráficos Interativos) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Lucide Icons (Iconografia) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- CABEÇALHO / NAVBAR -->
+  <header class="bg-slate-900 text-white shadow-xl border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-blue-600 rounded-xl shadow-md">
+          <i data-lucide="bar-chart-3" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">Dashboard de Importação & Consumo</h1>
+          <p class="text-xs text-slate-400">Visão Geral: Histórico de Entradas, Pedidos e Consumo Real</p>
+        </div>
+      </div>
+
+      <!-- SELETOR DE FABRICANTE -->
+      <div class="flex items-center gap-3 bg-slate-800 p-1.5 px-3 rounded-lg border border-slate-700">
+        <label for="seletorAba" class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+          <i data-lucide="filter" class="w-3.5 h-3.5 text-blue-400"></i> Fabricante:
+        </label>
+        <select id="seletorAba" onchange="atualizarDashboard()" class="bg-slate-900 border border-slate-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none block px-3 py-1.5 cursor-pointer">
+          <option value="ODEWAY" selected>ODEWAY</option>
+          <option value="ESWING">ESWING</option>
+          <option value="CHIC ROBOT">CHIC ROBOT</option>
+          <option value="ZANWHEI">ZANWHEI (SEGWAY)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 flex-1">
+
+    <!-- SEÇÃO 1: INFORMAÇÕES DE PEDIDOS (ÚLTIMO vs. NOVO) -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">1. Comparativo de Pedidos (Último Lote vs. Novo Pedido)</h2>
+          <p class="text-xs text-slate-500">Volume financeiro, quantidade de itens solicitados e variação do investimento</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Card: Novo Pedido -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Novo Pedido (2026)</span>
+            <span class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="circle-dollar-sign" class="w-5 h-5"></i></span>
+          </div>
+          <div class="mt-4">
+            <div id="kpiNovoValor" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
+            <p class="text-xs text-slate-500 mt-1"><span id="kpiNovoQtd" class="font-bold text-slate-700">0</span> peças solicitadas</p>
+          </div>
+        </div>
+
+        <!-- Card: Último Pedido -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Último Pedido (Ref)</span>
+            <span class="p-2 bg-slate-100 text-slate-600 rounded-lg"><i data-lucide="history" class="w-5 h-5"></i></span>
+          </div>
+          <div class="mt-4">
+            <div id="kpiUltimoValor" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
+            <p class="text-xs text-slate-500 mt-1"><span id="kpiUltimoQtd" class="font-bold text-slate-700">0</span> peças recebidas</p>
+          </div>
+        </div>
+
+        <!-- Card: Variação de Aporte -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Variação no Aporte</span>
+            <span id="badgeVariacaoIcon" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5"></i></span>
+          </div>
+          <div class="mt-4">
+            <div id="kpiVariacao" class="text-2xl font-extrabold text-emerald-600">0,0%</div>
+            <p class="text-xs text-slate-500 mt-1">Comparado ao lote anterior</p>
+          </div>
+        </div>
+
+        <!-- Card: Preço Médio por Peça -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Ticket Médio Unitário</span>
+            <span class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="tag" class="w-5 h-5"></i></span>
+          </div>
+          <div class="mt-4">
+            <div id="kpiPrecoMedio" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
+            <p class="text-xs text-slate-500 mt-1">Custo unitário ponderado</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 2: RELAÇÃO DE CONSUMO NO PERÍODO -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
+          <i data-lucide="boxes" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">2. Relação de Consumo no Período (Desde a 1ª Entrada até Hoje)</h2>
+          <p class="text-xs text-slate-500">Balanço de estoque, saídas efetuadas e taxa de giro das peças</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Indicadores de Estoque e Saída -->
+        <div class="space-y-3.5">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Entradas Totais</p>
+              <p id="kpiEntradas" class="text-xl font-bold text-slate-800">0 un.</p>
+            </div>
+            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="arrow-down-to-line" class="w-5 h-5"></i></div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Consumido / Saídas</p>
+              <p id="kpiSaidas" class="text-xl font-bold text-amber-600">0 un.</p>
+            </div>
+            <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="arrow-up-from-line" class="w-5 h-5"></i></div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Saldo em Estoque</p>
+              <p id="kpiSaldo" class="text-xl font-bold text-emerald-600">0 un.</p>
+            </div>
+            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="package-check" class="w-5 h-5"></i></div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Taxa de Giro / Consumo</p>
+              <p id="kpiTaxaConsumo" class="text-xl font-bold text-indigo-900">0,0%</p>
+            </div>
+            <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
+          </div>
+        </div>
+
+        <!-- Gráfico Principal (Chart.js) -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-sm font-bold text-slate-700">Visão Geral por Item: Entradas vs. Saídas vs. Saldo</h3>
+            <span class="text-[11px] text-slate-400">Atualizado dinamicamente</span>
+          </div>
+          <div class="relative h-64 w-full">
+            <canvas id="graficoConsumo"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 3: TABELA DE DETALHAMENTO DE PEÇAS -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden space-y-0">
+      <div class="p-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-800">3. Relação Detalhada por Peça e SKU</h3>
+          <p class="text-xs text-slate-500">Métricas completas por item com indicação automática de reposição</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-900 text-slate-200 uppercase tracking-wider font-semibold">
+              <th class="p-3.5">SKU</th>
+              <th class="p-3.5">Descrição do Item</th>
+              <th class="p-3.5 text-center">Entradas</th>
+              <th class="p-3.5 text-center">Saídas</th>
+              <th class="p-3.5 text-center">Saldo Atual</th>
+              <th class="p-3.5 text-center">% Consumido</th>
+              <th class="p-3.5 text-center bg-slate-800">Novo Pedido</th>
+              <th class="p-3.5 text-right">Status do Estoque</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPecas" class="divide-y divide-slate-100 font-medium text-slate-700">
+            <!-- Dados preenchidos via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    <p>Dashboard de Gestão de Importação & Consumo ELOCA © 2026</p>
+  </footer>
+
+  <!-- SCRIPT DE DADOS E FUNCIONALIDADES -->
+  <script>
+    // 1. DADOS DE TODAS AS SUAS PLANILHAS INTEGRADOS
+    const DADOS_FABRICANTES = {
+      ODEWAY: {
+        novoPedidoValor: 50700,
+        novoPedidoQtd: 227,
+        ultimoPedidoValor: 42150,
+        ultimoPedidoQtd: 190,
+        items: [
+          { sku: "ODW16", nome: "MOTOR HUB 2500W C60", entradas: 30, saidas: 6, saldo: 24, novoPedido: 5 },
+          { sku: "ODW4-N", nome: "PAINEL LED S10/S10X", entradas: 30, saidas: 6, saldo: 24, novoPedido: 10 },
+          { sku: "ODW60-OFF-ROAD", nome: "PLACA MÃE CONTROLADORA S10X", entradas: 24, saidas: 14, saldo: 10, novoPedido: 15 },
+          { sku: "ODW13", nome: "PARALAMA PLÁSTICO X60", entradas: 69, saidas: 33, saldo: 36, novoPedido: 6 },
+          { sku: "ODW10", nome: "SUPORTE PARALAMA METAL S10X", entradas: 74, saidas: 38, saldo: 36, novoPedido: 10 },
+          { sku: "ODW20", nome: "DESCANSO CENTRAL (PÉ DE APOIO)", entradas: 60, saidas: 59, saldo: 1, novoPedido: 67 },
+          { sku: "ODW7", nome: "CARENAGEM PLÁSTICA FRONTAL", entradas: 31, saidas: 2, saldo: 29, novoPedido: 10 },
+          { sku: "ODW9", nome: "TAPETE BORRACHA CHASSIS", entradas: 38, saidas: 23, saldo: 15, novoPedido: 10 },
+          { sku: "ODW8", nome: "CAIXA PLÁSTICA DA BATERIA", entradas: 28, saidas: 4, saldo: 24, novoPedido: 0 }
+        ]
+      },
+      ESWING: {
+        novoPedidoValor: 32400,
+        novoPedidoQtd: 140,
+        ultimoPedidoValor: 35000,
+        ultimoPedidoQtd: 155,
+        items: [
+          { sku: "ESW01", nome: "BATERIA LÍTIO 48V 15AH", entradas: 50, saidas: 40, saldo: 10, novoPedido: 30 },
+          { sku: "ESW02", nome: "PNEU TUBELESS 10 POLEGADAS", entradas: 100, saidas: 85, saldo: 15, novoPedido: 50 },
+          { sku: "ESW03", nome: "ACELERADOR THROTTLE CONTROL", entradas: 40, saidas: 12, saldo: 28, novoPedido: 15 },
+          { sku: "ESW04", nome: "DISCO DE FREIO TRASEIRO", entradas: 60, saidas: 20, saldo: 40, novoPedido: 20 }
+        ]
+      },
+      "CHIC ROBOT": {
+        novoPedidoValor: 18900,
+        novoPedidoQtd: 80,
+        ultimoPedidoValor: 15000,
+        ultimoPedidoQtd: 60,
+        items: [
+          { sku: "CHIC-01", nome: "SENSOR GIROSCÓPIO PRINCIPAL", entradas: 40, saidas: 35, saldo: 5, novoPedido: 40 },
+          { sku: "CHIC-02", nome: "CONECTORES DE CARGA", entradas: 80, saidas: 25, saldo: 55, novoPedido: 20 },
+          { sku: "CHIC-03", nome: "LÂMPADA LED INDICADORA", entradas: 50, saidas: 10, saldo: 40, novoPedido: 20 }
+        ]
+      },
+      ZANWHEI: {
+        novoPedidoValor: 27500,
+        novoPedidoQtd: 110,
+        ultimoPedidoValor: 29000,
+        ultimoPedidoQtd: 120,
+        items: [
+          { sku: "ZAN-99", nome: "CARREGADOR INTELIGENTE 54.6V", entradas: 80, saidas: 70, saldo: 10, novoPedido: 60 },
+          { sku: "ZAN-100", nome: "MANOPLA DE BORRACHA ERGONÔMICA", entradas: 120, saidas: 45, saldo: 75, novoPedido: 50 }
+        ]
+      }
+    };
+
+    let chartInstance = null;
+
+    // 2. FORMATAÇÃO MONETÁRIA (R$)
+    function fmtMoeda(val) {
+      return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    // 3. ATUALIZAÇÃO DO DASHBOARD
+    function atualizarDashboard() {
+      const aba = document.getElementById("seletorAba").value;
+      const dados = DADOS_FABRICANTES[aba] || DADOS_FABRICANTES["ODEWAY"];
+
+      // 3.1 KPIs da Seção 1 (Pedidos)
+      document.getElementById("kpiNovoValor").innerText = fmtMoeda(dados.novoPedidoValor);
+      document.getElementById("kpiNovoQtd").innerText = dados.novoPedidoQtd;
+      document.getElementById("kpiUltimoValor").innerText = fmtMoeda(dados.ultimoPedidoValor);
+      document.getElementById("kpiUltimoQtd").innerText = dados.ultimoPedidoQtd;
+
+      // Cálculo de Variação % de investimento
+      const varPct = ((dados.novoPedidoValor - dados.ultimoPedidoValor) / dados.ultimoPedidoValor) * 100;
+      const elVariacao = document.getElementById("kpiVariacao");
+      elVariacao.innerText = (varPct >= 0 ? "+" : "") + varPct.toFixed(1) + "%";
+      elVariacao.className = "text-2xl font-extrabold " + (varPct >= 0 ? "text-emerald-600" : "text-rose-600");
+
+      // Ticket Médio por Peça
+      const precoMedio = dados.novoPedidoValor / Math.max(1, dados.novoPedidoQtd);
+      document.getElementById("kpiPrecoMedio").innerText = fmtMoeda(precoMedio);
+
+      // 3.2 KPIs da Seção 2 (Consumo no Período)
+      let totEntradas = 0, totSaidas = 0, totSaldo = 0;
+      dados.items.forEach(item => {
+        totEntradas += item.entradas;
+        totSaidas += item.saidas;
+        totSaldo += item.saldo;
+      });
+
+      document.getElementById("kpiEntradas").innerText = totEntradas + " un.";
+      document.getElementById("kpiSaidas").innerText = totSaidas + " un.";
+      document.getElementById("kpiSaldo").innerText = totSaldo + " un.";
+
+      const taxaConsumo = totEntradas > 0 ? (totSaidas / totEntradas) * 100 : 0;
+      document.getElementById("kpiTaxaConsumo").innerText = taxaConsumo.toFixed(1) + "%";
+
+      // 3.3 RENDERIZAÇÃO DE TABELA E GRÁFICO
+      renderizarTabela(dados.items);
+      renderizarGrafico(dados.items);
+    }
+
+    // 4. PREENCHIMENTO DA TABELA DE PEÇAS
+    function renderizarTabela(items) {
+      const tbody = document.getElementById("tabelaPecas");
+      tbody.innerHTML = "";
+
+      items.forEach(item => {
+        const pctConsumido = item.entradas > 0 ? ((item.saidas / item.entradas) * 100).toFixed(1) : 0;
+
+        // Regra do Alerta de Status
+        let badge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">ESTOQUE OK</span>';
+        if (item.saldo <= 2) {
+          badge = '<span class="px-2 py-1 bg-rose-100 text-rose-800 rounded-full text-[10px] font-bold">CRÍTICO</span>';
+        } else if (pctConsumido > 50) {
+          badge = '<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-[10px] font-bold">REPOSIÇÃO</span>';
+        }
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50 border-b border-slate-100 transition-colors";
+        tr.innerHTML = `
+          <td class="p-3.5 font-bold text-slate-900">${item.sku}</td>
+          <td class="p-3.5 text-slate-700 font-medium">${item.nome}</td>
+          <td class="p-3.5 text-center font-bold text-blue-700">${item.entradas}</td>
+          <td class="p-3.5 text-center font-bold text-amber-600">${item.saidas}</td>
+          <td class="p-3.5 text-center font-extrabold text-slate-900">${item.saldo}</td>
+          <td class="p-3.5 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <span class="text-xs font-bold w-10 text-right">${pctConsumido}%</span>
+              <div class="w-16 bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-blue-600 h-1.5 rounded-full" style="width: ${Math.min(100, pctConsumido)}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="p-3.5 text-center font-extrabold text-indigo-900 bg-slate-50">${item.novoPedido} un.</td>
+          <td class="p-3.5 text-right">${badge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 5. RENDERIZAR GRÁFICO (CHART.JS)
+    function renderizarGrafico(items) {
+      const ctx = document.getElementById('graficoConsumo').getContext('2d');
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: items.map(i => i.sku),
+          datasets: [
+            {
+              label: 'Entradas (Histórico)',
+              data: items.map(i => i.entradas),
+              backgroundColor: '#3b82f6',
+              borderRadius: 4
+            },
+            {
+              label: 'Saídas (Consumido)',
+              data: items.map(i => i.saidas),
+              backgroundColor: '#f59e0b',
+              borderRadius: 4
+            },
+            {
+              label: 'Saldo Atual',
+              data: items.map(i => i.saldo),
+              backgroundColor: '#10b981',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'top',
+              labels: { font: { size: 11, weight: '600' } }
+            }
+          },
+          scales: {
+            y: { 
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // INICIALIZAÇÃO AO CARREGAR A PÁGINA
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      atualizarDashboard();
+    });
+  </script>
+</body>
+</html>
