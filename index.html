@@ -168,12 +168,17 @@
               <p id="subtituloGrafico" class="text-[11px] text-slate-500">Exibindo comparativo geral de todas as peças</p>
             </div>
 
-            <!-- CONTROLES DO GRÁFICO (SELETOR DE PEÇA + BOTÃO VOLTAR) -->
-            <div class="flex items-center gap-2">
-              <select id="seletorPeca" onchange="selecionarPecaManual(this.value)" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none px-2.5 py-1.5 cursor-pointer">
-                <!-- Opções populadas via JS -->
-              </select>
-              <button id="btnVoltarGeral" onclick="selecionarPecaManual('TODAS')" class="hidden px-2.5 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1 shadow-sm">
+            <!-- CONTROLES COM BOTÕES PARA FRENTE / PARA TRÁS -->
+            <div class="flex items-center gap-1.5">
+              <button onclick="navegarPeca(-1)" title="Item Anterior" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-300 flex items-center justify-center">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              
+              <button onclick="navegarPeca(1)" title="Próximo Item" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-300 flex items-center justify-center">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+
+              <button id="btnVoltarGeral" onclick="resetaParaGeral()" class="hidden px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1 shadow-sm">
                 <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Voltar Geral
               </button>
             </div>
@@ -186,12 +191,31 @@
       </div>
     </section>
 
-    <!-- SEÇÃO 3: TABELA DE DETALHAMENTO DE PEÇAS -->
+    <!-- SEÇÃO NOVA: GRÁFICO DE ITENS MAIS USADOS VS MENOS USADOS -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg">
+          <i data-lucide="arrow-up-down" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">3. Ranking de Consumo (Mais Usados vs. Menos Usados)</h2>
+          <p class="text-xs text-slate-500">Classificação dos itens por volume total de saídas no período</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div class="relative h-64 w-full">
+          <canvas id="graficoRanking"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 4: TABELA DE DETALHAMENTO DE PEÇAS -->
     <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden space-y-0">
       <div class="p-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">3. Relação Detalhada por Peça e SKU</h3>
-          <p class="text-xs text-slate-500">💡 <strong>Dica:</strong> Clique em qualquer linha para visualizar o gráfico individual do item!</p>
+          <h3 class="text-base font-bold text-slate-800">4. Relação Detalhada por Peça e SKU</h3>
+          <p class="text-xs text-slate-500">💡 <strong>Dica:</strong> Clique em qualquer linha para focar o gráfico na peça desejada!</p>
         </div>
       </div>
 
@@ -225,7 +249,6 @@
 
   <!-- SCRIPT DE DADOS E FUNCIONALIDADES -->
   <script>
-    // 1. BASE DE DADOS
     const DADOS_FABRICANTES = {
       ODEWAY: {
         novoPedidoValor: 50700,
@@ -280,34 +303,51 @@
     };
 
     let chartInstance = null;
-    let pecaSelecionada = "TODAS"; // Estado global da seleção
+    let chartRankingInstance = null;
+    let indexPecaAtual = -1; // -1 significa "VISÃO GERAL DE TODAS"
 
     function fmtMoeda(val) {
       return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
     function trocarFabricante() {
-      pecaSelecionada = "TODAS";
+      indexPecaAtual = -1;
       atualizarDashboard();
     }
 
-    function selecionarPecaManual(sku) {
-      pecaSelecionada = sku;
+    function resetaParaGeral() {
+      indexPecaAtual = -1;
+      atualizarDashboard();
+    }
+
+    // NAVEGAÇÃO PRA FRENTE / PRA TRÁS
+    function navegarPeca(direcao) {
       const aba = document.getElementById("seletorAba").value;
-      const dados = DADOS_FABRICANTES[aba] || DADOS_FABRICANTES["ODEWAY"];
-      
-      // Atualiza o select dropdown do gráfico
-      document.getElementById("seletorPeca").value = sku;
-      
-      renderizarTabela(dados.items);
-      renderizarGrafico(dados.items);
+      const items = DADOS_FABRICANTES[aba].items;
+
+      indexPecaAtual += direcao;
+
+      if (indexPecaAtual < 0) {
+        indexPecaAtual = items.length - 1; // Volta pro último
+      } else if (indexPecaAtual >= items.length) {
+        indexPecaAtual = 0; // Vai pro primeiro
+      }
+
+      atualizarDashboard();
+    }
+
+    function selecionarPecaPorSku(sku) {
+      const aba = document.getElementById("seletorAba").value;
+      const items = DADOS_FABRICANTES[aba].items;
+      indexPecaAtual = items.findIndex(i => i.sku === sku);
+      atualizarDashboard();
     }
 
     function atualizarDashboard() {
       const aba = document.getElementById("seletorAba").value;
       const dados = DADOS_FABRICANTES[aba] || DADOS_FABRICANTES["ODEWAY"];
 
-      // 1. KPIs da Seção 1 (Pedidos)
+      // 1. KPIs de Pedidos
       document.getElementById("kpiNovoValor").innerText = fmtMoeda(dados.novoPedidoValor);
       document.getElementById("kpiNovoQtd").innerText = dados.novoPedidoQtd;
       document.getElementById("kpiUltimoValor").innerText = fmtMoeda(dados.ultimoPedidoValor);
@@ -321,7 +361,7 @@
       const precoMedio = dados.novoPedidoValor / Math.max(1, dados.novoPedidoQtd);
       document.getElementById("kpiPrecoMedio").innerText = fmtMoeda(precoMedio);
 
-      // 2. KPIs da Seção 2 (Consumo Geral)
+      // 2. KPIs de Consumo
       let totEntradas = 0, totSaidas = 0, totSaldo = 0;
       dados.items.forEach(item => {
         totEntradas += item.entradas;
@@ -336,23 +376,16 @@
       const taxaConsumo = totEntradas > 0 ? (totSaidas / totEntradas) * 100 : 0;
       document.getElementById("kpiTaxaConsumo").innerText = taxaConsumo.toFixed(1) + "%";
 
-      // Populate Seletor de Peça do Gráfico
-      const selectPeca = document.getElementById("seletorPeca");
-      selectPeca.innerHTML = `<option value="TODAS">📊 Todas as Peças (Visão Geral)</option>`;
-      dados.items.forEach(item => {
-        selectPeca.innerHTML += `<option value="${item.sku}">${item.sku} - ${item.nome}</option>`;
-      });
-      selectPeca.value = pecaSelecionada;
-
       renderizarTabela(dados.items);
-      renderizarGrafico(dados.items);
+      renderizarGraficoConsumo(dados.items);
+      renderizarGraficoRanking(dados.items);
     }
 
     function renderizarTabela(items) {
       const tbody = document.getElementById("tabelaPecas");
       tbody.innerHTML = "";
 
-      items.forEach(item => {
+      items.forEach((item, idx) => {
         const pctConsumido = item.entradas > 0 ? ((item.saidas / item.entradas) * 100).toFixed(1) : 0;
 
         let badge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">ESTOQUE OK</span>';
@@ -362,10 +395,10 @@
           badge = '<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-[10px] font-bold">REPOSIÇÃO</span>';
         }
 
-        const isSelected = item.sku === pecaSelecionada;
+        const isSelected = idx === indexPecaAtual;
         const tr = document.createElement("tr");
-        tr.className = `cursor-pointer transition-colors ${isSelected ? 'bg-blue-50/80 border-l-4 border-l-blue-600' : 'hover:bg-slate-50 border-b border-slate-100'}`;
-        tr.onclick = () => selecionarPecaManual(item.sku);
+        tr.className = `cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 border-l-4 border-l-blue-600' : 'hover:bg-slate-50 border-b border-slate-100'}`;
+        tr.onclick = () => selecionarPecaPorSku(item.sku);
 
         tr.innerHTML = `
           <td class="p-3.5 font-bold text-slate-900">${item.sku}</td>
@@ -388,7 +421,8 @@
       });
     }
 
-    function renderizarGrafico(items) {
+    // 1. GRÁFICO PRINCIPAL DE CONSUMO (VISÃO GERAL OU ITEM SELECIONADO)
+    function renderizarGraficoConsumo(items) {
       const ctx = document.getElementById('graficoConsumo').getContext('2d');
       const btnVoltar = document.getElementById('btnVoltarGeral');
       const titulo = document.getElementById('tituloGrafico');
@@ -399,31 +433,31 @@
       }
 
       let labels = [];
-      let entradasData = [];
-      let saidasData = [];
-      let saldoData = [];
+      let datasetEntradas = [];
+      let datasetSaidas = [];
+      let datasetSaldo = [];
 
-      if (pecaSelecionada === "TODAS") {
-        // MODO GERAL
+      if (indexPecaAtual === -1) {
+        // VISÃO GERAL
         titulo.innerText = "Visão Geral por Item: Entradas vs. Saídas vs. Saldo";
         subtitulo.innerText = "Exibindo comparativo geral de todas as peças";
         btnVoltar.classList.add("hidden");
 
         labels = items.map(i => i.sku);
-        entradasData = items.map(i => i.entradas);
-        saidasData = items.map(i => i.saidas);
-        saldoData = items.map(i => i.saldo);
+        datasetEntradas = items.map(i => i.entradas);
+        datasetSaidas = items.map(i => i.saidas);
+        datasetSaldo = items.map(i => i.saldo);
       } else {
-        // MODO ITEM ÚNICO
-        const itemObj = items.find(i => i.sku === pecaSelecionada) || items[0];
+        // ITEM ÚNICO
+        const itemObj = items[indexPecaAtual];
         titulo.innerText = `Análise Individual: ${itemObj.sku} - ${itemObj.nome}`;
         subtitulo.innerText = `Detalhamento de Entradas, Consumo e Saldo em Estoque`;
         btnVoltar.classList.remove("hidden");
 
-        labels = ['Entradas (Histórico)', 'Saídas (Consumido)', 'Saldo Atual'];
-        entradasData = [itemObj.entradas, null, null];
-        saidasData = [null, itemObj.saidas, null];
-        saldoData = [null, null, itemObj.saldo];
+        labels = ['Entradas', 'Saídas (Consumido)', 'Saldo Atual'];
+        datasetEntradas = [itemObj.entradas, 0, 0];
+        datasetSaidas = [0, itemObj.saidas, 0];
+        datasetSaldo = [0, 0, itemObj.saldo];
       }
 
       chartInstance = new Chart(ctx, {
@@ -432,20 +466,20 @@
           labels: labels,
           datasets: [
             {
-              label: 'Entradas (Histórico)',
-              data: pecaSelecionada === "TODAS" ? entradasData : [entradasData[0], 0, 0],
+              label: 'Entradas',
+              data: datasetEntradas,
               backgroundColor: '#3b82f6',
               borderRadius: 4
             },
             {
               label: 'Saídas (Consumido)',
-              data: pecaSelecionada === "TODAS" ? saidasData : [0, saidasData[1], 0],
+              data: datasetSaidas,
               backgroundColor: '#f59e0b',
               borderRadius: 4
             },
             {
               label: 'Saldo Atual',
-              data: pecaSelecionada === "TODAS" ? saldoData : [0, 0, saldoData[2]],
+              data: datasetSaldo,
               backgroundColor: '#10b981',
               borderRadius: 4
             }
@@ -455,19 +489,55 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { 
-              position: 'top',
-              labels: { font: { size: 11, weight: '600' } }
-            }
+            legend: { position: 'top', labels: { font: { size: 11, weight: '600' } } }
           },
           scales: {
-            y: { 
-              beginAtZero: true,
-              grid: { color: '#f1f5f9' }
-            },
-            x: {
-              grid: { display: false }
-            }
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // 2. GRÁFICO DE RANKING (MAIS USADOS VS MENOS USADOS)
+    function renderizarGraficoRanking(items) {
+      const ctxRanking = document.getElementById('graficoRanking').getContext('2d');
+
+      if (chartRankingInstance) {
+        chartRankingInstance.destroy();
+      }
+
+      // Ordena os itens do maior para o menor consumo (saídas)
+      const ordenados = [...items].sort((a, b) => b.saidas - a.saidas);
+
+      // Cores graduais para diferenciar os mais usados (amber) dos menos usados (slate/indigo)
+      const cores = ordenados.map((item, index) => {
+        if (index === 0) return '#ea580c'; // O mais usado (Laranja Forte)
+        if (index < 3) return '#f59e0b';  // Top 3 (Amber)
+        return '#64748b';                  // Menos usados (Cinza/Slate)
+      });
+
+      chartRankingInstance = new Chart(ctxRanking, {
+        type: 'bar',
+        data: {
+          labels: ordenados.map(i => `${i.sku} (${i.nome.substring(0, 15)}...)`),
+          datasets: [{
+            label: 'Unidades Consumidas (Saídas)',
+            data: ordenados.map(i => i.saidas),
+            backgroundColor: cores,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y', // Gráfico Horizontal
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+            y: { grid: { display: false }, ticks: { font: { size: 10, weight: '600' } } }
           }
         }
       });
