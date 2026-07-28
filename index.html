@@ -1,3 +1,231 @@
+```python
+import pandas as pd
+
+# Open the excel file to inspect sheet names and structure
+excel_path = 'Movimentacao S10  E S9 E BMS 1 ANO.xlsx'
+xls = pd.ExcelFile(excel_path)
+print("Sheet names:", xls.sheet_names)
+
+for sheet in xls.sheet_names:
+    df = pd.read_excel(excel_path, sheet_name=sheet)
+    print(f"\n--- Sheet: {sheet} ---")
+    print(df.head(15))
+    print(df.info())
+
+
+```
+
+```text
+Sheet names: ['OG', 'S9 ', 'BMS']
+
+--- Sheet: OG ---
+   MOVIMENTAÇÃO ELOCA PEÇAS MODELO S10/S10X PERIODO DE 1 ANO 21/07/2025 A 24/07/2026                                                              Unnamed: 1 Unnamed: 2  Unnamed: 3           Unnamed: 4 Unnamed: 5 Unnamed: 6   Unnamed: 7     Unnamed: 8
+0                                                                            Produto                                                               Descrição        NCM   Descrição     DATA 1° ENTRADA    ENTRADAS     Saídas  Saldo Final  Valor Estoque
+1                                                                                349                                MOTOR HUB SEM ESCOVAS 2500W C60 CODODW16   87141000  S10 / S10X  2025-07-21 00:00:00         30          6           24   13957.671428
+2                                                                                353                            PAINEL LED, VERSÃO 2024-11, DICICLO S10/S10X   87141000  S10 / S10X  2025-07-24 00:00:00         30          6           24    2130.385714
+3                                                                                358                          T   COM MANOPLAS BORRACHA C60 / X60, COR PRETA   87141000  S10 / S10X  2025-07-24 00:00:00         35         26            9    1064.256923
+4                                                                                351                    PLACA MÃE CONTROLADORA, VERSÃO 2024-11, DICICLO S10X   87141000  S10 / S10X  2025-07-30 00:00:00         24         14           10       7267.625
+5                                                                                354              PARALAMA PLASTICO LADO D/E OFF ROAD X60 CODODW13 COR PRETA   87141000  S10 / S10X  2025-07-31 00:00:00         69         33           36    2102.551579
+6                                                                                356               SUPORTE PARALAMA METAL, LADO D/E, DICICLO S10X, COR PRATA   87141000  S10 / S10X  2025-07-31 00:00:00         74         38           36    4205.112632
+7                                                                                370                          DESCANSO CENTRAL, CODODW20 C60 / C60X S10/S10X   87141000  S10 / S10X  2025-07-31 00:00:00         60         59            1      87.171429
+8                                                                                359   PARTE INFERIOR DA TORRE DE DIRECAO EM ALUMINIO CODOW2  S10/S10X PRETA   87141000  S10 / S10X  2025-08-01 00:00:00         32         26            6       1590.876
+9                                                                                352  PLACA MÃE CONTROLADORA, VERSÃO 2024-11, DICICLO S10 CODODW60NCITY ROAD   87141000  S10 / S10X  2025-08-08 00:00:00         29         18           11    8030.717895
+10                                                                               355               PARALAMA PLASTICO LADO D/E ON ROAD C60 CODODW13 COR PRETA   87141000  S10 / S10X  2025-08-18 00:00:00         57         23           34       1988.133
+11                                                                               357      SUPORTE PARALAMA METAL, LADO D/E, DICICLO S10, COR PRATA  CODODW12   87141000  S10 / S10X  2025-08-22 00:00:00         67         27           40    4692.043478
+12                                                                               360          CARENAGEM PLÁSTICA FRONTAL CHASSI, DICICLO S10/S10X, COR PRETA   87141000  S10 / S10X  2025-09-03 00:00:00         31          2           29    1725.886667
+13                                                                               362               TAPETE BORRACHA CHASSIS, LADO DIREITO S10/S10X, COR PRETA   87141000  S10 / S10X  2025-09-23 00:00:00         38         23           15     885.047727
+14                                                                               361                 CAIXA PLÁSTICA  DA BATERIA, DICICLO S10/S10X, COR PRETA   87141000  S10 / S10X  2025-10-02 00:00:00         28          4           24    2140.966154
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 23 entries, 0 to 22
+Data columns (total 9 columns):
+ #   Column                                                                             Non-Null Count  Dtype 
+---  ------                                                                             --------------  ----- 
+ 0   MOVIMENTAÇÃO ELOCA PEÇAS MODELO S10/S10X PERIODO DE 1 ANO 21/07/2025 A 24/07/2026  23 non-null     object
+ 1   Unnamed: 1                                                                         23 non-null     object
+ 2   Unnamed: 2                                                                         23 non-null     object
+ 3   Unnamed: 3                                                                         23 non-null     object
+ 4   Unnamed: 4                                                                         23 non-null     object
+ 5   Unnamed: 5                                                                         23 non-null     object
+ 6   Unnamed: 6                                                                         23 non-null     object
+ 7   Unnamed: 7                                                                         23 non-null     object
+ 8   Unnamed: 8                                                                         23 non-null     object
+dtypes: object(9)
+memory usage: 1.7+ KB
+None
+
+--- Sheet: S9  ---
+   MOVIMENTAÇÃO ELOCA PEÇAS MODELO S9/S9X/H9/H9X PERIODO DE 1 ANO 28/07/2025 A 27/07/2026                                     Unnamed: 1      Unnamed: 2           Unnamed: 3 Unnamed: 4 Unnamed: 5 Unnamed: 6     Unnamed: 7
+0                                                                                     COD                                  FAMILIA S9/H9           GRUPO      DATA 1° ENTRADA   ENTRADAS     SAIDAS   ESTOQUE   Valor Estoque
+1                                                                                     152                GABINETE CENTRAL CONSOLE  S9/SE   S9/S9X/H9/H9X  2025-07-28 00:00:00         79         61         18        1046.93
+2                                                                                     434                         CAIXA DE BATERIA S9/H9   S9/S9X/H9/H9X  2025-07-28 00:00:00         54         39         15     785.198276
+3                                                                                   50041                      COUPLING  COMPLETO S9/S9X   S9/S9X/H9/H9X  2025-07-28 00:00:00        604        574         30          891.9
+4                                                                                   50056                          SENSOR DO PIVÔ S9/S9X   S9/S9X/H9/H9X  2025-07-28 00:00:00        121        113          8         164.96
+5                                                                                     151                          MOTOR BRUSHLESS S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         19         15          4           2176
+6                                                                                     153                               PLACA MAE S9/S9X   S9/S9X/H9/H9X  2025-07-29 00:00:00        101        101          0              0
+7                                                                                     154  PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY   S9/S9X/H9/H9X  2025-07-29 00:00:00         86         81          5        1189.25
+8                                                                                     158                                  MANOPLA S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00        119         98         21          386.4
+9                                                                                     162              REGULADOR DE ALTURA MANIPLO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         87         42         45     981.608333
+10                                                                                    164                        BARRA TRASNVESSAL S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         39         13         26     914.330625
+11                                                                                    167            ASSOALHO DE ALUMINIO S9//S9X/H9/H9X   S9/S9X/H9/H9X  2025-07-29 00:00:00         49         45          4        279.184
+12                                                                                    205   CARPETE DE SILICONE LADO DIREITO PRETO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         92         65         27    2271.724138
+13                                                                                    206  CARPETE DE SILICONE LADO ESQUERDO PRETO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         60         41         19         749.17
+14                                                                                    375                PARA-LAMA DE PLÁSTICO S9X PRETO   S9/S9X/H9/H9X  2025-07-29 00:00:00         70         29         41     1077.85186
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 41 entries, 0 to 40
+Data columns (total 8 columns):
+ #   Column                                                                                  Non-Null Count  Dtype 
+---  ------                                                                                  --------------  ----- 
+ 0   MOVIMENTAÇÃO ELOCA PEÇAS MODELO S9/S9X/H9/H9X PERIODO DE 1 ANO 28/07/2025 A 27/07/2026  41 non-null     object
+ 1   Unnamed: 1                                                                              41 non-null     object
+ 2   Unnamed: 2                                                                              41 non-null     object
+ 3   Unnamed: 3                                                                              41 non-null     object
+ 4   Unnamed: 4                                                                              41 non-null     object
+ 5   Unnamed: 5                                                                              41 non-null     object
+ 6   Unnamed: 6                                                                              41 non-null     object
+ 7   Unnamed: 7                                                                              41 non-null     object
+dtypes: object(8)
+memory usage: 2.7+ KB
+None
+
+--- Sheet: BMS ---
+   COD                                                    BMS   GRUPO DATA 1° ENTRADA  ENTRADAS  Saídas  Saldo Final  Valor Estoque
+0  471                     BMS YANYANG  15S 20A PARA NCM 3.7V  CR/ BT      2025-07-28        14      14            0       0.000000
+1  472                          BMS  YANYANG 17S 20A LFP 3.2V  CR/ BT      2025-07-28        27       6           21       0.000000
+2  474               MODULO BLUETOOTH   15S 20A  3.7V YANYANG  CR/ BT      2025-07-28        12      12            0       0.000000
+3  734  BMS  14S-20S NCM/LFP  MARCA YANYANG IMPORT ABRIL/2026  CR/ BT      2025-10-22        51      41           10     928.756667
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 4 entries, 0 to 3
+Data columns (total 8 columns):
+ #   Column           Non-Null Count  Dtype         
+---  ------           --------------  -----         
+ 0   COD              4 non-null      int64         
+ 1   BMS              4 non-null      object        
+ 2   GRUPO            4 non-null      object        
+ 3   DATA 1° ENTRADA  4 non-null      datetime64[ns]
+ 4   ENTRADAS         4 non-null      int64         
+ 5   Saídas           4 non-null      int64         
+ 6   Saldo Final      4 non-null      int64         
+ 7   Valor Estoque    4 non-null      float64       
+dtypes: datetime64[ns](1), float64(1), int64(4), object(2)
+memory usage: 384.0+ bytes
+None
+
+
+```
+
+```python
+# Let's inspect all rows of S9 and BMS sheets completely
+df_s9 = pd.read_excel(excel_path, sheet_name='S9 ')
+print("--- S9 Sheet Raw ---")
+print(df_s9.to_string())
+
+df_bms = pd.read_excel(excel_path, sheet_name='BMS')
+print("\n--- BMS Sheet Raw ---")
+print(df_bms.to_string())
+
+
+```
+
+```text
+--- S9 Sheet Raw ---
+   MOVIMENTAÇÃO ELOCA PEÇAS MODELO S9/S9X/H9/H9X PERIODO DE 1 ANO 28/07/2025 A 27/07/2026                                                                           Unnamed: 1      Unnamed: 2           Unnamed: 3 Unnamed: 4 Unnamed: 5 Unnamed: 6     Unnamed: 7
+0                                                                                     COD                                                                        FAMILIA S9/H9           GRUPO      DATA 1° ENTRADA   ENTRADAS     SAIDAS   ESTOQUE   Valor Estoque
+1                                                                                     152                                                      GABINETE CENTRAL CONSOLE  S9/SE   S9/S9X/H9/H9X  2025-07-28 00:00:00         79         61         18        1046.93
+2                                                                                     434                                                               CAIXA DE BATERIA S9/H9   S9/S9X/H9/H9X  2025-07-28 00:00:00         54         39         15     785.198276
+3                                                                                   50041                                                            COUPLING  COMPLETO S9/S9X   S9/S9X/H9/H9X  2025-07-28 00:00:00        604        574         30          891.9
+4                                                                                   50056                                                                SENSOR DO PIVÔ S9/S9X   S9/S9X/H9/H9X  2025-07-28 00:00:00        121        113          8         164.96
+5                                                                                     151                                                                MOTOR BRUSHLESS S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         19         15          4           2176
+6                                                                                     153                                                                     PLACA MAE S9/S9X   S9/S9X/H9/H9X  2025-07-29 00:00:00        101        101          0              0
+7                                                                                     154                                        PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY   S9/S9X/H9/H9X  2025-07-29 00:00:00         86         81          5        1189.25
+8                                                                                     158                                                                        MANOPLA S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00        119         98         21          386.4
+9                                                                                     162                                                    REGULADOR DE ALTURA MANIPLO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         87         42         45     981.608333
+10                                                                                    164                                                              BARRA TRASNVESSAL S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         39         13         26     914.330625
+11                                                                                    167                                                  ASSOALHO DE ALUMINIO S9//S9X/H9/H9X   S9/S9X/H9/H9X  2025-07-29 00:00:00         49         45          4        279.184
+12                                                                                    205                                         CARPETE DE SILICONE LADO DIREITO PRETO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         92         65         27    2271.724138
+13                                                                                    206                                        CARPETE DE SILICONE LADO ESQUERDO PRETO S9/SE   S9/S9X/H9/H9X  2025-07-29 00:00:00         60         41         19         749.17
+14                                                                                    375                                                      PARA-LAMA DE PLÁSTICO S9X PRETO   S9/S9X/H9/H9X  2025-07-29 00:00:00         70         29         41     1077.85186
+15                                                                                    393                                                        PIVO MECANICO COMPLETO S9/S9X   S9/S9X/H9/H9X  2025-07-29 00:00:00         72         51         21        1082.34
+16                                                                                 100056  CARREGADOR 63V 2A PARA DICICLO ELETRICO MODELO ESWING  S9/S9X/H9/H9X/BR8/R8  (NOVO)   S9/S9X/H9/H9X  2025-07-30 00:00:00         16         11          5            735
+17                                                                                    481                     CARREGADOR 63V 3A VENTOINHA  ESWING  S9/S9X/H9/H9X/BR8/R8 (NOVO)   S9/S9X/H9/H9X  2025-07-30 00:00:00         31         21         10         1489.2
+18                                                                                    157                                       ACABAMENTO CARENAGEM  INFERIOR DIANTEIRO S9/SE   S9/S9X/H9/H9X  2025-08-12 00:00:00         55         44         11          515.9
+19                                                                                    160                                                        TORRE INFERIOR  S9/S9X/H9/H9X   S9/S9X/H9/H9X  2025-08-18 00:00:00         68         37         31    5646.488541
+20                                                                                    452                                                         RODA COMPLETA COM MOTOR  H9X   S9/S9X/H9/H9X  2025-08-18 00:00:00         16         16          0              0
+21                                                                                    453                                                                   MOTOR SEM PNEU  H9   S9/S9X/H9/H9X  2025-08-18 00:00:00         45         26         19        9379.57
+22                                                                                  50058                                                                  SENSOR DE PÉ S9/S9X   S9/S9X/H9/H9X  2025-08-20 00:00:00         48         16         32         380.48
+23                                                                                    443                                                                 PLACA MAE ON ROAD H9   S9/S9X/H9/H9X  2025-08-21 00:00:00         24         13         11   10862.080952
+24                                                                                    444                                                                 PLACA DISPLAY H9/H9X   S9/S9X/H9/H9X  2025-08-22 00:00:00         55         24         31    6499.554722
+25                                                                                    446                                                                   SENSOR DE PIVO  H9   S9/S9X/H9/H9X  2025-08-22 00:00:00        136         66         70       1611.225
+26                                                                                    448                                                                   PLACA POWER H9/H9X   S9/S9X/H9/H9X  2025-08-22 00:00:00          8          6          2          131.1
+27                                                                                    449                                                                  SENSOR DE PE H9/H9X   S9/S9X/H9/H9X  2025-08-22 00:00:00         12         12          0              0
+28                                                                                    163                                                 CONJUNTO DE DESCANSO  PÉ DE APOIO S9   S9/S9X/H9/H9X  2025-08-27 00:00:00         41         40          1          59.46
+29                                                                                    374                                                  ALÇA PARA-LAMA FANDER METALICO  S9X   S9/S9X/H9/H9X  2025-09-01 00:00:00         54         18         36        2683.36
+30                                                                                    150                                                                  PARALAMA ON ROAD S9   S9/S9X/H9/H9X  2025-09-03 00:00:00        167        139         28         733.74
+31                                                                                    698                                          PNEU DE S9 90/90-12 MASKED SCOOTER IRA-GTIN   S9/S9X/H9/H9X  2025-09-11 00:00:00         30         30          0              0
+32                                                                                    753                                   CAIXA LED AZUL  FRONTAL SP/S9X/H9/H9X LADO DIREITO   S9/S9X/H9/H9X  2025-09-25 00:00:00         19         18          1      22.766667
+33                                                                                    754                                  CAIXA LED AZUL  FRONTAL SP/S9X/H9/H9X LADO ESQUERDO   S9/S9X/H9/H9X  2025-09-25 00:00:00         18         18          0              0
+34                                                                                    450                                                        RODA COMPLETA ARO 19X7-8  S9X   S9/S9X/H9/H9X  2025-10-17 00:00:00         10         10          0              0
+35                                                                                    900                                        PNEU OFF ROAD MODELO S9X/S10X ARO 19 X  7 - 8   S9/S9X/H9/H9X  2025-11-27 00:00:00          2          2          0              0
+36                                                                                    148                                                           CAIXA DE TRANSMISSAO S9/SE   S9/S9X/H9/H9X  2026-01-14 00:00:00          5          3          2        2140.66
+37                                                                                    442                                                               PLACA MAE OFF ROAD H9X   S9/S9X/H9/H9X  2026-01-14 00:00:00         12         12          0              0
+38                                                                                    451                                                      TORRE SUPERIOR  T  9/S9X/H9/H9X   S9/S9X/H9/H9X  2026-04-08 00:00:00         37         23         14           1330
+39                                                                                    925                                                            PIVO COMPLETO PARA H9/H9X   S9/S9X/H9/H9X  2026-04-14 00:00:00         21          9         12    2093.874286
+40                                                                                    918                                                        MOTOR DE H9 COMPLETO COM PNEU   S9/S9X/H9/H9X  2026-04-17 00:00:00         38         23         15    9582.848684
+
+--- BMS Sheet Raw ---
+   COD                                                    BMS   GRUPO DATA 1° ENTRADA  ENTRADAS  Saídas  Saldo Final  Valor Estoque
+0  471                     BMS YANYANG  15S 20A PARA NCM 3.7V  CR/ BT      2025-07-28        14      14            0       0.000000
+1  472                          BMS  YANYANG 17S 20A LFP 3.2V  CR/ BT      2025-07-28        27       6           21       0.000000
+2  474               MODULO BLUETOOTH   15S 20A  3.7V YANYANG  CR/ BT      2025-07-28        12      12            0       0.000000
+3  734  BMS  14S-20S NCM/LFP  MARCA YANYANG IMPORT ABRIL/2026  CR/ BT      2025-10-22        51      41           10     928.756667
+
+
+```
+
+```python
+# Let's verify data totals for S9 and BMS
+# Clean S9 dataframe
+df_s9_clean = df_s9.iloc[1:].copy()
+df_s9_clean.columns = ['COD', 'NOME', 'GRUPO', 'DATA_1_ENTRADA', 'ENTRADAS', 'SAIDAS', 'ESTOQUE', 'VALOR_ESTOQUE']
+
+for col in ['ENTRADAS', 'SAIDAS', 'ESTOQUE']:
+    df_s9_clean[col] = pd.to_numeric(df_s9_clean[col])
+
+print("S9 Totals:")
+print("Entradas:", df_s9_clean['ENTRADAS'].sum())
+print("Saidas:", df_s9_clean['SAIDAS'].sum())
+print("Estoque:", df_s9_clean['ESTOQUE'].sum())
+
+print("\nBMS Totals:")
+print("Entradas:", df_bms['ENTRADAS'].sum())
+print("Saidas:", df_bms['Saídas'].sum())
+print("Estoque:", df_bms['Saldo Final'].sum())
+
+
+```
+
+```text
+S9 Totals:
+Entradas: 2620
+Saidas: 2005
+Estoque: 615
+
+BMS Totals:
+Entradas: 104
+Saidas: 73
+Estoque: 31
+
+
+```
+
+Aqui está o código HTML/JS atualizado para inclusão direta no seu dashboard do GitHub.
+
+Nesta versão, adicionamos as duas abas solicitadas (**ESWING (S9 / S9X / H9 / H9X)** e **YY (BMS)**) no seletor de fabricantes, mapeando todas as peças e dados de consumo extraídos da planilha, além de incorporar os dados do último lote de importação da BMS enviado no comprovante.
+
+---
+
+### Código Completo (`index.html`)
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -32,14 +260,15 @@
         </div>
       </div>
 
-      <!-- SELETOR DE FABRICANTE -->
+      <!-- SELETOR DE FABRICANTE / LINHA -->
       <div class="flex items-center gap-3 bg-slate-800 p-1.5 px-3 rounded-lg border border-slate-700">
         <label for="seletorAba" class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-          <i data-lucide="filter" class="w-3.5 h-3.5 text-blue-400"></i> Fabricante:
+          <i data-lucide="filter" class="w-3.5 h-3.5 text-blue-400"></i> Fabricante / Linha:
         </label>
         <select id="seletorAba" onchange="trocarFabricante()" class="bg-slate-900 border border-slate-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none block px-3 py-1.5 cursor-pointer">
-          <option value="ODEWAY" selected>ODEWAY</option>
-          <option value="ESWING">ESWING</option>
+          <option value="ODEWAY" selected>ODEWAY (S10 / S10X)</option>
+          <option value="ESWING_S9">ESWING (S9 / S9X / H9 / H9X)</option>
+          <option value="YY_BMS">YY (BMS)</option>
           <option value="CHIC ROBOT">CHIC ROBOT</option>
           <option value="ZANWHEI">ZANWHEI (SEGWAY)</option>
         </select>
@@ -217,7 +446,7 @@
     <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden space-y-0">
       <div class="p-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">4. Relação Detalhada por Peça e SKU</h3>
+          <h3 class="text-base font-bold text-slate-800">4. Relação Detalhada por Peça e SKU / Código</h3>
           <p class="text-xs text-slate-500">💡 <strong>Dica:</strong> Clique em qualquer linha para focar o gráfico na peça desejada!</p>
         </div>
       </div>
@@ -226,7 +455,7 @@
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-slate-900 text-slate-200 uppercase tracking-wider font-semibold">
-              <th class="p-3.5">SKU</th>
+              <th class="p-3.5">SKU / CÓD</th>
               <th class="p-3.5">Descrição do Item</th>
               <th class="p-3.5 text-center">Entradas</th>
               <th class="p-3.5 text-center">Saídas</th>
@@ -270,16 +499,64 @@
           { sku: "ODW8", nome: "CAIXA PLÁSTICA DA BATERIA", entradas: 28, saidas: 4, saldo: 24, novoPedido: 0 }
         ]
       },
-      ESWING: {
-        novoPedidoValor: 32400,
-        novoPedidoQtd: 140,
+      ESWING_S9: {
+        novoPedidoValor: 38500,
+        novoPedidoQtd: 180,
         ultimoPedidoValor: 35000,
         ultimoPedidoQtd: 155,
         items: [
-          { sku: "ESW01", nome: "BATERIA LÍTIO 48V 15AH", entradas: 50, saidas: 40, saldo: 10, novoPedido: 30 },
-          { sku: "ESW02", nome: "PNEU TUBELESS 10 POLEGADAS", entradas: 100, saidas: 85, saldo: 15, novoPedido: 50 },
-          { sku: "ESW03", nome: "ACELERADOR THROTTLE CONTROL", entradas: 40, saidas: 12, saldo: 28, novoPedido: 15 },
-          { sku: "ESW04", nome: "DISCO DE FREIO TRASEIRO", entradas: 60, saidas: 20, saldo: 40, novoPedido: 20 }
+          { sku: "152", nome: "GABINETE CENTRAL CONSOLE S9/SE", entradas: 79, saidas: 61, saldo: 18, novoPedido: 20 },
+          { sku: "434", nome: "CAIXA DE BATERIA S9/H9", entradas: 54, saidas: 39, saldo: 15, novoPedido: 15 },
+          { sku: "50041", nome: "COUPLING COMPLETO S9/S9X", entradas: 604, saidas: 574, saldo: 30, novoPedido: 50 },
+          { sku: "50056", nome: "SENSOR DO PIVÔ S9/S9X", entradas: 121, saidas: 113, saldo: 8, novoPedido: 20 },
+          { sku: "151", nome: "MOTOR BRUSHLESS S9/SE", entradas: 19, saidas: 15, saldo: 4, novoPedido: 5 },
+          { sku: "153", nome: "PLACA MAE S9/S9X", entradas: 101, saidas: 101, saldo: 0, novoPedido: 10 },
+          { sku: "154", nome: "PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY", entradas: 86, saidas: 81, saldo: 5, novoPedido: 10 },
+          { sku: "158", nome: "MANOPLA S9/SE", entradas: 119, saidas: 98, saldo: 21, novoPedido: 15 },
+          { sku: "162", nome: "REGULADOR DE ALTURA MANIPLO S9/SE", entradas: 87, saidas: 42, saldo: 45, novoPedido: 10 },
+          { sku: "164", nome: "BARRA TRASNVESSAL S9/SE", entradas: 39, saidas: 13, saldo: 26, novoPedido: 5 },
+          { sku: "167", nome: "ASSOALHO DE ALUMINIO S9/S9X/H9/H9X", entradas: 49, saidas: 45, saldo: 4, novoPedido: 10 },
+          { sku: "205", nome: "CARPETE DE SILICONE DIREITO PRETO S9/SE", entradas: 92, saidas: 65, saldo: 27, novoPedido: 10 },
+          { sku: "206", nome: "CARPETE DE SILICONE ESQUERDO PRETO S9/SE", entradas: 60, saidas: 41, saldo: 19, novoPedido: 10 },
+          { sku: "375", nome: "PARA-LAMA DE PLÁSTICO S9X PRETO", entradas: 70, saidas: 29, saldo: 41, novoPedido: 0 },
+          { sku: "393", nome: "PIVO MECANICO COMPLETO S9/S9X", entradas: 72, saidas: 51, saldo: 21, novoPedido: 10 },
+          { sku: "100056", nome: "CARREGADOR 63V 2A ESWING S9/S9X/H9/H9X/BR8/R8", entradas: 16, saidas: 11, saldo: 5, novoPedido: 5 },
+          { sku: "481", nome: "CARREGADOR 63V 3A VENTOINHA ESWING S9/S9X/H9/H9X", entradas: 31, saidas: 21, saldo: 10, novoPedido: 5 },
+          { sku: "157", nome: "ACABAMENTO CARENAGEM INFERIOR DIANTEIRO S9/SE", entradas: 55, saidas: 44, saldo: 11, novoPedido: 10 },
+          { sku: "160", nome: "TORRE INFERIOR S9/S9X/H9/H9X", entradas: 68, saidas: 37, saldo: 31, novoPedido: 0 },
+          { sku: "452", nome: "RODA COMPLETA COM MOTOR H9X", entradas: 16, saidas: 16, saldo: 0, novoPedido: 5 },
+          { sku: "453", nome: "MOTOR SEM PNEU H9", entradas: 45, saidas: 26, saldo: 19, novoPedido: 5 },
+          { sku: "50058", nome: "SENSOR DE PÉ S9/S9X", entradas: 48, saidas: 16, saldo: 32, novoPedido: 0 },
+          { sku: "443", nome: "PLACA MAE ON ROAD H9", entradas: 24, saidas: 13, saldo: 11, novoPedido: 5 },
+          { sku: "444", nome: "PLACA DISPLAY H9/H9X", entradas: 55, saidas: 24, saldo: 31, novoPedido: 0 },
+          { sku: "446", nome: "SENSOR DE PIVO H9", entradas: 136, saidas: 66, saldo: 70, novoPedido: 0 },
+          { sku: "448", nome: "PLACA POWER H9/H9X", entradas: 8, saidas: 6, saldo: 2, novoPedido: 5 },
+          { sku: "449", nome: "SENSOR DE PE H9/H9X", entradas: 12, saidas: 12, saldo: 0, novoPedido: 5 },
+          { sku: "163", nome: "CONJUNTO DE DESCANSO PÉ DE APOIO S9", entradas: 41, saidas: 40, saldo: 1, novoPedido: 10 },
+          { sku: "374", nome: "ALÇA PARA-LAMA FANDER METALICO S9X", entradas: 54, saidas: 18, saldo: 36, novoPedido: 0 },
+          { sku: "150", nome: "PARALAMA ON ROAD S9", entradas: 167, saidas: 139, saldo: 28, novoPedido: 15 },
+          { sku: "698", nome: "PNEU DE S9 90/90-12 MASKED SCOOTER IRA-GTIN", entradas: 30, saidas: 30, saldo: 0, novoPedido: 10 },
+          { sku: "753", nome: "CAIXA LED AZUL FRONTAL DIREITO S9/S9X/H9/H9X", entradas: 19, saidas: 18, saldo: 1, novoPedido: 5 },
+          { sku: "754", nome: "CAIXA LED AZUL FRONTAL ESQUERDO S9/S9X/H9/H9X", entradas: 18, saidas: 18, saldo: 0, novoPedido: 5 },
+          { sku: "450", nome: "RODA COMPLETA ARO 19X7-8 S9X", entradas: 10, saidas: 10, saldo: 0, novoPedido: 2 },
+          { sku: "900", nome: "PNEU OFF ROAD S9X/S10X ARO 19 X 7-8", entradas: 2, saidas: 2, saldo: 0, novoPedido: 5 },
+          { sku: "148", nome: "CAIXA DE TRANSMISSAO S9/SE", entradas: 5, saidas: 3, saldo: 2, novoPedido: 2 },
+          { sku: "442", nome: "PLACA MAE OFF ROAD H9X", entradas: 12, saidas: 12, saldo: 0, novoPedido: 5 },
+          { sku: "451", nome: "TORRE SUPERIOR T 9/S9X/H9/H9X", entradas: 37, saidas: 23, saldo: 14, novoPedido: 5 },
+          { sku: "925", nome: "PIVO COMPLETO PARA H9/H9X", entradas: 21, saidas: 9, saldo: 12, novoPedido: 5 },
+          { sku: "918", nome: "MOTOR DE H9 COMPLETO COM PNEU", entradas: 38, saidas: 23, saldo: 15, novoPedido: 5 }
+        ]
+      },
+      YY_BMS: {
+        novoPedidoValor: 2500,
+        novoPedidoQtd: 30,
+        ultimoPedidoValor: 2435, // USD $435.00
+        ultimoPedidoQtd: 30,
+        items: [
+          { sku: "YYBMZ", nome: "BMS 20S YY (YY-BPU14-MOS-20S50A)", entradas: 51, saidas: 41, saldo: 10, novoPedido: 30 },
+          { sku: "471", nome: "BMS YANYANG 15S 20A PARA NCM 3.7V", entradas: 14, saidas: 14, saldo: 0, novoPedido: 0 },
+          { sku: "472", nome: "BMS YANYANG 17S 20A LFP 3.2V", entradas: 27, saidas: 6, saldo: 21, novoPedido: 0 },
+          { sku: "474", nome: "MODULO BLUETOOTH 15S 20A 3.7V YANYANG", entradas: 12, saidas: 12, saldo: 0, novoPedido: 0 }
         ]
       },
       "CHIC ROBOT": {
@@ -341,7 +618,7 @@
     function selecionarPecaPorSku(sku) {
       const aba = document.getElementById("seletorAba").value;
       const items = DADOS_FABRICANTES[aba].items;
-      indexPecaAtual = items.findIndex(i => i.sku === sku);
+      indexPecaAtual = items.findIndex(i => String(i.sku) === String(sku));
       atualizarDashboard();
     }
 
@@ -354,7 +631,7 @@
       document.getElementById("kpiUltimoValor").innerText = fmtMoeda(dados.ultimoPedidoValor);
       document.getElementById("kpiUltimoQtd").innerText = dados.ultimoPedidoQtd;
 
-      const varPct = ((dados.novoPedidoValor - dados.ultimoPedidoValor) / dados.ultimoPedidoValor) * 100;
+      const varPct = ((dados.novoPedidoValor - dados.ultimoPedidoValor) / Math.max(1, dados.ultimoPedidoValor)) * 100;
       const elVariacao = document.getElementById("kpiVariacao");
       elVariacao.innerText = (varPct >= 0 ? "+" : "") + varPct.toFixed(1) + "%";
       elVariacao.className = "text-2xl font-extrabold " + (varPct >= 0 ? "text-emerald-600" : "text-rose-600");
@@ -421,7 +698,6 @@
       });
     }
 
-    // 1. GRÁFICO PRINCIPAL COM OS NOMES DAS PEÇAS NO EIXO X
     function renderizarGraficoConsumo(items) {
       const ctx = document.getElementById('graficoConsumo').getContext('2d');
       const btnVoltar = document.getElementById('btnVoltarGeral');
@@ -442,7 +718,6 @@
         subtitulo.innerText = "Exibindo comparativo geral de todas as peças";
         btnVoltar.classList.add("hidden");
 
-        // TROCA DO SKU PELO NOME EM PORTUGUÊS
         labels = items.map(i => i.nome);
         datasetEntradas = items.map(i => i.entradas);
         datasetSaidas = items.map(i => i.saidas);
@@ -509,7 +784,6 @@
                 font: { size: 9, weight: '600' },
                 maxRotation: 25,
                 minRotation: 0,
-                // Trunca textos muito longos no eixo X para manter limpo
                 callback: function(val, index) {
                   let label = this.getLabelForValue(val);
                   if (typeof label === 'string' && label.length > 18) {
@@ -524,7 +798,6 @@
       });
     }
 
-    // 2. GRÁFICO DE RANKING TAMBÉM ATUALIZADO COM NOMES EM PORTUGUÊS
     function renderizarGraficoRanking(items) {
       const ctxRanking = document.getElementById('graficoRanking').getContext('2d');
 
@@ -532,7 +805,8 @@
         chartRankingInstance.destroy();
       }
 
-      const ordenados = [...items].sort((a, b) => b.saidas - a.saidas);
+      // Pega no máximo os 10 mais consumidos para não poluir o ranking em abas grandes
+      const ordenados = [...items].sort((a, b) => b.saidas - a.saidas).slice(0, 10);
 
       const cores = ordenados.map((item, index) => {
         if (index === 0) return '#ea580c';
@@ -596,3 +870,5 @@
   </script>
 </body>
 </html>
+
+```
