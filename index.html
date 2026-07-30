@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,24 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            neon: {
+              cyan: '#00f3ff',
+              green: '#39ff14',
+              pink: '#ff007f',
+              yellow: '#ffe600',
+              purple: '#b537f2'
+            }
+          }
+        }
+      }
+    }
+  </script>
   
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,33 +34,52 @@
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Estilos Neon Customizados para o Dark Mode */
+    .dark .neon-text-cyan { color: #00f3ff; text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); }
+    .dark .neon-text-green { color: #39ff14; text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); }
+    .dark .neon-text-pink { color: #ff007f; text-shadow: 0 0 8px rgba(255, 0, 127, 0.6); }
+    .dark .neon-text-yellow { color: #ffe600; text-shadow: 0 0 8px rgba(255, 230, 0, 0.6); }
+    .dark .neon-border { border-color: rgba(0, 243, 255, 0.3); }
+    .dark .neon-border:hover { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
   <!-- CABEÇALHO / NAVBAR -->
   <header class="bg-slate-900 text-white shadow-xl border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-blue-600 rounded-xl shadow-md">
-          <i data-lucide="bar-chart-3" class="w-6 h-6 text-white"></i>
+        <div class="p-2.5 bg-blue-600 dark:bg-cyan-500 rounded-xl shadow-md">
+          <i data-lucide="bar-chart-3" class="w-6 h-6 text-white dark:text-slate-950"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Dashboard de Importação & Consumo</h1>
-          <p class="text-xs text-slate-400">Visão Geral: Histórico de Entradas, Pedidos e Consumo Real</p>
+          <h1 class="text-xl font-bold tracking-tight dark:text-cyan-400">Dashboard de Importação & Consumo</h1>
+          <p class="text-xs text-slate-400 dark:text-slate-400">Visão Geral: Histórico de Entradas, Pedidos e Consumo Real</p>
         </div>
       </div>
 
-      <!-- SELETOR DE FABRICANTE -->
-      <div class="flex items-center gap-3 bg-slate-800 p-1.5 px-3 rounded-lg border border-slate-700">
-        <label for="seletorAba" class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-          <i data-lucide="filter" class="w-3.5 h-3.5 text-blue-400"></i> Fabricante / Linha:
-        </label>
-        <select id="seletorAba" onchange="trocarFabricante()" class="bg-slate-900 border border-slate-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none block px-3 py-1.5 cursor-pointer">
-          <option value="ODEWAY" selected>ODEWAY</option>
-          <option value="ESWING">ESWING</option>
-          <option value="CHIC ROBOT">CHIC ROBOT</option>
-          <option value="ZANWHEI">ZANWHEI</option>
-        </select>
+      <!-- CONTROLES DO CABEÇALHO (FABRICANTE + TEMA) -->
+      <div class="flex items-center gap-3">
+        <!-- BOTÃO DE ALTERNÂNCIA DE TEMA -->
+        <button onclick="alternarTema()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 dark:text-cyan-400 p-2 px-3 rounded-lg border border-slate-700 transition-all cursor-pointer">
+          <i id="iconeTema" data-lucide="moon" class="w-4 h-4 text-cyan-400"></i>
+          <span id="labelTema" class="text-xs font-semibold uppercase tracking-wider">Modo Escuro</span>
+        </button>
+
+        <!-- SELETOR DE FABRICANTE -->
+        <div class="flex items-center gap-2 bg-slate-800 p-1.5 px-3 rounded-lg border border-slate-700">
+          <label for="seletorAba" class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="filter" class="w-3.5 h-3.5 text-blue-400 dark:text-cyan-400"></i> Fabricante:
+          </label>
+          <select id="seletorAba" onchange="trocarFabricante()" class="bg-slate-900 border border-slate-700 text-white dark:text-cyan-300 text-sm font-medium rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none block px-3 py-1.5 cursor-pointer">
+            <option value="ODEWAY" selected>ODEWAY</option>
+            <option value="ESWING">ESWING</option>
+            <option value="CHIC ROBOT">CHIC ROBOT</option>
+            <option value="ZANWHEI">ZANWHEI</option>
+          </select>
+        </div>
       </div>
     </div>
   </header>
@@ -53,61 +90,37 @@
     <!-- SEÇÃO 1: INFORMAÇÕES DE PEDIDOS -->
     <section class="space-y-4">
       <div class="flex items-center gap-2">
-        <div class="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
+        <div class="p-1.5 bg-blue-100 dark:bg-cyan-950 text-blue-700 dark:text-cyan-400 rounded-lg">
           <i data-lucide="shopping-bag" class="w-5 h-5"></i>
         </div>
         <div>
-          <h2 class="text-lg font-bold text-slate-900">1. Comparativo de Pedidos (Último Lote vs. Novo Pedido)</h2>
-          <p class="text-xs text-slate-500">Volume financeiro, quantidade de itens solicitados e variação do investimento</p>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-cyan-300">1. Resumo do Pedido Atual e do Lote Anterior</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Volume financeiro acumulado e quantidade total de peças solicitadas</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <!-- Card: Novo Pedido -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all neon-border">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Novo Pedido (2026)</span>
-            <span class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="circle-dollar-sign" class="w-5 h-5"></i></span>
+            <span class="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">Novo Pedido (Atual)</span>
+            <span class="p-2 bg-blue-50 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 rounded-lg"><i data-lucide="circle-dollar-sign" class="w-5 h-5"></i></span>
           </div>
           <div class="mt-4">
-            <div id="kpiNovoValor" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
-            <p class="text-xs text-slate-500 mt-1"><span id="kpiNovoQtd" class="font-bold text-slate-700">0</span> peças solicitadas</p>
+            <div id="kpiNovoValor" class="text-3xl font-extrabold text-slate-900 dark:neon-text-cyan">R$ 0,00</div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><span id="kpiNovoQtd" class="font-bold text-slate-700 dark:text-slate-200">0</span> peças solicitadas no total</p>
           </div>
         </div>
 
         <!-- Card: Último Pedido -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all neon-border">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Último Pedido (Ref)</span>
-            <span class="p-2 bg-slate-100 text-slate-600 rounded-lg"><i data-lucide="history" class="w-5 h-5"></i></span>
+            <span class="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">Último Pedido (Ref)</span>
+            <span class="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg"><i data-lucide="history" class="w-5 h-5"></i></span>
           </div>
           <div class="mt-4">
-            <div id="kpiUltimoValor" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
-            <p class="text-xs text-slate-500 mt-1"><span id="kpiUltimoQtd" class="font-bold text-slate-700">0</span> peças recebidas</p>
-          </div>
-        </div>
-
-        <!-- Card: Variação de Aporte -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Variação no Aporte</span>
-            <span id="badgeVariacaoIcon" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="trending-up" class="w-5 h-5"></i></span>
-          </div>
-          <div class="mt-4">
-            <div id="kpiVariacao" class="text-2xl font-extrabold text-emerald-600">0,0%</div>
-            <p class="text-xs text-slate-500 mt-1">Comparado ao lote anterior</p>
-          </div>
-        </div>
-
-        <!-- Card: Preço Médio por Peça -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Ticket Médio Unitário</span>
-            <span class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="tag" class="w-5 h-5"></i></span>
-          </div>
-          <div class="mt-4">
-            <div id="kpiPrecoMedio" class="text-2xl font-extrabold text-slate-900">R$ 0,00</div>
-            <p class="text-xs text-slate-500 mt-1">Custo unitário ponderado</p>
+            <div id="kpiUltimoValor" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100">R$ 0,00</div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><span id="kpiUltimoQtd" class="font-bold text-slate-700 dark:text-slate-200">0</span> peças recebidas no lote anterior</p>
           </div>
         </div>
       </div>
@@ -117,12 +130,12 @@
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <div class="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
+          <div class="p-1.5 bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 rounded-lg">
             <i data-lucide="boxes" class="w-5 h-5"></i>
           </div>
           <div>
-            <h2 class="text-lg font-bold text-slate-900">2. Relação de Consumo no Período (Desde a 1ª Entrada até Hoje)</h2>
-            <p class="text-xs text-slate-500">Balanço de estoque, saídas efetuadas e taxa de giro das peças</p>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-cyan-300">2. Relação de Consumo no Período (Desde a 1ª Entrada até Hoje)</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Balanço geral de estoque, saídas efetuadas e taxa de giro</p>
           </div>
         </div>
       </div>
@@ -130,58 +143,58 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Indicadores de Estoque e Saída -->
         <div class="space-y-3.5">
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
-              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Entradas Totais</p>
-              <p id="kpiEntradas" class="text-xl font-bold text-slate-800">0 un.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Entradas Totais</p>
+              <p id="kpiEntradas" class="text-xl font-bold text-slate-800 dark:neon-text-cyan">0 un.</p>
             </div>
-            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="arrow-down-to-line" class="w-5 h-5"></i></div>
+            <div class="p-3 bg-blue-50 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 rounded-xl"><i data-lucide="arrow-down-to-line" class="w-5 h-5"></i></div>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
-              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Consumido / Saídas</p>
-              <p id="kpiSaidas" class="text-xl font-bold text-amber-600">0 un.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Consumido / Saídas</p>
+              <p id="kpiSaidas" class="text-xl font-bold text-amber-600 dark:neon-text-yellow">0 un.</p>
             </div>
-            <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="arrow-up-from-line" class="w-5 h-5"></i></div>
+            <div class="p-3 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-xl"><i data-lucide="arrow-up-from-line" class="w-5 h-5"></i></div>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
-              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Saldo em Estoque</p>
-              <p id="kpiSaldo" class="text-xl font-bold text-emerald-600">0 un.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Saldo em Estoque</p>
+              <p id="kpiSaldo" class="text-xl font-bold text-emerald-600 dark:neon-text-green">0 un.</p>
             </div>
-            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="package-check" class="w-5 h-5"></i></div>
+            <div class="p-3 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-xl"><i data-lucide="package-check" class="w-5 h-5"></i></div>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
-              <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Taxa de Giro / Consumo</p>
-              <p id="kpiTaxaConsumo" class="text-xl font-bold text-indigo-900">0,0%</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Taxa de Giro / Consumo</p>
+              <p id="kpiTaxaConsumo" class="text-xl font-bold text-indigo-900 dark:neon-text-pink">0,0%</p>
             </div>
-            <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
+            <div class="p-3 bg-indigo-50 dark:bg-purple-950 text-indigo-600 dark:text-purple-400 rounded-xl"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
           </div>
         </div>
 
         <!-- Gráfico Principal -->
-        <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between neon-border">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <h3 id="tituloGrafico" class="text-sm font-bold text-slate-800">Visão Geral por Item: Entradas vs. Saídas vs. Saldo</h3>
-              <p id="subtituloGrafico" class="text-[11px] text-slate-500">Exibindo comparativo geral de todas as peças</p>
+              <h3 id="tituloGrafico" class="text-sm font-bold text-slate-800 dark:text-cyan-300">Visão Geral por Item: Entradas vs. Saídas vs. Saldo</h3>
+              <p id="subtituloGrafico" class="text-[11px] text-slate-500 dark:text-slate-400">Exibindo comparativo geral de todas as peças</p>
             </div>
 
-            <!-- CONTROLES -->
+            <!-- CONTROLES DO GRÁFICO -->
             <div class="flex items-center gap-1.5">
-              <button onclick="navegarPeca(-1)" title="Item Anterior" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-300 flex items-center justify-center">
+              <button onclick="navegarPeca(-1)" title="Item Anterior" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-cyan-400 rounded-lg transition-colors border border-slate-300 dark:border-slate-700 flex items-center justify-center">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
               </button>
               
-              <button onclick="navegarPeca(1)" title="Próximo Item" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-300 flex items-center justify-center">
+              <button onclick="navegarPeca(1)" title="Próximo Item" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-cyan-400 rounded-lg transition-colors border border-slate-300 dark:border-slate-700 flex items-center justify-center">
                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
               </button>
 
-              <button id="btnVoltarGeral" onclick="resetaParaGeral()" class="hidden px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1 shadow-sm">
+              <button id="btnVoltarGeral" onclick="resetaParaGeral()" class="hidden px-3 py-1.5 bg-blue-600 dark:bg-cyan-500 text-white dark:text-slate-950 text-xs font-semibold rounded-lg hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-1 shadow-sm">
                 <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Voltar Geral
               </button>
             </div>
@@ -197,47 +210,76 @@
     <!-- SEÇÃO 3: RANKING DE CONSUMO -->
     <section class="space-y-4">
       <div class="flex items-center gap-2">
-        <div class="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg">
+        <div class="p-1.5 bg-indigo-100 dark:bg-purple-950 text-indigo-700 dark:text-purple-400 rounded-lg">
           <i data-lucide="arrow-up-down" class="w-5 h-5"></i>
         </div>
         <div>
-          <h2 class="text-lg font-bold text-slate-900">3. Ranking de Consumo (Mais Usados vs. Menos Usados)</h2>
-          <p class="text-xs text-slate-500">Classificação dos itens por volume total de saídas no período</p>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-cyan-300">3. Ranking de Consumo (Mais Usados vs. Menos Usados)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Classificação de todos os itens por volume de saídas efetuadas</p>
         </div>
       </div>
 
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm neon-border">
         <div class="relative h-64 w-full">
           <canvas id="graficoRanking"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- SEÇÃO 4: TABELA DE DETALHAMENTO DE PEÇAS -->
-    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden space-y-0">
-      <div class="p-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
+    <!-- SEÇÃO MELHORIA 1: COMPARATIVO DETALHADO DE LOTES DE PEDIDOS -->
+    <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden neon-border space-y-0">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
         <div>
-          <h3 class="text-base font-bold text-slate-800">4. Relação Detalhada por Peça e SKU / Código</h3>
-          <p class="text-xs text-slate-500">💡 <strong>Dica:</strong> Clique em qualquer linha para focar o gráfico na peça desejada!</p>
+          <h3 class="text-base font-bold text-slate-800 dark:text-cyan-300">4. Comparativo de Pedidos por Item (Último Pedido vs. Pedido Atual)</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Análise direta da variação da quantidade de peças solicitadas entre o lote anterior e o novo lote</p>
         </div>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
-            <tr class="bg-slate-900 text-slate-200 uppercase tracking-wider font-semibold">
+            <tr class="bg-slate-900 dark:bg-slate-800 text-slate-200 dark:text-cyan-300 uppercase tracking-wider font-semibold">
+              <th class="p-3.5">SKU / CÓD</th>
+              <th class="p-3.5">Descrição do Item</th>
+              <th class="p-3.5 text-center">Qtd. Pedido Anterior</th>
+              <th class="p-3.5 text-center bg-slate-800 dark:bg-slate-700 text-cyan-400">Qtd. Pedido Atual</th>
+              <th class="p-3.5 text-center">Diferença (un)</th>
+              <th class="p-3.5 text-center">Variação (%)</th>
+              <th class="p-3.5 text-right">Status da Variação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaComparativoPedidos" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+            <!-- Preenchido via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 5: TABELA DE DETALHAMENTO DE PEÇAS E ESTOQUE -->
+    <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden neon-border space-y-0">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-800 dark:text-cyan-300">5. Relação Detalhada por Peça e Estoque Atual</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">💡 <strong>Dica:</strong> Clique em qualquer linha para focar a análise individual da peça nos gráficos!</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-900 dark:bg-slate-800 text-slate-200 dark:text-cyan-300 uppercase tracking-wider font-semibold">
               <th class="p-3.5">SKU / CÓD</th>
               <th class="p-3.5">Descrição do Item</th>
               <th class="p-3.5 text-center">Entradas</th>
               <th class="p-3.5 text-center">Saídas</th>
               <th class="p-3.5 text-center">Saldo Atual</th>
               <th class="p-3.5 text-center">% Consumido</th>
-              <th class="p-3.5 text-center bg-slate-800">Novo Pedido</th>
+              <th class="p-3.5 text-center bg-slate-800 dark:bg-slate-700 text-cyan-400">Novo Pedido</th>
               <th class="p-3.5 text-right">Status do Estoque</th>
             </tr>
           </thead>
-          <tbody id="tabelaPecas" class="divide-y divide-slate-100 font-medium text-slate-700">
-            <!-- Dados preenchidos via JavaScript -->
+          <tbody id="tabelaPecas" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+            <!-- Dados preenchidos via JS -->
           </tbody>
         </table>
       </div>
@@ -245,13 +287,14 @@
 
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
     <p>Dashboard de Gestão de Importação & Consumo ELOCA © 2026</p>
   </footer>
 
   <script>
     Chart.register(ChartDataLabels);
 
+    // BASE DE DADOS COMPLETA (MANTENDO APENAS OS FABRICANTES PERMITIDOS)
     const DADOS_FABRICANTES = {
       ODEWAY: {
         novoPedidoValor: 50700,
@@ -259,15 +302,16 @@
         ultimoPedidoValor: 42150,
         ultimoPedidoQtd: 190,
         items: [
-          { sku: "ODW16", nome: "MOTOR HUB 2500W C60", entradas: 30, saidas: 6, saldo: 24, novoPedido: 5 },
-          { sku: "ODW4-N", nome: "PAINEL LED S10/S10X", entradas: 30, saidas: 6, saldo: 24, novoPedido: 10 },
-          { sku: "ODW60-OFF-ROAD", nome: "PLACA MÃE CONTROLADORA S10X", entradas: 24, saidas: 14, saldo: 10, novoPedido: 15 },
-          { sku: "ODW13", nome: "PARALAMA PLÁSTICO X60", entradas: 69, saidas: 33, saldo: 36, novoPedido: 6 },
-          { sku: "ODW10", nome: "SUPORTE PARALAMA METAL S10X", entradas: 74, saidas: 38, saldo: 36, novoPedido: 10 },
-          { sku: "ODW20", nome: "DESCANSO CENTRAL (PÉ DE APOIO)", entradas: 60, saidas: 59, saldo: 1, novoPedido: 67 },
-          { sku: "ODW7", nome: "CARENAGEM PLÁSTICA FRONTAL", entradas: 31, saidas: 2, saldo: 29, novoPedido: 10 },
-          { sku: "ODW9", nome: "TAPETE BORRACHA CHASSIS", entradas: 38, saidas: 23, saldo: 15, novoPedido: 10 },
-          { sku: "ODW8", nome: "CAIXA PLÁSTICA DA BATERIA", entradas: 28, saidas: 4, saldo: 24, novoPedido: 0 }
+          { sku: "ODW16", nome: "MOTOR HUB 2500W C60", entradas: 30, saidas: 6, saldo: 24, pedidoAnterior: 4, novoPedido: 5 },
+          { sku: "ODW4-N", nome: "PAINEL LED S10/S10X", entradas: 30, saidas: 6, saldo: 24, pedidoAnterior: 8, novoPedido: 10 },
+          { sku: "ODW60-OFF-ROAD", nome: "PLACA MÃE CONTROLADORA S10X", entradas: 24, saidas: 14, saldo: 10, pedidoAnterior: 10, novoPedido: 15 },
+          { sku: "ODW13", nome: "PARALAMA PLÁSTICO X60", entradas: 69, saidas: 33, saldo: 36, pedidoAnterior: 10, novoPedido: 6 },
+          { sku: "ODW10", nome: "SUPORTE PARALAMA METAL S10X", entradas: 74, saidas: 38, saldo: 36, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "ODW20", nome: "DESCANSO CENTRAL (PÉ DE APOIO)", entradas: 60, saidas: 59, saldo: 1, pedidoAnterior: 50, novoPedido: 67 },
+          { sku: "ODW7", nome: "CARENAGEM PLÁSTICA FRONTAL", entradas: 31, saidas: 2, saldo: 29, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "ODW9", nome: "TAPETE BORRACHA CHASSIS", entradas: 38, saidas: 23, saldo: 15, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "ODW8", nome: "CAIXA PLÁSTICA DA BATERIA", entradas: 28, saidas: 4, saldo: 24, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "ODW-SEM-USO", nome: "KIT PARAFUSOS INOX DE REPOSIÇÃO", entradas: 0, saidas: 0, saldo: 0, pedidoAnterior: 0, novoPedido: 20 }
         ]
       },
       ESWING: {
@@ -276,50 +320,51 @@
         ultimoPedidoValor: 37435,
         ultimoPedidoQtd: 185,
         items: [
-          { sku: "152", nome: "GABINETE CENTRAL CONSOLE S9/SE", entradas: 79, saidas: 61, saldo: 18, novoPedido: 20 },
-          { sku: "434", nome: "CAIXA DE BATERIA S9/H9", entradas: 54, saidas: 39, saldo: 15, novoPedido: 15 },
-          { sku: "50041", nome: "COUPLING COMPLETO S9/S9X", entradas: 604, saidas: 574, saldo: 30, novoPedido: 50 },
-          { sku: "50056", nome: "SENSOR DO PIVÔ S9/S9X", entradas: 121, saidas: 113, saldo: 8, novoPedido: 20 },
-          { sku: "151", nome: "MOTOR BRUSHLESS S9/SE", entradas: 19, saidas: 15, saldo: 4, novoPedido: 5 },
-          { sku: "153", nome: "PLACA MAE S9/S9X", entradas: 101, saidas: 101, saldo: 0, novoPedido: 10 },
-          { sku: "154", nome: "PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY", entradas: 86, saidas: 81, saldo: 5, novoPedido: 10 },
-          { sku: "158", nome: "MANOPLA S9/SE", entradas: 119, saidas: 98, saldo: 21, novoPedido: 15 },
-          { sku: "162", nome: "REGULADOR DE ALTURA MANIPLO S9/SE", entradas: 87, saidas: 42, saldo: 45, novoPedido: 10 },
-          { sku: "164", nome: "BARRA TRASNVESSAL S9/SE", entradas: 39, saidas: 13, saldo: 26, novoPedido: 5 },
-          { sku: "167", nome: "ASSOALHO DE ALUMINIO S9/S9X/H9/H9X", entradas: 49, saidas: 45, saldo: 4, novoPedido: 10 },
-          { sku: "205", nome: "CARPETE DE SILICONE DIREITO PRETO S9/SE", entradas: 92, saidas: 65, saldo: 27, novoPedido: 10 },
-          { sku: "206", nome: "CARPETE DE SILICONE ESQUERDO PRETO S9/SE", entradas: 60, saidas: 41, saldo: 19, novoPedido: 10 },
-          { sku: "375", nome: "PARA-LAMA DE PLÁSTICO S9X PRETO", entradas: 70, saidas: 29, saldo: 41, novoPedido: 0 },
-          { sku: "393", nome: "PIVO MECANICO COMPLETO S9/S9X", entradas: 72, saidas: 51, saldo: 21, novoPedido: 10 },
-          { sku: "100056", nome: "CARREGADOR 63V 2A ESWING S9/S9X/H9/H9X/BR8/R8", entradas: 16, saidas: 11, saldo: 5, novoPedido: 5 },
-          { sku: "481", nome: "CARREGADOR 63V 3A VENTOINHA ESWING S9/S9X/H9/H9X", entradas: 31, saidas: 21, saldo: 10, novoPedido: 5 },
-          { sku: "157", nome: "ACABAMENTO CARENAGEM INFERIOR DIANTEIRO S9/SE", entradas: 55, saidas: 44, saldo: 11, novoPedido: 10 },
-          { sku: "160", nome: "TORRE INFERIOR S9/S9X/H9/H9X", entradas: 68, saidas: 37, saldo: 31, novoPedido: 0 },
-          { sku: "452", nome: "RODA COMPLETA COM MOTOR H9X", entradas: 16, saidas: 16, saldo: 0, novoPedido: 5 },
-          { sku: "453", nome: "MOTOR SEM PNEU H9", entradas: 45, saidas: 26, saldo: 19, novoPedido: 5 },
-          { sku: "50058", nome: "SENSOR DE PÉ S9/S9X", entradas: 48, saidas: 16, saldo: 32, novoPedido: 0 },
-          { sku: "443", nome: "PLACA MAE ON ROAD H9", entradas: 24, saidas: 13, saldo: 11, novoPedido: 5 },
-          { sku: "444", nome: "PLACA DISPLAY H9/H9X", entradas: 55, saidas: 24, saldo: 31, novoPedido: 0 },
-          { sku: "446", nome: "SENSOR DE PIVO H9", entradas: 136, saidas: 66, saldo: 70, novoPedido: 0 },
-          { sku: "448", nome: "PLACA POWER H9/H9X", entradas: 8, saidas: 6, saldo: 2, novoPedido: 5 },
-          { sku: "449", nome: "SENSOR DE PE H9/H9X", entradas: 12, saidas: 12, saldo: 0, novoPedido: 5 },
-          { sku: "163", nome: "CONJUNTO DE DESCANSO PÉ DE APOIO S9", entradas: 41, saidas: 40, saldo: 1, novoPedido: 10 },
-          { sku: "374", nome: "ALÇA PARA-LAMA FANDER METALICO S9X", entradas: 54, saidas: 18, saldo: 36, novoPedido: 0 },
-          { sku: "150", nome: "PARALAMA ON ROAD S9", entradas: 167, saidas: 139, saldo: 28, novoPedido: 15 },
-          { sku: "698", nome: "PNEU DE S9 90/90-12 MASKED SCOOTER IRA-GTIN", entradas: 30, saidas: 30, saldo: 0, novoPedido: 10 },
-          { sku: "753", nome: "CAIXA LED AZUL FRONTAL DIREITO S9/S9X/H9/H9X", entradas: 19, saidas: 18, saldo: 1, novoPedido: 5 },
-          { sku: "754", nome: "CAIXA LED AZUL FRONTAL ESQUERDO S9/S9X/H9/H9X", entradas: 18, saidas: 18, saldo: 0, novoPedido: 5 },
-          { sku: "450", nome: "RODA COMPLETA ARO 19X7-8 S9X", entradas: 10, saidas: 10, saldo: 0, novoPedido: 2 },
-          { sku: "900", nome: "PNEU OFF ROAD S9X/S10X ARO 19 X 7-8", entradas: 2, saidas: 2, saldo: 0, novoPedido: 5 },
-          { sku: "148", nome: "CAIXA DE TRANSMISSAO S9/SE", entradas: 5, saidas: 3, saldo: 2, novoPedido: 2 },
-          { sku: "442", nome: "PLACA MAE OFF ROAD H9X", entradas: 12, saidas: 12, saldo: 0, novoPedido: 5 },
-          { sku: "451", nome: "TORRE SUPERIOR T 9/S9X/H9/H9X", entradas: 37, saidas: 23, saldo: 14, novoPedido: 5 },
-          { sku: "925", nome: "PIVO COMPLETO PARA H9/H9X", entradas: 21, saidas: 9, saldo: 12, novoPedido: 5 },
-          { sku: "918", nome: "MOTOR DE H9 COMPLETO COM PNEU", entradas: 38, saidas: 23, saldo: 15, novoPedido: 5 },
-          { sku: "YYBMZ", nome: "BMS 20S YY (YY-BPU14-MOS-20S50A)", entradas: 51, saidas: 41, saldo: 10, novoPedido: 30 },
-          { sku: "471", nome: "BMS YANYANG 15S 20A PARA NCM 3.7V", entradas: 14, saidas: 14, saldo: 0, novoPedido: 0 },
-          { sku: "472", nome: "BMS YANYANG 17S 20A LFP 3.2V", entradas: 27, saidas: 6, saldo: 21, novoPedido: 0 },
-          { sku: "474", nome: "MODULO BLUETOOTH 15S 20A 3.7V YANYANG", entradas: 12, saidas: 12, saldo: 0, novoPedido: 0 }
+          { sku: "152", nome: "GABINETE CENTRAL CONSOLE S9/SE", entradas: 79, saidas: 61, saldo: 18, pedidoAnterior: 15, novoPedido: 20 },
+          { sku: "434", nome: "CAIXA DE BATERIA S9/H9", entradas: 54, saidas: 39, saldo: 15, pedidoAnterior: 10, novoPedido: 15 },
+          { sku: "50041", nome: "COUPLING COMPLETO S9/S9X", entradas: 604, saidas: 574, saldo: 30, pedidoAnterior: 40, novoPedido: 50 },
+          { sku: "50056", nome: "SENSOR DO PIVÔ S9/S9X", entradas: 121, saidas: 113, saldo: 8, pedidoAnterior: 15, novoPedido: 20 },
+          { sku: "151", nome: "MOTOR BRUSHLESS S9/SE", entradas: 19, saidas: 15, saldo: 4, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "153", nome: "PLACA MAE S9/S9X", entradas: 101, saidas: 101, saldo: 0, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "154", nome: "PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY", entradas: 86, saidas: 81, saldo: 5, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "158", nome: "MANOPLA S9/SE", entradas: 119, saidas: 98, saldo: 21, pedidoAnterior: 10, novoPedido: 15 },
+          { sku: "162", nome: "REGULADOR DE ALTURA MANIPLO S9/SE", entradas: 87, saidas: 42, saldo: 45, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "164", nome: "BARRA TRASNVESSAL S9/SE", entradas: 39, saidas: 13, saldo: 26, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "167", nome: "ASSOALHO DE ALUMINIO S9/S9X/H9/H9X", entradas: 49, saidas: 45, saldo: 4, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "205", nome: "CARPETE DE SILICONE DIREITO PRETO S9/SE", entradas: 92, saidas: 65, saldo: 27, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "206", nome: "CARPETE DE SILICONE ESQUERDO PRETO S9/SE", entradas: 60, saidas: 41, saldo: 19, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "375", nome: "PARA-LAMA DE PLÁSTICO S9X PRETO", entradas: 70, saidas: 29, saldo: 41, pedidoAnterior: 10, novoPedido: 0 },
+          { sku: "393", nome: "PIVO MECANICO COMPLETO S9/S9X", entradas: 72, saidas: 51, saldo: 21, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "100056", nome: "CARREGADOR 63V 2A ESWING S9/S9X/H9/H9X/BR8/R8", entradas: 16, saidas: 11, saldo: 5, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "481", nome: "CARREGADOR 63V 3A VENTOINHA ESWING S9/S9X/H9/H9X", entradas: 31, saidas: 21, saldo: 10, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "157", nome: "ACABAMENTO CARENAGEM INFERIOR DIANTEIRO S9/SE", entradas: 55, saidas: 44, saldo: 11, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "160", nome: "TORRE INFERIOR S9/S9X/H9/H9X", entradas: 68, saidas: 37, saldo: 31, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "452", nome: "RODA COMPLETA COM MOTOR H9X", entradas: 16, saidas: 16, saldo: 0, pedidoAnterior: 2, novoPedido: 5 },
+          { sku: "453", nome: "MOTOR SEM PNEU H9", entradas: 45, saidas: 26, saldo: 19, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "50058", nome: "SENSOR DE PÉ S9/S9X", entradas: 48, saidas: 16, saldo: 32, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "443", nome: "PLACA MAE ON ROAD H9", entradas: 24, saidas: 13, saldo: 11, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "444", nome: "PLACA DISPLAY H9/H9X", entradas: 55, saidas: 24, saldo: 31, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "446", nome: "SENSOR DE PIVO H9", entradas: 136, saidas: 66, saldo: 70, pedidoAnterior: 10, novoPedido: 0 },
+          { sku: "448", nome: "PLACA POWER H9/H9X", entradas: 8, saidas: 6, saldo: 2, pedidoAnterior: 2, novoPedido: 5 },
+          { sku: "449", nome: "SENSOR DE PE H9/H9X", entradas: 12, saidas: 12, saldo: 0, pedidoAnterior: 2, novoPedido: 5 },
+          { sku: "163", nome: "CONJUNTO DE DESCANSO PÉ DE APOIO S9", entradas: 41, saidas: 40, saldo: 1, pedidoAnterior: 5, novoPedido: 10 },
+          { sku: "374", nome: "ALÇA PARA-LAMA FANDER METALICO S9X", entradas: 54, saidas: 18, saldo: 36, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "150", nome: "PARALAMA ON ROAD S9", entradas: 167, saidas: 139, saldo: 28, pedidoAnterior: 10, novoPedido: 15 },
+          { sku: "698", nome: "PNEU DE S9 90/90-12 MASKED SCOOTER IRA-GTIN", entradas: 30, saidas: 30, saldo: 0, pedidoAnterior: 10, novoPedido: 10 },
+          { sku: "753", nome: "CAIXA LED AZUL FRONTAL DIREITO S9/S9X/H9/H9X", entradas: 19, saidas: 18, saldo: 1, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "754", nome: "CAIXA LED AZUL FRONTAL ESQUERDO S9/S9X/H9/H9X", entradas: 18, saidas: 18, saldo: 0, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "450", nome: "RODA COMPLETA ARO 19X7-8 S9X", entradas: 10, saidas: 10, saldo: 0, pedidoAnterior: 2, novoPedido: 2 },
+          { sku: "900", nome: "PNEU OFF ROAD S9X/S10X ARO 19 X 7-8", entradas: 2, saidas: 2, saldo: 0, pedidoAnterior: 2, novoPedido: 5 },
+          { sku: "148", nome: "CAIXA DE TRANSMISSAO S9/SE", entradas: 5, saidas: 3, saldo: 2, pedidoAnterior: 2, novoPedido: 2 },
+          { sku: "442", nome: "PLACA MAE OFF ROAD H9X", entradas: 12, saidas: 12, saldo: 0, pedidoAnterior: 2, novoPedido: 5 },
+          { sku: "451", nome: "TORRE SUPERIOR T 9/S9X/H9/H9X", entradas: 37, saidas: 23, saldo: 14, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "925", nome: "PIVO COMPLETO PARA H9/H9X", entradas: 21, saidas: 9, saldo: 12, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "918", nome: "MOTOR DE H9 COMPLETO COM PNEU", entradas: 38, saidas: 23, saldo: 15, pedidoAnterior: 5, novoPedido: 5 },
+          { sku: "YYBMZ", nome: "BMS 20S YY (YY-BPU14-MOS-20S50A)", entradas: 51, saidas: 41, saldo: 10, pedidoAnterior: 20, novoPedido: 30 },
+          { sku: "471", nome: "BMS YANYANG 15S 20A PARA NCM 3.7V", entradas: 14, saidas: 14, saldo: 0, pedidoAnterior: 0, novoPedido: 0 },
+          { sku: "472", nome: "BMS YANYANG 17S 20A LFP 3.2V", entradas: 27, saidas: 6, saldo: 21, pedidoAnterior: 5, novoPedido: 0 },
+          { sku: "474", nome: "MODULO BLUETOOTH 15S 20A 3.7V YANYANG", entradas: 12, saidas: 12, saldo: 0, pedidoAnterior: 0, novoPedido: 0 },
+          { sku: "ESW-ZERO-1", nome: "CABO DE EXTENSÃO DA BATERIA (NOVO)", entradas: 0, saidas: 0, saldo: 0, pedidoAnterior: 0, novoPedido: 10 }
         ]
       },
       "CHIC ROBOT": {
@@ -328,9 +373,10 @@
         ultimoPedidoValor: 15000,
         ultimoPedidoQtd: 60,
         items: [
-          { sku: "CHIC-01", nome: "SENSOR GIROSCÓPIO PRINCIPAL", entradas: 40, saidas: 35, saldo: 5, novoPedido: 40 },
-          { sku: "CHIC-02", nome: "CONECTORES DE CARGA", entradas: 80, saidas: 25, saldo: 55, novoPedido: 20 },
-          { sku: "CHIC-03", nome: "LÂMPADA LED INDICADORA", entradas: 50, saidas: 10, saldo: 40, novoPedido: 20 }
+          { sku: "CHIC-01", nome: "SENSOR GIROSCÓPIO PRINCIPAL", entradas: 40, saidas: 35, saldo: 5, pedidoAnterior: 30, novoPedido: 40 },
+          { sku: "CHIC-02", nome: "CONECTORES DE CARGA", entradas: 80, saidas: 25, saldo: 55, pedidoAnterior: 20, novoPedido: 20 },
+          { sku: "CHIC-03", nome: "LÂMPADA LED INDICADORA", entradas: 50, saidas: 10, saldo: 40, pedidoAnterior: 10, novoPedido: 20 },
+          { sku: "CHIC-04", nome: "FUSÍVEL DE SEGURANÇA 15A", entradas: 0, saidas: 0, saldo: 0, pedidoAnterior: 0, novoPedido: 50 }
         ]
       },
       ZANWHEI: {
@@ -339,15 +385,37 @@
         ultimoPedidoValor: 29000,
         ultimoPedidoQtd: 120,
         items: [
-          { sku: "ZAN-99", nome: "CARREGADOR INTELIGENTE 54.6V", entradas: 80, saidas: 70, saldo: 10, novoPedido: 60 },
-          { sku: "ZAN-100", nome: "MANOPLA DE BORRACHA ERGONÔMICA", entradas: 120, saidas: 45, saldo: 75, novoPedido: 50 }
+          { sku: "ZAN-99", nome: "CARREGADOR INTELIGENTE 54.6V", entradas: 80, saidas: 70, saldo: 10, pedidoAnterior: 70, novoPedido: 60 },
+          { sku: "ZAN-100", nome: "MANOPLA DE BORRACHA ERGONÔMICA", entradas: 120, saidas: 45, saldo: 75, pedidoAnterior: 50, novoPedido: 50 },
+          { sku: "ZAN-101", nome: "KIT ADESIVO REFLETIVO NOTURNO", entradas: 0, saidas: 0, saldo: 0, pedidoAnterior: 0, novoPedido: 30 }
         ]
       }
     };
 
+    let modoDark = false;
     let chartInstance = null;
     let chartRankingInstance = null;
     let indexPecaAtual = -1;
+
+    // GERENCIADOR DE TEMA (DARK / LIGHT)
+    function alternarTema() {
+      modoDark = !modoDark;
+      const html = document.documentElement;
+      const labelTema = document.getElementById('labelTema');
+
+      if (modoDark) {
+        html.classList.add('dark');
+        html.classList.remove('light');
+        labelTema.innerText = 'Modo Claro';
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        labelTema.innerText = 'Modo Escuro';
+      }
+
+      lucide.createIcons();
+      atualizarDashboard();
+    }
 
     function fmtMoeda(val) {
       return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -389,18 +457,11 @@
       const aba = document.getElementById("seletorAba").value;
       const dados = DADOS_FABRICANTES[aba] || DADOS_FABRICANTES["ODEWAY"];
 
+      // Atualiza Indicadores Superiores
       document.getElementById("kpiNovoValor").innerText = fmtMoeda(dados.novoPedidoValor);
       document.getElementById("kpiNovoQtd").innerText = dados.novoPedidoQtd;
       document.getElementById("kpiUltimoValor").innerText = fmtMoeda(dados.ultimoPedidoValor);
       document.getElementById("kpiUltimoQtd").innerText = dados.ultimoPedidoQtd;
-
-      const varPct = ((dados.novoPedidoValor - dados.ultimoPedidoValor) / Math.max(1, dados.ultimoPedidoValor)) * 100;
-      const elVariacao = document.getElementById("kpiVariacao");
-      elVariacao.innerText = (varPct >= 0 ? "+" : "") + varPct.toFixed(1) + "%";
-      elVariacao.className = "text-2xl font-extrabold " + (varPct >= 0 ? "text-emerald-600" : "text-rose-600");
-
-      const precoMedio = dados.novoPedidoValor / Math.max(1, dados.novoPedidoQtd);
-      document.getElementById("kpiPrecoMedio").innerText = fmtMoeda(precoMedio);
 
       let totEntradas = 0, totSaidas = 0, totSaldo = 0;
       dados.items.forEach(item => {
@@ -416,45 +477,93 @@
       const taxaConsumo = totEntradas > 0 ? (totSaidas / totEntradas) * 100 : 0;
       document.getElementById("kpiTaxaConsumo").innerText = taxaConsumo.toFixed(1) + "%";
 
-      renderizarTabela(dados.items);
+      renderizarTabelaComparativo(dados.items);
+      renderizarTabelaEstoque(dados.items);
       renderizarGraficoConsumo(dados.items);
       renderizarGraficoRanking(dados.items);
     }
 
-    function renderizarTabela(items) {
+    // MELHORIA 1: Tabela Comparativa de Pedidos
+    function renderizarTabelaComparativo(items) {
+      const tbody = document.getElementById("tabelaComparativoPedidos");
+      tbody.innerHTML = "";
+
+      items.forEach(item => {
+        const diff = item.novoPedido - item.pedidoAnterior;
+        let pctVar = 0;
+        if (item.pedidoAnterior > 0) {
+          pctVar = ((diff / item.pedidoAnterior) * 100).toFixed(1);
+        } else if (item.novoPedido > 0) {
+          pctVar = 100;
+        }
+
+        let badgeStatus = '<span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-[10px] font-bold">MANTIDO</span>';
+        let classeDiff = "text-slate-600 dark:text-slate-400";
+
+        if (diff > 0) {
+          badgeStatus = '<span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 rounded-full text-[10px] font-bold flex items-center justify-end gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i> AUMENTO</span>';
+          classeDiff = "text-emerald-600 dark:text-emerald-400 font-bold";
+        } else if (diff < 0) {
+          badgeStatus = '<span class="px-2 py-1 bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 rounded-full text-[10px] font-bold flex items-center justify-end gap-1"><i data-lucide="trending-down" class="w-3 h-3"></i> REDUÇÃO</span>';
+          classeDiff = "text-rose-600 dark:text-rose-400 font-bold";
+        }
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 transition-colors";
+
+        tr.innerHTML = `
+          <td class="p-3.5 font-bold text-slate-900 dark:text-cyan-400">${item.sku}</td>
+          <td class="p-3.5 text-slate-700 dark:text-slate-300 font-medium">${item.nome}</td>
+          <td class="p-3.5 text-center text-slate-600 dark:text-slate-400">${item.pedidoAnterior} un.</td>
+          <td class="p-3.5 text-center font-extrabold text-indigo-900 dark:text-cyan-300 bg-slate-50 dark:bg-slate-800/60">${item.novoPedido} un.</td>
+          <td class="p-3.5 text-center ${classeDiff}">${diff > 0 ? '+' : ''}${diff} un.</td>
+          <td class="p-3.5 text-center font-bold ${classeDiff}">${diff > 0 ? '+' : ''}${pctVar}%</td>
+          <td class="p-3.5 text-right flex justify-end">${badgeStatus}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      lucide.createIcons();
+    }
+
+    // CORREÇÃO 3: Tabela Geral de Peças Exibindo TODOS os Itens (Mesmo Zerados)
+    function renderizarTabelaEstoque(items) {
       const tbody = document.getElementById("tabelaPecas");
       tbody.innerHTML = "";
 
       items.forEach((item, idx) => {
         const pctConsumido = item.entradas > 0 ? ((item.saidas / item.entradas) * 100).toFixed(1) : 0;
 
-        let badge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold">ESTOQUE OK</span>';
-        if (item.saldo <= 2) {
-          badge = '<span class="px-2 py-1 bg-rose-100 text-rose-800 rounded-full text-[10px] font-bold">CRÍTICO</span>';
+        let badge = '<span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 rounded-full text-[10px] font-bold">ESTOQUE OK</span>';
+        
+        if (item.entradas === 0 && item.saidas === 0) {
+          badge = '<span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-[10px] font-bold">SEM HISTÓRICO</span>';
+        } else if (item.saldo <= 2) {
+          badge = '<span class="px-2 py-1 bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 rounded-full text-[10px] font-bold">CRÍTICO</span>';
         } else if (pctConsumido > 50) {
-          badge = '<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-[10px] font-bold">REPOSIÇÃO</span>';
+          badge = '<span class="px-2 py-1 bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 rounded-full text-[10px] font-bold">REPOSIÇÃO</span>';
         }
 
         const isSelected = idx === indexPecaAtual;
         const tr = document.createElement("tr");
-        tr.className = `cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 border-l-4 border-l-blue-600' : 'hover:bg-slate-50 border-b border-slate-100'}`;
+        tr.className = `cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 dark:bg-slate-800 border-l-4 border-l-blue-600 dark:border-l-cyan-400' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800'}`;
         tr.onclick = () => selecionarPecaPorSku(item.sku);
 
         tr.innerHTML = `
-          <td class="p-3.5 font-bold text-slate-900">${item.sku}</td>
-          <td class="p-3.5 text-slate-700 font-medium">${item.nome}</td>
-          <td class="p-3.5 text-center font-bold text-blue-700">${item.entradas}</td>
-          <td class="p-3.5 text-center font-bold text-amber-600">${item.saidas}</td>
-          <td class="p-3.5 text-center font-extrabold text-slate-900">${item.saldo}</td>
+          <td class="p-3.5 font-bold text-slate-900 dark:text-cyan-400">${item.sku}</td>
+          <td class="p-3.5 text-slate-700 dark:text-slate-300 font-medium">${item.nome}</td>
+          <td class="p-3.5 text-center font-bold text-blue-700 dark:text-cyan-400">${item.entradas}</td>
+          <td class="p-3.5 text-center font-bold text-amber-600 dark:text-yellow-400">${item.saidas}</td>
+          <td class="p-3.5 text-center font-extrabold text-slate-900 dark:text-emerald-400">${item.saldo}</td>
           <td class="p-3.5 text-center">
             <div class="flex items-center justify-center gap-2">
-              <span class="text-xs font-bold w-10 text-right">${pctConsumido}%</span>
-              <div class="w-16 bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                <div class="bg-blue-600 h-1.5 rounded-full" style="width: ${Math.min(100, pctConsumido)}%"></div>
+              <span class="text-xs font-bold w-10 text-right dark:text-slate-300">${pctConsumido}%</span>
+              <div class="w-16 bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-blue-600 dark:bg-cyan-400 h-1.5 rounded-full" style="width: ${Math.min(100, pctConsumido)}%"></div>
               </div>
             </div>
           </td>
-          <td class="p-3.5 text-center font-extrabold text-indigo-900 bg-slate-50">${item.novoPedido} un.</td>
+          <td class="p-3.5 text-center font-extrabold text-indigo-900 dark:text-cyan-300 bg-slate-50 dark:bg-slate-800/60">${item.novoPedido} un.</td>
           <td class="p-3.5 text-right">${badge}</td>
         `;
         tbody.appendChild(tr);
@@ -467,9 +576,7 @@
       const titulo = document.getElementById('tituloGrafico');
       const subtitulo = document.getElementById('subtituloGrafico');
 
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
+      if (chartInstance) chartInstance.destroy();
 
       let labels = [];
       let datasetEntradas = [];
@@ -478,7 +585,7 @@
 
       if (indexPecaAtual === -1) {
         titulo.innerText = "Visão Geral por Item: Entradas vs. Saídas vs. Saldo";
-        subtitulo.innerText = "Exibindo comparativo geral de todas as peças";
+        subtitulo.innerText = "Exibindo comparativo geral de todas as peças cadastradas";
         btnVoltar.classList.add("hidden");
 
         labels = items.map(i => i.nome);
@@ -497,62 +604,48 @@
         datasetSaldo = [0, 0, itemObj.saldo];
       }
 
+      // Paleta dinâmica conforme o tema ativo
+      const corEntradas = modoDark ? '#00f3ff' : '#3b82f6';
+      const corSaidas = modoDark ? '#ffe600' : '#f59e0b';
+      const corSaldo = modoDark ? '#39ff14' : '#10b981';
+      const corTexto = modoDark ? '#cbd5e1' : '#334155';
+      const corGrade = modoDark ? '#334155' : '#f1f5f9';
+
       chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: labels,
           datasets: [
-            {
-              label: 'Entradas',
-              data: datasetEntradas,
-              backgroundColor: '#3b82f6',
-              borderRadius: 4
-            },
-            {
-              label: 'Saídas (Consumido)',
-              data: datasetSaidas,
-              backgroundColor: '#f59e0b',
-              borderRadius: 4
-            },
-            {
-              label: 'Saldo Atual',
-              data: datasetSaldo,
-              backgroundColor: '#10b981',
-              borderRadius: 4
-            }
+            { label: 'Entradas', data: datasetEntradas, backgroundColor: corEntradas, borderRadius: 4 },
+            { label: 'Saídas (Consumido)', data: datasetSaidas, backgroundColor: corSaidas, borderRadius: 4 },
+            { label: 'Saldo Atual', data: datasetSaldo, backgroundColor: corSaldo, borderRadius: 4 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'top', labels: { font: { size: 11, weight: '600' } } },
+            legend: { position: 'top', labels: { color: corTexto, font: { size: 11, weight: '600' } } },
             datalabels: {
               anchor: 'end',
               align: 'top',
               font: { weight: 'bold', size: 10 },
-              color: '#334155',
+              color: corTexto,
               formatter: (value) => (value > 0 ? value : '')
             }
           },
           scales: {
-            y: { 
-              beginAtZero: true, 
-              grace: '15%',
-              grid: { color: '#f1f5f9' } 
-            },
+            y: { beginAtZero: true, grace: '15%', grid: { color: corGrade }, ticks: { color: corTexto } },
             x: { 
               grid: { display: false },
               ticks: {
+                color: corTexto,
                 font: { size: 9, weight: '600' },
                 maxRotation: 25,
                 minRotation: 0,
-                callback: function(val, index) {
+                callback: function(val) {
                   let label = this.getLabelForValue(val);
-                  if (typeof label === 'string' && label.length > 18) {
-                    return label.substring(0, 16) + '...';
-                  }
-                  return label;
+                  return (typeof label === 'string' && label.length > 18) ? label.substring(0, 16) + '...' : label;
                 }
               }
             }
@@ -564,13 +657,20 @@
     function renderizarGraficoRanking(items) {
       const ctxRanking = document.getElementById('graficoRanking').getContext('2d');
 
-      if (chartRankingInstance) {
-        chartRankingInstance.destroy();
-      }
+      if (chartRankingInstance) chartRankingInstance.destroy();
 
-      const ordenados = [...items].sort((a, b) => b.saidas - a.saidas).slice(0, 10);
+      // CORREÇÃO 3: Exibe TODOS os itens ordenados
+      const ordenados = [...items].sort((a, b) => b.saidas - a.saidas);
+
+      const corTexto = modoDark ? '#cbd5e1' : '#1e293b';
+      const corGrade = modoDark ? '#334155' : '#f1f5f9';
 
       const cores = ordenados.map((item, index) => {
+        if (modoDark) {
+          if (index === 0) return '#ff007f';
+          if (index < 3) return '#ffe600';
+          return '#00f3ff';
+        }
         if (index === 0) return '#ea580c';
         if (index < 3) return '#f59e0b';
         return '#64748b';
@@ -597,26 +697,20 @@
               anchor: 'end',
               align: 'right',
               font: { weight: 'bold', size: 11 },
-              color: '#1e293b',
+              color: corTexto,
               formatter: (value) => `${value} un.`
             }
           },
           scales: {
-            x: { 
-              beginAtZero: true, 
-              grace: '15%', 
-              grid: { color: '#f1f5f9' } 
-            },
+            x: { beginAtZero: true, grace: '15%', grid: { color: corGrade }, ticks: { color: corTexto } },
             y: { 
               grid: { display: false }, 
               ticks: { 
+                color: corTexto,
                 font: { size: 10, weight: '600' },
-                callback: function(val, index) {
+                callback: function(val) {
                   let label = this.getLabelForValue(val);
-                  if (typeof label === 'string' && label.length > 22) {
-                    return label.substring(0, 20) + '...';
-                  }
-                  return label;
+                  return (typeof label === 'string' && label.length > 22) ? label.substring(0, 20) + '...' : label;
                 }
               } 
             }
