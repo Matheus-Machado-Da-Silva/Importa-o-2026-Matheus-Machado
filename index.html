@@ -36,13 +36,9 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Estilos Neon Customizados para o Dark Mode */
-    .dark .neon-text-cyan { color: #00f3ff; text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); }
-    .dark .neon-text-green { color: #39ff14; text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); }
-    .dark .neon-text-pink { color: #ff007f; text-shadow: 0 0 8px rgba(255, 0, 127, 0.6); }
-    .dark .neon-text-yellow { color: #ffe600; text-shadow: 0 0 8px rgba(255, 230, 0, 0.6); }
-    .dark .neon-border { border-color: rgba(0, 243, 255, 0.3); }
-    .dark .neon-border:hover { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+    /* Estilos Customizados para o Dark Mode */
+    .dark .neon-border { border-color: #00f3ff; box-shadow: 0 0 8px rgba(0, 243, 255, 0.2); }
+    .dark .neon-border:hover { border-color: #00f3ff; box-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
   </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
@@ -56,7 +52,7 @@
         </div>
         <div>
           <h1 class="text-xl font-bold tracking-tight dark:text-cyan-400">Dashboard de Importação & Consumo</h1>
-          <p class="text-xs text-slate-400 dark:text-slate-400">Visão Geral: Histórico de Entradas, Pedidos e Consumo Real</p>
+          <p class="text-xs text-slate-400">Visão Geral: Histórico de Entradas, Pedidos e Consumo Real</p>
         </div>
       </div>
 
@@ -107,7 +103,7 @@
             <span class="p-2 bg-blue-50 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 rounded-lg"><i data-lucide="circle-dollar-sign" class="w-5 h-5"></i></span>
           </div>
           <div class="mt-4">
-            <div id="kpiNovoValor" class="text-3xl font-extrabold text-slate-900 dark:neon-text-cyan">R$ 0,00</div>
+            <div id="kpiNovoValor" class="text-3xl font-extrabold text-slate-900 dark:text-cyan-400">R$ 0,00</div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1"><span id="kpiNovoQtd" class="font-bold text-slate-700 dark:text-slate-200">0</span> peças solicitadas no total</p>
           </div>
         </div>
@@ -146,7 +142,7 @@
           <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
               <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Entradas Totais</p>
-              <p id="kpiEntradas" class="text-xl font-bold text-slate-800 dark:neon-text-cyan">0 un.</p>
+              <p id="kpiEntradas" class="text-xl font-bold text-slate-800 dark:text-cyan-400">0 un.</p>
             </div>
             <div class="p-3 bg-blue-50 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 rounded-xl"><i data-lucide="arrow-down-to-line" class="w-5 h-5"></i></div>
           </div>
@@ -154,7 +150,7 @@
           <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
               <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Consumido / Saídas</p>
-              <p id="kpiSaidas" class="text-xl font-bold text-amber-600 dark:neon-text-yellow">0 un.</p>
+              <p id="kpiSaidas" class="text-xl font-bold text-amber-600 dark:text-amber-400">0 un.</p>
             </div>
             <div class="p-3 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-xl"><i data-lucide="arrow-up-from-line" class="w-5 h-5"></i></div>
           </div>
@@ -162,7 +158,7 @@
           <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
               <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Saldo em Estoque</p>
-              <p id="kpiSaldo" class="text-xl font-bold text-emerald-600 dark:neon-text-green">0 un.</p>
+              <p id="kpiSaldo" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">0 un.</p>
             </div>
             <div class="p-3 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-xl"><i data-lucide="package-check" class="w-5 h-5"></i></div>
           </div>
@@ -170,7 +166,7 @@
           <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between neon-border">
             <div>
               <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Taxa de Giro / Consumo</p>
-              <p id="kpiTaxaConsumo" class="text-xl font-bold text-indigo-900 dark:neon-text-pink">0,0%</p>
+              <p id="kpiTaxaConsumo" class="text-xl font-bold text-indigo-900 dark:text-purple-400">0,0%</p>
             </div>
             <div class="p-3 bg-indigo-50 dark:bg-purple-950 text-indigo-600 dark:text-purple-400 rounded-xl"><i data-lucide="pie-chart" class="w-5 h-5"></i></div>
           </div>
@@ -226,7 +222,7 @@
       </div>
     </section>
 
-    <!-- SEÇÃO MELHORIA 1: COMPARATIVO DETALHADO DE LOTES DE PEDIDOS -->
+    <!-- SEÇÃO COMPARATIVO DETALHADO DE LOTES DE PEDIDOS -->
     <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden neon-border space-y-0">
       <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -255,7 +251,7 @@
       </div>
     </section>
 
-    <!-- SEÇÃO 5: TABELA DE DETALHAMENTO DE PEÇAS E ESTOQUE -->
+    <!-- SEÇÃO TABELA DE DETALHAMENTO DE PEÇAS E ESTOQUE -->
     <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden neon-border space-y-0">
       <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -294,7 +290,6 @@
   <script>
     Chart.register(ChartDataLabels);
 
-    // BASE DE DADOS COMPLETA (MANTENDO APENAS OS FABRICANTES PERMITIDOS)
     const DADOS_FABRICANTES = {
       ODEWAY: {
         novoPedidoValor: 50700,
@@ -483,7 +478,6 @@
       renderizarGraficoRanking(dados.items);
     }
 
-    // MELHORIA 1: Tabela Comparativa de Pedidos
     function renderizarTabelaComparativo(items) {
       const tbody = document.getElementById("tabelaComparativoPedidos");
       tbody.innerHTML = "";
@@ -526,7 +520,6 @@
       lucide.createIcons();
     }
 
-    // CORREÇÃO 3: Tabela Geral de Peças Exibindo TODOS os Itens (Mesmo Zerados)
     function renderizarTabelaEstoque(items) {
       const tbody = document.getElementById("tabelaPecas");
       tbody.innerHTML = "";
@@ -604,7 +597,6 @@
         datasetSaldo = [0, 0, itemObj.saldo];
       }
 
-      // Paleta dinâmica conforme o tema ativo
       const corEntradas = modoDark ? '#00f3ff' : '#3b82f6';
       const corSaidas = modoDark ? '#ffe600' : '#f59e0b';
       const corSaldo = modoDark ? '#39ff14' : '#10b981';
@@ -659,7 +651,6 @@
 
       if (chartRankingInstance) chartRankingInstance.destroy();
 
-      // CORREÇÃO 3: Exibe TODOS os itens ordenados
       const ordenados = [...items].sort((a, b) => b.saidas - a.saidas);
 
       const corTexto = modoDark ? '#cbd5e1' : '#1e293b';
