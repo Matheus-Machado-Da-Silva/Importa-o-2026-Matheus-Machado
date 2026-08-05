@@ -14,7 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        /* ESTÉTICTA MODO CLARO EXATA DOS PRINTS */
+        /* ESTÉTICA MODO CLARO ORIGINAL */
         body.light-mode {
             background-color: #f8fafc !important;
             color: #0f172a !important;
@@ -69,10 +69,13 @@
             </div>
 
             <div class="flex items-center space-x-3">
-                <!-- Select Fabricante -->
+                <!-- Select Fabricante com todos os fornecedores -->
                 <div class="relative">
                     <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-50 border border-slate-200 text-slate-800 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none pr-10">
-                        <option value="ODEWAY">ODEWAY</option>
+                        <option value="ODEWAY" selected>ODEWAY</option>
+                        <option value="SEGWAY">SEGWAY</option>
+                        <option value="NINEBOT">NINEBOT</option>
+                        <option value="INMOTION">INMOTION</option>
                     </select>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
@@ -114,15 +117,13 @@
 
         <!-- CARDS INDICADORES (KPIs) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- ÚLTIMO PEDIDO (P.O) -->
             <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative">
                 <i data-lucide="history" class="w-4 h-4 text-blue-500 absolute right-4 top-4"></i>
                 <span class="text-xs subtext font-bold uppercase tracking-wider block">Último Pedido (P.O)</span>
-                <p id="lastPoValue" class="text-2xl font-black mt-1">US$ 20.808,00</p>
-                <span id="lastPoDate" class="text-xs subtext mt-1 block">2025/2026 Processo 93</span>
+                <p id="lastPoValue" class="text-2xl font-black mt-1">US$ 0,00</p>
+                <span id="lastPoDate" class="text-xs subtext mt-1 block">-</span>
             </div>
 
-            <!-- PEDIDO ATUAL (CALCULADO) -->
             <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative">
                 <i data-lucide="shopping-cart" class="w-4 h-4 text-blue-500 absolute right-4 top-4"></i>
                 <span class="text-xs subtext font-bold uppercase tracking-wider block">Pedido Atual (Calculado)</span>
@@ -132,7 +133,6 @@
                 </span>
             </div>
 
-            <!-- CONSUMO MÉDIO DIÁRIO -->
             <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative">
                 <i data-lucide="trending-up" class="w-4 h-4 text-amber-500 absolute right-4 top-4"></i>
                 <span class="text-xs subtext font-bold uppercase tracking-wider block">Consumo Médio Diário</span>
@@ -140,7 +140,6 @@
                 <span class="text-xs subtext mt-1 block">Soma de Saídas / 365 dias</span>
             </div>
 
-            <!-- COBERTURA DO ESTOQUE -->
             <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative">
                 <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500 absolute right-4 top-4"></i>
                 <span class="text-xs subtext font-bold uppercase tracking-wider block">Cobertura do Estoque</span>
@@ -151,7 +150,6 @@
 
         <!-- SEÇÃO DE GRÁFICOS E RANKINGS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- RANKING DE CONSUMO -->
             <div class="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col justify-between card-bg">
                 <div>
                     <div class="flex justify-between items-center mb-4">
@@ -162,7 +160,6 @@
                     </div>
 
                     <div class="space-y-4">
-                        <!-- Peça Mais Consumida -->
                         <div class="bg-emerald-50/50 border border-emerald-200/60 p-4 rounded-xl">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1">
@@ -173,7 +170,6 @@
                             <p id="mostConsumedName" class="text-sm font-bold mt-2 text-slate-800">-</p>
                         </div>
 
-                        <!-- Peça Menos Consumida -->
                         <div class="bg-rose-50/50 border border-rose-200/60 p-4 rounded-xl">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1">
@@ -187,7 +183,6 @@
                 </div>
             </div>
 
-            <!-- GRÁFICO COMPARATIVO -->
             <div class="lg:col-span-2 bg-white border border-slate-200 p-5 rounded-2xl card-bg">
                 <h3 class="font-bold text-base mb-4 flex items-center gap-2">
                     <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-500"></i> Comparativo (Estoque vs Saídas vs Solicitado)
@@ -229,7 +224,7 @@
                         </tr>
                     </thead>
                     <tbody id="partsTableBody" class="divide-y divide-slate-100">
-                        <!-- Linhas geradas via JavaScript -->
+                        <!-- Gerado via JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -294,6 +289,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // OBJETO COMPLETO DE FABRICANTES
         const DATABASE = {
             "ODEWAY": {
                 lastPoValue: 20808.00,
@@ -322,11 +318,26 @@
                     { name: "Console Central", stock: 0, imported: 1, annualConsumption: 1, requested: 30, unitPrice: 0.00 },
                     { name: "Sensor de Pivô", stock: 92, imported: 100, annualConsumption: 8, requested: 0, unitPrice: 4.50 }
                 ]
+            },
+            "SEGWAY": {
+                lastPoValue: 15200.00,
+                lastPoDate: "2025 Processo 45",
+                items: []
+            },
+            "NINEBOT": {
+                lastPoValue: 8400.00,
+                lastPoDate: "2025 Processo 12",
+                items: []
+            },
+            "INMOTION": {
+                lastPoValue: 5100.00,
+                lastPoDate: "2025 Processo 08",
+                items: []
             }
         };
 
         let currentFab = "ODEWAY";
-        let isAuthorized = true; // Mantém liberado por padrão conforme print
+        let isAuthorized = true;
         let chartInstance = null;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -336,8 +347,12 @@
 
             db.ref("fabricantes").on("value", (snapshot) => {
                 const data = snapshot.val();
-                if (data && data[currentFab] && data[currentFab].items && data[currentFab].items.length > 0) {
-                    DATABASE[currentFab] = data[currentFab];
+                if (data) {
+                    Object.keys(data).forEach(fab => {
+                        if (data[fab] && data[fab].items) {
+                            DATABASE[fab] = data[fab];
+                        }
+                    });
                 } else {
                     db.ref("fabricantes").set(DATABASE);
                 }
@@ -348,14 +363,8 @@
         function toggleTheme() {
             const body = document.getElementById("appBody");
             const themeText = document.getElementById("themeText");
-            
             body.classList.toggle("light-mode");
-            
-            if (body.classList.contains("light-mode")) {
-                themeText.innerText = "Escuro";
-            } else {
-                themeText.innerText = "Claro";
-            }
+            themeText.innerText = body.classList.contains("light-mode") ? "Escuro" : "Claro";
         }
 
         function toggleAuth() {
@@ -446,6 +455,8 @@
             event.preventDefault();
             if (!isAuthorized) return;
 
+            if (!DATABASE[currentFab].items) DATABASE[currentFab].items = [];
+
             const newPart = {
                 name: document.getElementById("newPartName").value,
                 stock: parseFloat(document.getElementById("newPartStock").value) || 0,
@@ -499,11 +510,11 @@
         }
 
         function renderDashboard() {
-            const data = DATABASE[currentFab];
-            if (!data || !data.items) return;
+            const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
+            const items = data.items || [];
 
-            document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById("lastPoDate").innerText = data.lastPoDate;
+            document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
 
             let totalCurrentPo = 0;
             let totalDailyCons = 0;
@@ -512,7 +523,7 @@
             let mostConsumed = { name: '-', qty: -1 };
             let leastConsumed = { name: '-', qty: Infinity };
 
-            data.items.forEach(item => {
+            items.forEach(item => {
                 totalCurrentPo += (item.requested * item.unitPrice);
                 const daily = item.annualConsumption / 365;
                 totalDailyCons += daily;
@@ -532,18 +543,23 @@
             const avgCoverage = totalDailyCons > 0 ? Math.round(totalStock / totalDailyCons) : 0;
             document.getElementById("stockCoverage").innerText = `${avgCoverage} Dias`;
 
-            document.getElementById("mostConsumedName").innerText = mostConsumed.name;
-            document.getElementById("mostConsumedQty").innerText = `${mostConsumed.qty} un/ano`;
+            document.getElementById("mostConsumedName").innerText = mostConsumed.qty >= 0 ? mostConsumed.name : '-';
+            document.getElementById("mostConsumedQty").innerText = `${mostConsumed.qty >= 0 ? mostConsumed.qty : 0} un/ano`;
 
             document.getElementById("leastConsumedName").innerText = leastConsumed.qty === Infinity ? '-' : leastConsumed.name;
             document.getElementById("leastConsumedQty").innerText = leastConsumed.qty === Infinity ? '0 un/ano' : `${leastConsumed.qty} un/ano`;
 
-            updateChart(data.items);
+            updateChart(items);
 
             const tbody = document.getElementById("partsTableBody");
             tbody.innerHTML = "";
 
-            data.items.forEach((item, index) => {
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">Nenhuma peça cadastrada para este fabricante. Clique em "Adicionar Peça" para começar.</td></tr>`;
+                return;
+            }
+
+            items.forEach((item, index) => {
                 const dailyCons = (item.annualConsumption / 365).toFixed(2);
                 const coverageDays = dailyCons > 0 ? Math.round(item.stock / dailyCons) : 0;
                 const itemTotal = (item.requested * item.unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
