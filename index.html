@@ -632,15 +632,20 @@ tr.onclick = (e) => {
             lucide.createIcons();
         }
    function toggleTheme() {
-    // Alterna o modo claro no body
+    // 1. Alterna o CSS do seu <style> (light-mode)
     const isLight = document.body.classList.toggle('light-mode');
     
-    // Alterna a classe dark no HTML (Tailwind)
-    document.documentElement.classList.toggle('dark');
+    // 2. Alterna a classe 'dark' no HTML (para componentes Tailwind)
+    if (isLight) {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
     
-    // Atualiza o texto do botão
+    // 3. Atualiza o texto do botão
     const themeText = document.getElementById("themeText");
     if (themeText) {
+        // Se tem light-mode, a tela é CLARA, então o botão deve oferecer trocar para ESCURO
         themeText.innerText = isLight ? "Escuro" : "Claro";
     }
 }
