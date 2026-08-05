@@ -365,13 +365,6 @@
             });
         });
 
-        function toggleTheme() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    const themeText = document.getElementById("themeText");
-    if (themeText) {
-        themeText.innerText = isDark ? "Claro" : "Escuro";
-    }
-        }
         function toggleAuth() {
             isAuthorized = !isAuthorized;
             updateAuthUI();
@@ -638,16 +631,19 @@ tr.onclick = (e) => {
 
             lucide.createIcons();
         }
-    function toggleTheme() {
-        // Alterna a classe no body (conforme o seu CSS)
-        const isLight = document.body.classList.toggle('light-mode');
-        
-        // Atualiza o texto do botão
-        const themeText = document.getElementById("themeText");
-        if (themeText) {
-            themeText.innerText = isLight ? "Escuro" : "Claro";
-        }
+   function toggleTheme() {
+    // Alterna o modo claro no body
+    const isLight = document.body.classList.toggle('light-mode');
+    
+    // Alterna a classe dark no HTML (Tailwind)
+    document.documentElement.classList.toggle('dark');
+    
+    // Atualiza o texto do botão
+    const themeText = document.getElementById("themeText");
+    if (themeText) {
+        themeText.innerText = isLight ? "Escuro" : "Claro";
     }
+}
 </script>
 </body>
 </html>
