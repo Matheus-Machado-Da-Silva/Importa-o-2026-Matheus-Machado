@@ -383,22 +383,35 @@
     const db = firebase.database();
         // Database extracted from Official Excel Spreadsheets
         const DATABASE = {
-            "ODEWAY": {
-                lastPoValue: 20808.00,
-                lastPoDate: "2025/2026 Processo 93",
-                items: [
-                    { name: "S10 / S10X - MOTOR HUB SEM ESCOVAS 2500W C60", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 100.00 },
-                    { name: "S10 / S10X - PAINEL LED, VERSÃO 2024-11", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 15.00 },
-                    { name: "S10 / S10X - T COM MANOPLAS BORRACHA C60 / X60", stock: 9, imported: 35, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
-                    { name: "S10X - PLACA MÃE CONTROLADORA, VERSÃO 2024-11", stock: 10, imported: 24, annualConsumption: 14, requested: 10, unitPrice: 40.00 },
-                    { name: "S10 / S10X - CAIXA DE BATERIA DE S10/S10X", stock: 36, imported: 69, annualConsumption: 33, requested: 0, unitPrice: 15.00 },
-                    { name: "S10 / S10X - CARENAGEM/CAIXA FRONTAL S10/S10X", stock: 36, imported: 74, annualConsumption: 38, requested: 10, unitPrice: 10.00 },
-                    { name: "S10 / S10X - CARREGADOR DE S10/S10X", stock: 1, imported: 60, annualConsumption: 59, requested: 20, unitPrice: 40.00 },
-                    { name: "S10 / S10X - FENDER S10", stock: 6, imported: 32, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
-                    { name: "S10 / S10X - FENDER S10X", stock: 11, imported: 29, annualConsumption: 18, requested: 10, unitPrice: 20.00 },
-                    { name: "S10 / S10X - PAR DE TAPETE DE S10/S10X", stock: 34, imported: 57, annualConsumption: 23, requested: 10, unitPrice: 10.00 }
-                ]
-            },
+    "ODEWAY": {
+        lastPoValue: 20808.00,
+        lastPoDate: "2025/2026 Processo 93",
+        items: [
+            { name: "Caixa de Bateria S10-S10X", stock: 24, imported: 5, annualConsumption: 4, requested: 0, unitPrice: 15.00 },
+            { name: "Carenagem Dianteira S10-S10X", stock: 29, imported: 31, annualConsumption: 2, requested: 10, unitPrice: 10.00 },
+            { name: "Carregador S10-S10X", stock: 4, imported: 41, annualConsumption: 37, requested: 20, unitPrice: 40.00 },
+            { name: "Fender Metalico S10", stock: 40, imported: 67, annualConsumption: 27, requested: 10, unitPrice: 20.00 },
+            { name: "Fender Metalico S10X", stock: 36, imported: 74, annualConsumption: 38, requested: 10, unitPrice: 20.00 },
+            { name: "Motor S10", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 100.00 },
+            { name: "Motor S10X", stock: 26, imported: 33, annualConsumption: 7, requested: 0, unitPrice: 105.00 },
+            { name: "Tapete (Par)", stock: 30, imported: 55, annualConsumption: 25, requested: 10, unitPrice: 10.00 },
+            { name: "Para-Lama S10", stock: 34, imported: 57, annualConsumption: 27, requested: 6, unitPrice: 10.00 },
+            { name: "Para-Lama S10X", stock: 36, imported: 69, annualConsumption: 33, requested: 6, unitPrice: 10.00 },
+            { name: "Pé de apoio S10-S10X", stock: 1, imported: 60, annualConsumption: 59, requested: 67, unitPrice: 15.00 },
+            { name: "Placa Display S10-S10X", stock: 24, imported: 30, annualConsumption: 6, requested: 10, unitPrice: 15.00 },
+            { name: "Placa Mãe S10", stock: 11, imported: 29, annualConsumption: 18, requested: 15, unitPrice: 125.00 },
+            { name: "Placa Mãe S10X", stock: 10, imported: 24, annualConsumption: 14, requested: 15, unitPrice: 125.00 },
+            { name: "Pneu S10", stock: 0, imported: 10, annualConsumption: 10, requested: 0, unitPrice: 30.00 },
+            { name: "Pneu S10X", stock: 6, imported: 14, annualConsumption: 8, requested: 20, unitPrice: 35.00 },
+            { name: "'T' com Manopla", stock: 9, imported: 35, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
+            { name: "Torre Inferior", stock: 6, imported: 32, annualConsumption: 26, requested: 10, unitPrice: 45.00 },
+            { name: "Pivô Mecânico", stock: 0, imported: 1, annualConsumption: 1, requested: 15, unitPrice: 0.00 },
+            { name: "Sensor de Pé", stock: 0, imported: 0, annualConsumption: 0, requested: 30, unitPrice: 0.00 },
+            { name: "Console Central", stock: 0, imported: 1, annualConsumption: 1, requested: 30, unitPrice: 0.00 },
+            { name: "Sensor de Pivô", stock: 92, imported: 100, annualConsumption: 8, requested: 0, unitPrice: 4.50 }
+        ]
+    }
+};
             "ESWING": {
                 lastPoValue: 16622.00,
                 lastPoDate: "2025/2026 Processo 92",
