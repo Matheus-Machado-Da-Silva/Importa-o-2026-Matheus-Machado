@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Importação de Peças</title>
+    <title>IMPORT DYNAMICS PRO - Gestão de Peças</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,315 +12,204 @@
             theme: {
                 extend: {
                     colors: {
-                        neon: {
-                            cyan: '#00f3ff',
-                            magenta: '#ff007f',
-                            green: '#39ff14',
-                            yellow: '#ffe600',
-                            purple: '#b500ff'
-                        }
+                        darkBg: '#0b0f19',
+                        cardBg: '#111827',
+                        borderBg: '#1f2937'
                     }
                 }
             }
         }
     </script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Firebase SDKs (Cole AQUI) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase JS SDK (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        /* Dark Theme Styles (Efeitos Visuais Exclusivos do Modo Escuro) */
-        html.dark body {
-            background-color: #020617;
-            color: #f8fafc;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        html.dark .card-bg {
-            background-color: rgba(15, 23, 42, 0.85);
-            border-color: rgba(51, 65, 85, 0.6);
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
         }
-        html.dark .table-head {
-            background-color: #020617;
-            color: #94a3b8;
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
         }
-        html.dark .input-bg {
-            background-color: #020617;
-            color: #ffffff;
-            border-color: #334155;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
         }
-        html.dark .neon-glow-cyan {
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.35), inset 0 0 10px rgba(0, 243, 255, 0.05);
-        }
-        html.dark .neon-glow-green {
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.35), inset 0 0 10px rgba(57, 255, 20, 0.05);
-        }
-        html.dark .neon-glow-magenta {
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.35), inset 0 0 10px rgba(255, 0, 127, 0.05);
-        }
-        html.dark .neon-txt-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); color: #00f3ff; }
-        html.dark .neon-txt-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); color: #22c55e; }
-        html.dark .neon-txt-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); color: #ff007f; }
-
-        /* Light Theme Styles (Modo Claro Corporativo Limpo e Sem Efeitos) */
-        html:not(.dark) body {
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-        html:not(.dark) .card-bg {
-            background-color: #ffffff;
-            border-color: #e2e8f0;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-        html:not(.dark) .table-head {
-            background-color: #f1f5f9;
-            color: #475569;
-        }
-        html:not(.dark) .input-bg {
-            background-color: #ffffff;
-            color: #0f172a;
-            border-color: #cbd5e1;
-        }
-        html:not(.dark) .neon-glow-cyan,
-        html:not(.dark) .neon-glow-green,
-        html:not(.dark) .neon-glow-magenta {
-            box-shadow: none !important;
-        }
-        html:not(.dark) .neon-txt-cyan { text-shadow: none !important; color: #0284c7 !important; }
-        html:not(.dark) .neon-txt-green { text-shadow: none !important; color: #16a34a !important; }
-        html:not(.dark) .neon-txt-magenta { text-shadow: none !important; color: #d97706 !important; }
-
-        html:not(.dark) text, html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, html:not(.dark) span {
-            color: inherit;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #0284c7; border-radius: 3px; }
     </style>
 </head>
-<body class="transition-colors duration-300 min-h-screen font-sans antialiased">
+<body class="bg-slate-950 dark:bg-[#0b0f19] text-slate-100 font-sans min-h-screen transition-colors duration-300">
 
-    <!-- Header Navigation -->
-    <header class="card-bg border-b sticky top-0 z-40 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            
-            <!-- Brand Logo -->
+    <!-- HEADER / NAVIGATION -->
+    <header class="border-b border-slate-800 bg-slate-900/80 dark:bg-[#111827]/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-blue-500/10 dark:bg-cyan-500/10 border border-blue-500/30 dark:border-cyan-500/50 rounded-xl neon-glow-cyan">
-                    <i data-lucide="package" class="w-6 h-6 text-blue-600 dark:text-neon-cyan"></i>
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10">
+                    <i data-lucide="box" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-wide text-slate-900 dark:text-cyan-400 neon-txt-cyan flex items-center gap-2">
-                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 font-semibold">PRO</span>
+                    <h1 class="font-black text-xl tracking-wider text-cyan-400 flex items-center gap-2">
+                        IMPORT DYNAMICS <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/30 font-bold tracking-normal">PRO</span>
                     </h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Gestão Dinâmica de Peças & Importação</p>
+                    <p class="text-xs text-slate-400">Gestão Dinâmica de Peças & Importação</p>
                 </div>
             </div>
 
-            <!-- Header Controls -->
             <div class="flex items-center space-x-3">
-                
-                <!-- Manufacturer Select Dropdown -->
-                <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/40 border border-slate-300 dark:border-cyan-500/40 px-3 py-1.5 rounded-xl neon-glow-cyan">
-                    <i data-lucide="factory" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
-                    <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-bold text-slate-800 dark:text-neon-cyan focus:outline-none cursor-pointer">
-                        <option value="ODEWAY" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ODEWAY</option>
-                        <option value="ESWING" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ESWING</option>
-                        <option value="CHIC ROBOT" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">CHIC ROBOT</option>
-                        <option value="YY (YAN-YANG)" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">YY (YAN-YANG)</option>
-                        <option value="JGNE" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">JGNE</option>
-                        <option value="ZAMWHEI" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ZAMWHEI</option>
+                <!-- Select Fabricante -->
+                <div class="relative">
+                    <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-900 dark:bg-slate-800 border border-slate-700 text-cyan-400 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 cursor-pointer appearance-none pr-10">
+                        <option value="ODEWAY">ODEWAY</option>
                     </select>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
 
-                <!-- Auth/Login Status Button -->
-                <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center space-x-2 bg-amber-50 dark:bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-400 hover:border-amber-500 transition-all shadow-sm">
-                    <i data-lucide="lock" class="w-4 h-4 text-amber-600 dark:text-amber-400" id="authIcon"></i>
+                <!-- Botão Autenticação -->
+                <button id="authBtn" onclick="toggleAuth()" class="flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 px-3 py-2 rounded-xl text-xs font-bold transition">
+                    <i id="authIcon" data-lucide="lock" class="w-4 h-4"></i>
                     <span id="authText">Login / Desbloquear</span>
                 </button>
 
-                <!-- Light/Dark Mode Switcher -->
-                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-cyan-400 p-2.5 rounded-xl transition-all shadow-sm">
-                    <i id="themeIcon" data-lucide="sun" class="w-4 h-4 text-amber-500 dark:text-neon-yellow"></i>
-                    <span id="themeText" class="text-xs font-bold text-slate-700 dark:text-slate-200">Claro</span>
+                <!-- Botão Tema (Claro/Escuro) -->
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                    <i data-lucide="sun" class="w-4 h-4"></i>
+                    <span id="themeText">Claro</span>
                 </button>
-
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
 
-        <!-- Title Banner -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between card-bg border rounded-2xl p-5 neon-glow-cyan gap-4">
+        <!-- BANNER TOPO -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/60 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-800 gap-4">
             <div>
-                <span class="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-cyan-500/10 text-blue-700 dark:text-neon-cyan border border-blue-300 dark:border-cyan-500/40 font-bold tracking-wider uppercase" id="currentFabBadge">ODEWAY</span>
-                <h2 class="text-2xl font-black text-slate-900 dark:text-white mt-2 flex items-center gap-2">
-                    Fabricante: <span id="manufacturerTitle" class="text-blue-600 dark:text-neon-cyan neon-txt-cyan">ODEWAY</span>
-                </h2>
+                <span id="currentFabBadge" class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 tracking-wide uppercase">ODEWAY</span>
+                <h2 class="text-2xl font-black mt-2 text-white">Fabricante: <span id="currentFabTitle" class="text-cyan-400">ODEWAY</span></h2>
             </div>
-            
-            <div class="flex items-center space-x-3">
-                <span id="lockBadge" class="text-xs px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 font-bold flex items-center gap-1.5">
-                    <i data-lucide="shield-alert" class="w-4 h-4"></i>
-                    <span>Modo Somente Leitura</span>
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
+                <span id="lockBadge" class="text-xs px-3 py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5">
+                    <i data-lucide="shield-alert" class="w-4 h-4"></i>Modo Somente Leitura
                 </span>
-                
-                <button id="addBtn" onclick="addNewRow()" disabled class="opacity-50 cursor-not-allowed flex items-center justify-center space-x-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-500 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl font-bold text-sm transition-all neon-glow-green">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <button id="addBtn" onclick="openAddModal()" disabled class="flex items-center space-x-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition opacity-50 cursor-not-allowed">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
                     <span>Adicionar Peça</span>
                 </button>
             </div>
         </div>
 
-        <!-- 4 Top Metric KPI Cards -->
+        <!-- CARDS INDICADORES (KPIs) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            <!-- Card 1: Último Pedido -->
-            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    <span>Último Pedido (P.O)</span>
-                    <i data-lucide="history" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
-                </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="lastPoValue">US$ 0,00</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="lastPoDate">Referência Histórica</div>
-                </div>
+            <!-- ÚLTIMO PEDIDO (P.O) -->
+            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Último Pedido (P.O)</span>
+                <p id="lastPoValue" class="text-2xl font-black text-white mt-1">US$ 0,00</p>
+                <span id="lastPoDate" class="text-xs text-slate-500 mt-1 block">Referência Histórica</span>
             </div>
 
-            <!-- Card 2: Pedido Atual -->
-            <div class="card-bg border border-blue-300 dark:border-cyan-500/60 rounded-2xl p-5 flex flex-col justify-between neon-glow-cyan">
-                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    <span>Pedido Atual (Calculado)</span>
-                    <i data-lucide="shopping-cart" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
-                </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-black text-blue-600 dark:text-neon-cyan neon-txt-cyan" id="currentPoValue">US$ 0,00</div>
-                    <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i>
-                        <span>Recálculo em Tempo Real</span>
-                    </div>
-                </div>
+            <!-- PEDIDO ATUAL (CALCULADO) -->
+            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm border-l-4 border-l-cyan-500 hover:border-slate-700 transition">
+                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Pedido Atual (Calculado)</span>
+                <p id="currentPoValue" class="text-2xl font-black text-cyan-400 mt-1">US$ 0,00</p>
+                <span class="text-xs text-emerald-400 mt-1 block font-medium">Recálculo em Tempo Real</span>
             </div>
 
-            <!-- Card 3: Consumo Médio Diário -->
-            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    <span>Consumo Médio Diário</span>
-                    <i data-lucide="trending-up" class="w-4 h-4 text-amber-600 dark:text-neon-magenta"></i>
-                </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-black text-amber-600 dark:text-neon-magenta neon-txt-magenta" id="avgDailyConsumption">0.00 un/dia</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Soma de Saídas / 365 dias</div>
-                </div>
+            <!-- CONSUMO MÉDIO DIÁRIO -->
+            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Consumo Médio Diário</span>
+                <p id="avgDailyCons" class="text-2xl font-black text-pink-500 mt-1">0.00 un/dia</p>
+                <span class="text-xs text-slate-500 mt-1 block">Soma de Saídas / 365 dias</span>
             </div>
 
-            <!-- Card 4: Cobertura de Estoque -->
-            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    <span>Cobertura do Estoque</span>
-                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-                </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-black text-emerald-600 dark:text-neon-green neon-txt-green" id="stockCoverageDays">0 Dias</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Duração estimada do estoque</div>
-                </div>
+            <!-- COBERTURA DO ESTOQUE -->
+            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Cobertura do Estoque</span>
+                <p id="stockCoverage" class="text-2xl font-black text-emerald-400 mt-1">0 Dias</p>
+                <span class="text-xs text-slate-500 mt-1 block">Duração estimada do estoque</span>
             </div>
-
         </div>
 
-        <!-- Ranking Panels & Visual Chart Section -->
+        <!-- SEÇÃO DE GRÁFICOS E RANKINGS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            <!-- Ranking Panel (1/3) -->
-            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/50 pb-3">
-                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                        <i data-lucide="trophy" class="w-4 h-4 text-amber-500 dark:text-neon-yellow"></i>
-                        <span>Ranking de Consumo</span>
-                    </h3>
-                    <span class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-semibold">Saídas 1 Ano</span>
-                </div>
-
-                <div class="space-y-4 flex-grow flex flex-col justify-center">
-                    <!-- Mais Consumido -->
-                    <div class="bg-emerald-50/50 dark:bg-slate-950/40 border border-emerald-300 dark:border-emerald-500/40 rounded-xl p-4 neon-glow-green">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> PEÇA MAIS CONSUMIDA
-                            </span>
-                            <span class="text-xs font-black text-emerald-800 dark:text-emerald-400 bg-emerald-200/60 dark:bg-emerald-500/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
-                        </div>
-                        <div class="text-sm font-bold text-slate-900 dark:text-white truncate" id="mostConsumedName">-</div>
+            <!-- RANKING DE CONSUMO -->
+            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-base text-white">Ranking de Consumo</h3>
+                        <span class="text-[10px] bg-slate-800 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-700">Saídas 1 Ano</span>
                     </div>
 
-                    <!-- Menos Consumido -->
-                    <div class="bg-rose-50/50 dark:bg-slate-950/40 border border-rose-300 dark:border-pink-500/40 rounded-xl p-4 neon-glow-magenta">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black text-rose-700 dark:text-neon-magenta flex items-center gap-1">
-                                <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i> PEÇA MENOS CONSUMIDA
-                            </span>
-                            <span class="text-xs font-black text-rose-800 dark:text-neon-magenta bg-rose-200/60 dark:bg-pink-500/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
+                    <div class="space-y-4">
+                        <!-- Peça Mais Consumida -->
+                        <div class="bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Peça Mais Consumida</span>
+                                <span id="mostConsumedQty" class="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded">0 un</span>
+                            </div>
+                            <p id="mostConsumedName" class="text-sm font-bold text-slate-200 mt-2">-</p>
                         </div>
-                        <div class="text-sm font-bold text-slate-900 dark:text-white truncate" id="leastConsumedName">-</div>
+
+                        <!-- Peça Menos Consumida -->
+                        <div class="bg-pink-500/5 border border-pink-500/20 p-4 rounded-xl">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Peça Menos Consumida</span>
+                                <span id="leastConsumedQty" class="text-xs bg-pink-500/20 text-pink-300 font-bold px-2 py-0.5 rounded">0 un</span>
+                            </div>
+                            <p id="leastConsumedName" class="text-sm font-bold text-slate-200 mt-2">-</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Chart Section (2/3) -->
-            <div class="lg:col-span-2 card-bg border rounded-2xl p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
-                        <span>Comparativo (Estoque vs Saídas vs Solicitado)</span>
-                    </h3>
-                </div>
-                <div class="h-64 w-full">
-                    <canvas id="partsChart"></canvas>
+            <!-- GRÁFICO COMPARATIVO -->
+            <div class="lg:col-span-2 bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl">
+                <h3 class="font-bold text-base text-white mb-4">Comparativo (Estoque vs Saídas vs Solicitado)</h3>
+                <div class="h-64 relative">
+                    <canvas id="comparisonChart"></canvas>
                 </div>
             </div>
-
         </div>
 
-        <!-- Dynamic Editable Table -->
-        <div class="card-bg border rounded-2xl overflow-hidden neon-glow-cyan">
-            <div class="p-5 border-b border-slate-200 dark:border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- TABELA COMPLETA DE PEÇAS -->
+        <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                 <div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center space-x-2">
-                        <i data-lucide="table" class="w-5 h-5 text-blue-600 dark:text-neon-cyan"></i>
-                        <span>Tabela Completa de Peças</span>
+                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i data-lucide="table" class="text-cyan-400 w-5 h-5"></i> Tabela Completa de Peças
                     </h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
                 </div>
-                <div id="tableEditStatus" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 flex items-center gap-1.5">
-                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                    <span>Modo Leitura (Bloqueado)</span>
-                </div>
+                <span id="tableEditStatus" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                    Modo Leitura (Bloqueado)
+                </span>
             </div>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="table-head text-xs uppercase font-extrabold border-b border-slate-200 dark:border-slate-700">
+                    <thead class="bg-slate-950/60 dark:bg-slate-900/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
                         <tr>
-                            <th class="py-3.5 px-4 min-w-[220px]">Nome da Peça</th>
-                            <th class="py-3.5 px-3 text-center w-28">Estoque Actual</th>
-                            <th class="py-3.5 px-3 text-center w-28">Entradas</th>
-                            <th class="py-3.5 px-3 text-center w-28">Saídas (1 Ano)</th>
-                            <th class="py-3.5 px-3 text-center w-28">Consumo Diário</th>
-                            <th class="py-3.5 px-3 text-center w-28">Cobertura</th>
-                            <th class="py-3.5 px-3 text-center w-28">Qtd Solicitada</th>
-                            <th class="py-3.5 px-3 text-center w-28">Valor Un. (US$)</th>
-                            <th class="py-3.5 px-3 text-right w-32">Total Item (US$)</th>
-                            <th class="py-3.5 px-3 text-center w-16">Ação</th>
+                            <th class="p-3.5">Nome da Peça</th>
+                            <th class="p-3.5 text-center">Estoque Actual</th>
+                            <th class="p-3.5 text-center">Entradas</th>
+                            <th class="p-3.5 text-center">Saídas (1 Ano)</th>
+                            <th class="p-3.5 text-center">Consumo Diário</th>
+                            <th class="p-3.5 text-center">Cobertura</th>
+                            <th class="p-3.5 text-center">Qtd Solicitada</th>
+                            <th class="p-3.5 text-center">Valor Un. (US$)</th>
+                            <th class="p-3.5 text-right">Total Item (US$)</th>
+                            <th class="p-3.5 text-center">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="partsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700/40">
-                        <!-- Dynamic Rows Injected via JS -->
+                    <tbody id="partsTableBody" class="divide-y divide-slate-800/60">
+                        <!-- Linhas geradas via JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -328,207 +217,149 @@
 
     </main>
 
-    <!-- Login Modal -->
-    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="card-bg border border-blue-400 dark:border-cyan-500/50 rounded-2xl p-6 max-w-md w-full neon-glow-cyan space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 dark:text-neon-cyan"></i>
-                    <span>Autenticação de Usuário</span>
-                </h3>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-                Digite seu e-mail e senha autorizados para liberar o modo de edição completa e exclusão de itens.
-            </p>
+    <!-- MODAL ADICIONAR NOVA PEÇA -->
+    <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+            <button onclick="closeAddModal()" class="absolute right-4 top-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="plus-circle" class="text-cyan-400"></i> Adicionar Nova Peça
+            </h3>
 
-            <div class="space-y-3">
+            <form onsubmit="handleAddPiece(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">E-mail do Usuário</label>
-                    <input type="email" id="loginEmail" value="matheussmmacahdo@outlook.com" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Nome da Peça</label>
+                    <input type="text" id="newPartName" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Estoque Actual</label>
+                        <input type="number" id="newPartStock" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Entradas</label>
+                        <input type="number" id="newPartImported" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Saídas (1 Ano)</label>
+                        <input type="number" id="newPartAnnual" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Qtd Solicitada</label>
+                        <input type="number" id="newPartRequested" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Senha (Padrão: admin)</label>
-                    <input type="password" id="loginPassword" value="admin" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Valor Unitário (US$)</label>
+                    <input type="number" step="0.01" id="newPartPrice" value="0.00" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
                 </div>
-            </div>
 
-            <div class="flex items-center space-x-3 pt-2">
-                <button onclick="performLogin()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 font-black py-2.5 rounded-xl text-sm transition-all neon-glow-cyan">
-                    Entrar e Liberar Edição
-                </button>
-            </div>
+                <div class="pt-3 flex justify-end space-x-2">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs">Salvar Peça</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Script Master Logic -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Configuração do Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyA1ohBcTTDOyS_TSdiNx2aiCcWmYIuv9DE",
-      authDomain: "dashboard-importacao-2026.firebaseapp.com",
-      databaseURL: "https://dashboard-importacao-2026-default-rtdb.firebaseio.com",
-      projectId: "dashboard-importacao-2026",
-      storageBucket: "dashboard-importacao-2026.firebasestorage.app",
-      messagingSenderId: "1015490479145",
-      appId: "1:1015490479145:web:cea3c66e238685ef378838",
-      measurementId: "G-656ZVSB7CG"
-    };
+        // CONFIGURAÇÃO DO FIREBASE REALTIME DATABASE
+        const firebaseConfig = {
+            databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
+        };
 
-    // Inicializar Firebase e Realtime Database
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-        // Database extracted from Official Excel Spreadsheets
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ESTRUTURA DE DADOS OFICIAL (22 ITENS COMPLETOS)
         const DATABASE = {
-    "ODEWAY": {
-        lastPoValue: 20808.00,
-        lastPoDate: "2025/2026 Processo 93",
-        items: [
-            { name: "Caixa de Bateria S10-S10X", stock: 24, imported: 5, annualConsumption: 4, requested: 0, unitPrice: 15.00 },
-            { name: "Carenagem Dianteira S10-S10X", stock: 29, imported: 31, annualConsumption: 2, requested: 10, unitPrice: 10.00 },
-            { name: "Carregador S10-S10X", stock: 4, imported: 41, annualConsumption: 37, requested: 20, unitPrice: 40.00 },
-            { name: "Fender Metalico S10", stock: 40, imported: 67, annualConsumption: 27, requested: 10, unitPrice: 20.00 },
-            { name: "Fender Metalico S10X", stock: 36, imported: 74, annualConsumption: 38, requested: 10, unitPrice: 20.00 },
-            { name: "Motor S10", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 100.00 },
-            { name: "Motor S10X", stock: 26, imported: 33, annualConsumption: 7, requested: 0, unitPrice: 105.00 },
-            { name: "Tapete (Par)", stock: 30, imported: 55, annualConsumption: 25, requested: 10, unitPrice: 10.00 },
-            { name: "Para-Lama S10", stock: 34, imported: 57, annualConsumption: 27, requested: 6, unitPrice: 10.00 },
-            { name: "Para-Lama S10X", stock: 36, imported: 69, annualConsumption: 33, requested: 6, unitPrice: 10.00 },
-            { name: "Pé de apoio S10-S10X", stock: 1, imported: 60, annualConsumption: 59, requested: 67, unitPrice: 15.00 },
-            { name: "Placa Display S10-S10X", stock: 24, imported: 30, annualConsumption: 6, requested: 10, unitPrice: 15.00 },
-            { name: "Placa Mãe S10", stock: 11, imported: 29, annualConsumption: 18, requested: 15, unitPrice: 125.00 },
-            { name: "Placa Mãe S10X", stock: 10, imported: 24, annualConsumption: 14, requested: 15, unitPrice: 125.00 },
-            { name: "Pneu S10", stock: 0, imported: 10, annualConsumption: 10, requested: 0, unitPrice: 30.00 },
-            { name: "Pneu S10X", stock: 6, imported: 14, annualConsumption: 8, requested: 20, unitPrice: 35.00 },
-            { name: "'T' com Manopla", stock: 9, imported: 35, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
-            { name: "Torre Inferior", stock: 6, imported: 32, annualConsumption: 26, requested: 10, unitPrice: 45.00 },
-            { name: "Pivô Mecânico", stock: 0, imported: 1, annualConsumption: 1, requested: 15, unitPrice: 0.00 },
-            { name: "Sensor de Pé", stock: 0, imported: 0, annualConsumption: 0, requested: 30, unitPrice: 0.00 },
-            { name: "Console Central", stock: 0, imported: 1, annualConsumption: 1, requested: 30, unitPrice: 0.00 },
-            { name: "Sensor de Pivô", stock: 92, imported: 100, annualConsumption: 8, requested: 0, unitPrice: 4.50 }
-        ]
-    }
-};
-            "ESWING": {
-                lastPoValue: 16622.00,
-                lastPoDate: "2025/2026 Processo 92",
+            "ODEWAY": {
+                lastPoValue: 20808.00,
+                lastPoDate: "2025/2026 Processo 93",
                 items: [
-                    { name: "GABINETE CENTRAL CONSOLE S9/SE", stock: 18, imported: 79, annualConsumption: 61, requested: 100, unitPrice: 10.00 },
-                    { name: "CAIXA DE BATERIA S9/H9", stock: 15, imported: 54, annualConsumption: 39, requested: 40, unitPrice: 9.00 },
-                    { name: "COUPLING COMPLETO S9/S9X", stock: 30, imported: 604, annualConsumption: 574, requested: 300, unitPrice: 5.00 },
-                    { name: "SENSOR DO PIVÔ S9/S9X", stock: 8, imported: 121, annualConsumption: 113, requested: 50, unitPrice: 4.00 },
-                    { name: "MOTOR BRUSHLESS S9/SE", stock: 4, imported: 19, annualConsumption: 15, requested: 10, unitPrice: 85.00 },
-                    { name: "PLACA MAE S9/S9X", stock: 0, imported: 101, annualConsumption: 101, requested: 50, unitPrice: 35.00 }
-                ]
-            },
-            "CHIC ROBOT": {
-                lastPoValue: 0.00,
-                lastPoDate: "Sem registro na P.O Anterior",
-                items: [
-                    { name: "PAR DE MANOPLA ORIGINAL", stock: 5, imported: 10, annualConsumption: 5, requested: 20, unitPrice: 6.00 },
-                    { name: "T' (Tope tube)", stock: 2, imported: 5, annualConsumption: 3, requested: 10, unitPrice: 23.00 },
-                    { name: "FENDER METALICO", stock: 4, imported: 8, annualConsumption: 4, requested: 20, unitPrice: 17.00 }
-                ]
-            },
-            "YY (YAN-YANG)": {
-                lastPoValue: 435.00,
-                lastPoDate: "2025/2026 Processo YY",
-                items: [
-                    { name: "BMS YANYANG 15S 20A PARA NCM 3.7V", stock: 0, imported: 14, annualConsumption: 14, requested: 20, unitPrice: 12.00 },
-                    { name: "BMS YANYANG 17S 20A LFP 3.2V", stock: 21, imported: 27, annualConsumption: 6, requested: 25, unitPrice: 13.50 }
-                ]
-            },
-            "JGNE": {
-                lastPoValue: 7125.00,
-                lastPoDate: "2025/2026 Processo JGNE",
-                items: [
-                    { name: "CÉLULAS INR (JGCNR-2600mah-18650-3.6v)", stock: 500, imported: 5000, annualConsumption: 4500, requested: 3000, unitPrice: 1.65 },
-                    { name: "CÉLULAS LFP (JGCNR-2200mah-18650-3.2v)", stock: 200, imported: 1000, annualConsumption: 800, requested: 0, unitPrice: 1.50 }
-                ]
-            },
-            "ZAMWHEI": {
-                lastPoValue: 2225.00,
-                lastPoDate: "2025/2026 Processo 95",
-                items: [
-                    { name: "CONTROLE DE I2/X2 (Infokey for Segway PT/SE)", stock: 3, imported: 10, annualConsumption: 7, requested: 5, unitPrice: 125.00 },
-                    { name: "PIVO MECANICO DE I2/X2", stock: 2, imported: 8, annualConsumption: 6, requested: 5, unitPrice: 80.00 }
+                    { name: "Caixa de Bateria S10-S10X", stock: 24, imported: 5, annualConsumption: 4, requested: 0, unitPrice: 15.00 },
+                    { name: "Carenagem Dianteira S10-S10X", stock: 29, imported: 31, annualConsumption: 2, requested: 10, unitPrice: 10.00 },
+                    { name: "Carregador S10-S10X", stock: 4, imported: 41, annualConsumption: 37, requested: 20, unitPrice: 40.00 },
+                    { name: "Fender Metalico S10", stock: 40, imported: 67, annualConsumption: 27, requested: 10, unitPrice: 20.00 },
+                    { name: "Fender Metalico S10X", stock: 36, imported: 74, annualConsumption: 38, requested: 10, unitPrice: 20.00 },
+                    { name: "Motor S10", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 100.00 },
+                    { name: "Motor S10X", stock: 26, imported: 33, annualConsumption: 7, requested: 0, unitPrice: 105.00 },
+                    { name: "Tapete (Par)", stock: 30, imported: 55, annualConsumption: 25, requested: 10, unitPrice: 10.00 },
+                    { name: "Para-Lama S10", stock: 34, imported: 57, annualConsumption: 27, requested: 6, unitPrice: 10.00 },
+                    { name: "Para-Lama S10X", stock: 36, imported: 69, annualConsumption: 33, requested: 6, unitPrice: 10.00 },
+                    { name: "Pé de apoio S10-S10X", stock: 1, imported: 60, annualConsumption: 59, requested: 67, unitPrice: 15.00 },
+                    { name: "Placa Display S10-S10X", stock: 24, imported: 30, annualConsumption: 6, requested: 10, unitPrice: 15.00 },
+                    { name: "Placa Mãe S10", stock: 11, imported: 29, annualConsumption: 18, requested: 15, unitPrice: 125.00 },
+                    { name: "Placa Mãe S10X", stock: 10, imported: 24, annualConsumption: 14, requested: 15, unitPrice: 125.00 },
+                    { name: "Pneu S10", stock: 0, imported: 10, annualConsumption: 10, requested: 0, unitPrice: 30.00 },
+                    { name: "Pneu S10X", stock: 6, imported: 14, annualConsumption: 8, requested: 20, unitPrice: 35.00 },
+                    { name: "'T' com Manopla", stock: 9, imported: 35, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
+                    { name: "Torre Inferior", stock: 6, imported: 32, annualConsumption: 26, requested: 10, unitPrice: 45.00 },
+                    { name: "Pivô Mecânico", stock: 0, imported: 1, annualConsumption: 1, requested: 15, unitPrice: 0.00 },
+                    { name: "Sensor de Pé", stock: 0, imported: 0, annualConsumption: 0, requested: 30, unitPrice: 0.00 },
+                    { name: "Console Central", stock: 0, imported: 1, annualConsumption: 1, requested: 30, unitPrice: 0.00 },
+                    { name: "Sensor de Pivô", stock: 92, imported: 100, annualConsumption: 8, requested: 0, unitPrice: 4.50 }
                 ]
             }
         };
 
-        // State Variables
+        // VARIÁVEIS DE ESTADO
         let currentFab = "ODEWAY";
-        let isDarkMode = true;
         let isAuthorized = false;
-        let partsChart = null;
+        let chartInstance = null;
 
-       document.addEventListener("DOMContentLoaded", () => {
+        // INICIALIZAÇÃO DA APLICAÇÃO
+        document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
-            
-            // Conecta no Firebase e carrega as informações salvas
+            initChart();
+
+            // Sincronização em Tempo Real com o Firebase
             db.ref("fabricantes").on("value", (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
+                if (data && data[currentFab]) {
                     Object.assign(DATABASE, data);
-                    renderDashboard();
                 } else {
+                    // Garante a gravação inicial caso o banco esteja vazio
                     db.ref("fabricantes").set(DATABASE);
                 }
+                renderDashboard();
             });
         });
 
-        // Toggle Theme Mode (Light / Dark)
+        // TEMA CLARO / ESCURO
         function toggleTheme() {
-            isDarkMode = !isDarkMode;
             const html = document.documentElement;
-            const themeIcon = document.getElementById("themeIcon");
             const themeText = document.getElementById("themeText");
-
-            if (isDarkMode) {
-                html.classList.add("dark");
-                themeIcon.setAttribute("data-lucide", "sun");
-                themeText.innerText = "Claro";
-            } else {
+            if (html.classList.contains("dark")) {
                 html.classList.remove("dark");
-                themeIcon.setAttribute("data-lucide", "moon");
                 themeText.innerText = "Escuro";
+            } else {
+                html.classList.add("dark");
+                themeText.innerText = "Claro";
             }
-            lucide.createIcons();
-            renderChart(DATABASE[currentFab].items);
         }
 
-        // Toggle Login Modal
-        function toggleAuthModal() {
-            if (isAuthorized) {
-                // Logout
+        // LOGIN / DESBLOQUEIO DE EDIÇÃO
+        function toggleAuth() {
+            if (!isAuthorized) {
+                const pwd = prompt("Digite a senha de administrador:");
+                if (pwd === "1234" || pwd === "admin") {
+                    isAuthorized = true;
+                    alert("Acesso Liberado! Modo de edição ativado.");
+                } else if (pwd !== null) {
+                    alert("Senha incorreta!");
+                }
+            } else {
                 isAuthorized = false;
-                updateAuthUI();
-                renderDashboard();
-            } else {
-                const modal = document.getElementById("authModal");
-                modal.classList.toggle("hidden");
             }
+            updateAuthUI();
+            renderDashboard();
         }
 
-        // Perform Login
-        function performLogin() {
-            const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-            const pass = document.getElementById("loginPassword").value;
-
-            if (email === "matheussmmacahdo@outlook.com" && pass === "admin") {
-                isAuthorized = true;
-                document.getElementById("authModal").classList.add("hidden");
-                updateAuthUI();
-                renderDashboard();
-            } else {
-                alert("E-mail ou senha incorretos! Utilize a senha padrão 'admin'.");
-            }
-        }
-
-        // Update Authentication Status UI
         function updateAuthUI() {
             const authBtn = document.getElementById("authBtn");
             const authIcon = document.getElementById("authIcon");
@@ -538,28 +369,28 @@
             const tableEditStatus = document.getElementById("tableEditStatus");
 
             if (isAuthorized) {
-                authBtn.className = "flex items-center space-x-2 bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-500 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-400 hover:border-emerald-600 transition-all neon-glow-green";
+                authBtn.className = "flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 px-3 py-2 rounded-xl text-xs font-bold transition";
                 authIcon.setAttribute("data-lucide", "unlock");
                 authText.innerText = "Sair (Modo Edição)";
 
-                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400 dark:border-emerald-500/40 font-bold flex items-center gap-1.5";
-                lockBadge.innerHTML = `<i data-lucide="unlock" class="w-4 h-4"></i><span>Modo Edição Ativo</span>`;
+                lockBadge.className = "text-xs px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold flex items-center gap-1.5";
+                lockBadge.innerHTML = `<i data-lucide="unlock" class="w-4 h-4"></i>Modo Edição Ativo`;
 
-                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400 dark:border-emerald-500/40 flex items-center gap-1.5";
-                tableEditStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>Edição Total Liberada</span>`;
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+                tableEditStatus.innerText = "Edição Total Liberada";
 
                 addBtn.disabled = false;
                 addBtn.classList.remove("opacity-50", "cursor-not-allowed");
             } else {
-                authBtn.className = "flex items-center space-x-2 bg-amber-50 dark:bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-400 hover:border-amber-500 transition-all shadow-sm";
+                authBtn.className = "flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 px-3 py-2 rounded-xl text-xs font-bold transition";
                 authIcon.setAttribute("data-lucide", "lock");
                 authText.innerText = "Login / Desbloquear";
 
-                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 font-bold flex items-center gap-1.5";
-                lockBadge.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i><span>Modo Somente Leitura</span>`;
+                lockBadge.className = "text-xs px-3 py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5";
+                lockBadge.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i>Modo Somente Leitura`;
 
-                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 flex items-center gap-1.5";
-                tableEditStatus.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i><span>Modo Leitura (Bloqueado)</span>`;
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30";
+                tableEditStatus.innerText = "Modo Leitura (Bloqueado)";
 
                 addBtn.disabled = true;
                 addBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -567,36 +398,14 @@
             lucide.createIcons();
         }
 
-        // Change Manufacturer
-        function changeManufacturer(fab) {
+        function changeFabricante(fab) {
             currentFab = fab;
             document.getElementById("currentFabBadge").innerText = fab;
-            document.getElementById("manufacturerTitle").innerText = fab;
+            document.getElementById("currentFabTitle").innerText = fab;
             renderDashboard();
         }
 
-        // Add New Editable Item Row
-        function addNewRow() {
-            if (!isAuthorized) return;
-            DATABASE[currentFab].items.push({
-                name: "Nova Peça Editável",
-                stock: 0,
-                imported: 0,
-                annualConsumption: 0,
-                requested: 0,
-                unitPrice: 0.00
-            });
-            renderDashboard();
-        }
-
-        // Delete Row
-        function deleteRow(index) {
-            if (!isAuthorized) return;
-            DATABASE[currentFab].items.splice(index, 1);
-            renderDashboard();
-        }
-
-        // Update Field Value and Recalculate
+        // ATUALIZAÇÃO E SALVAMENTO NO FIREBASE
         function updateFieldValue(index, field, value) {
             if (!isAuthorized) return;
             const item = DATABASE[currentFab].items[index];
@@ -607,211 +416,193 @@
                 const parsed = parseFloat(value) || 0;
                 item[field] = parsed >= 0 ? parsed : 0;
             }
+
+            // Grava alterações no Firebase Realtime Database
             db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
+
             renderDashboard();
         }
 
-        // Master Dashboard Render
-        function renderDashboard() {
-            const data = DATABASE[currentFab];
-
-            // 1. Last P.O Info
-            document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById("lastPoDate").innerText = data.lastPoDate;
-
-            // 2. Automations & Totals
-            let totalCurrentPo = 0;
-            let totalAnnualConsumption = 0;
-            let totalStock = 0;
-
-            data.items.forEach(item => {
-                totalCurrentPo += (item.requested * item.unitPrice);
-                totalAnnualConsumption += item.annualConsumption;
-                totalStock += item.stock;
-            });
-
-            document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            
-            const avgDaily = (totalAnnualConsumption / 365);
-            document.getElementById("avgDailyConsumption").innerText = `${avgDaily.toFixed(2)} un/dia`;
-
-            const coverageDays = avgDaily > 0 ? Math.round(totalStock / avgDaily) : "∞";
-            document.getElementById("stockCoverageDays").innerText = typeof coverageDays === 'number' ? `${coverageDays} Dias` : coverageDays;
-
-            // 3. Render Table
-            renderTable();
-
-            // 4. Render Ranking
-            renderRanking(data.items);
-
-            // 5. Render Chart
-            renderChart(data.items);
-        }
-
-        // Render Ranking Section
-        function renderRanking(items) {
-            if (!items || items.length === 0) {
-                document.getElementById("mostConsumedName").innerText = "Sem dados";
-                document.getElementById("mostConsumedQty").innerText = "0 un";
-                document.getElementById("leastConsumedName").innerText = "Sem dados";
-                document.getElementById("leastConsumedQty").innerText = "0 un";
-                return;
+        // DELETAR PEÇA DA TABELA
+        function deleteItem(index) {
+            if (!isAuthorized) return;
+            if (confirm(`Tem certeza que deseja excluir "${DATABASE[currentFab].items[index].name}"?`)) {
+                DATABASE[currentFab].items.splice(index, 1);
+                db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
+                renderDashboard();
             }
-
-            const maxVal = Math.max(...items.map(i => i.annualConsumption));
-            const mostConsumed = items.filter(i => i.annualConsumption === maxVal);
-
-            const minVal = Math.min(...items.map(i => i.annualConsumption));
-            const leastConsumed = items.filter(i => i.annualConsumption === minVal);
-
-            document.getElementById("mostConsumedName").innerText = mostConsumed.map(i => i.name).join(" / ");
-            document.getElementById("mostConsumedQty").innerText = `${maxVal} un/ano`;
-
-            document.getElementById("leastConsumedName").innerText = leastConsumed.map(i => i.name).join(" / ");
-            document.getElementById("leastConsumedQty").innerText = `${minVal} un/ano`;
         }
 
-        // Render Table (Editable if Authorized)
-        function renderTable() {
-            const tbody = document.getElementById("partsTableBody");
-            tbody.innerHTML = "";
-
-            const items = DATABASE[currentFab].items;
-
-            items.forEach((item, index) => {
-                const dailyAvg = (item.annualConsumption / 365).toFixed(2);
-                const coverage = dailyAvg > 0 ? `${Math.round(item.stock / dailyAvg)} d` : "∞";
-                const totalItemPrice = (item.requested * item.unitPrice);
-
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-100 dark:hover:bg-slate-500/10 transition-colors";
-
-                if (isAuthorized) {
-                    tr.innerHTML = `
-                        <td class="py-2 px-3">
-                            <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full input-bg rounded-lg px-2 py-1 text-xs font-bold focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
-                        </td>
-                        <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-blue-600 dark:text-cyan-400 focus:outline-none">
-                        </td>
-                        <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.imported}" onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-semibold focus:outline-none">
-                        </td>
-                        <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-amber-600 dark:text-neon-magenta focus:outline-none">
-                        </td>
-                        <td class="py-2 px-2 text-center text-xs font-medium text-slate-500 dark:text-slate-400">${dailyAvg} /d</td>
-                        <td class="py-2 px-2 text-center">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-rose-100 dark:bg-pink-500/20 text-rose-700 dark:text-neon-magenta border border-rose-300 dark:border-pink-500/40' : 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400'}">${coverage}</span>
-                        </td>
-                        <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-black text-blue-600 dark:text-neon-cyan focus:outline-none border-blue-400 dark:border-cyan-500/50 neon-glow-cyan">
-                        </td>
-                        <td class="py-2 px-2">
-                            <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none">
-                        </td>
-                        <td class="py-2 px-3 text-right font-black text-xs text-blue-600 dark:text-neon-cyan">
-                            US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </td>
-                        <td class="py-2 px-2 text-center">
-                            <button onclick="deleteRow(${index})" class="text-slate-400 hover:text-rose-600 dark:hover:text-neon-magenta transition-colors" title="Excluir Peça">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </td>
-                    `;
-                } else {
-                    tr.innerHTML = `
-                        <td class="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">${item.name}</td>
-                        <td class="py-3 px-3 text-center font-bold text-blue-600 dark:text-cyan-400">${item.stock}</td>
-                        <td class="py-3 px-3 text-center text-slate-700 dark:text-slate-300">${item.imported}</td>
-                        <td class="py-3 px-3 text-center font-bold text-amber-600 dark:text-neon-magenta">${item.annualConsumption}</td>
-                        <td class="py-3 px-3 text-center text-xs text-slate-500 dark:text-slate-400">${dailyAvg} /dia</td>
-                        <td class="py-3 px-3 text-center">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-rose-100 dark:bg-pink-500/20 text-rose-700 dark:text-neon-magenta border border-rose-300 dark:border-pink-500/40' : 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400'}">${coverage}</span>
-                        </td>
-                        <td class="py-3 px-3 text-center font-black text-blue-600 dark:text-neon-cyan">${item.requested}</td>
-                        <td class="py-3 px-3 text-center font-bold text-emerald-700 dark:text-emerald-400">US$ ${item.unitPrice.toFixed(2)}</td>
-                        <td class="py-3 px-3 text-right font-black text-blue-600 dark:text-neon-cyan">
-                            US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </td>
-                        <td class="py-3 px-2 text-center">
-                            <i data-lucide="lock" class="w-4 h-4 text-slate-400 dark:text-slate-500 inline-block" title="Faça login para editar"></i>
-                        </td>
-                    `;
-                }
-
-                tbody.appendChild(tr);
-            });
-
-            lucide.createIcons();
+        // MODAL ADICIONAR PEÇA
+        function openAddModal() {
+            if (!isAuthorized) return;
+            document.getElementById("addModal").classList.remove("hidden");
         }
 
-        // Render Chart.js
-        function renderChart(items) {
-            const ctx = document.getElementById('partsChart').getContext('2d');
+        function closeAddModal() {
+            document.getElementById("addModal").classList.add("hidden");
+        }
 
-            if (partsChart) {
-                partsChart.destroy();
-            }
+        function handleAddPiece(event) {
+            event.preventDefault();
+            if (!isAuthorized) return;
 
-            const labels = items.map(i => i.name.length > 18 ? i.name.substring(0, 18) + '...' : i.name);
-            const stockData = items.map(i => i.stock);
-            const consumptionData = items.map(i => i.annualConsumption);
-            const requestedData = items.map(i => i.requested);
+            const newPart = {
+                name: document.getElementById("newPartName").value,
+                stock: parseFloat(document.getElementById("newPartStock").value) || 0,
+                imported: parseFloat(document.getElementById("newPartImported").value) || 0,
+                annualConsumption: parseFloat(document.getElementById("newPartAnnual").value) || 0,
+                requested: parseFloat(document.getElementById("newPartRequested").value) || 0,
+                unitPrice: parseFloat(document.getElementById("newPartPrice").value) || 0
+            };
 
-            const isDark = document.documentElement.classList.contains("dark");
+            DATABASE[currentFab].items.push(newPart);
+            db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
 
-            partsChart = new Chart(ctx, {
+            closeAddModal();
+            renderDashboard();
+            event.target.reset();
+        }
+
+        // CONFIGURAÇÃO DO CHART.JS
+        function initChart() {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: [],
                     datasets: [
-                        {
-                            label: 'Estoque Actual',
-                            data: stockData,
-                            backgroundColor: isDark ? 'rgba(100, 116, 139, 0.7)' : 'rgba(148, 163, 184, 0.8)',
-                            borderColor: isDark ? '#64748b' : '#64748b',
-                            borderWidth: 1.5
-                        },
-                        {
-                            label: 'Saídas (1 Ano)',
-                            data: consumptionData,
-                            backgroundColor: isDark ? 'rgba(255, 0, 127, 0.7)' : 'rgba(217, 119, 6, 0.8)',
-                            borderColor: isDark ? '#ff007f' : '#b45309',
-                            borderWidth: 1.5
-                        },
-                        {
-                            label: 'Qtd Solicitada',
-                            data: requestedData,
-                            backgroundColor: isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(2, 132, 199, 0.8)',
-                            borderColor: isDark ? '#00f3ff' : '#0369a1',
-                            borderWidth: 1.5
-                        }
+                        { label: 'Estoque Atual', data: [], backgroundColor: '#06b6d4' },
+                        { label: 'Saídas (1 Ano)', data: [], backgroundColor: '#ec4899' },
+                        { label: 'Qtd Solicitada', data: [], backgroundColor: '#10b981' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: isDark ? '#f8fafc' : '#0f172a',
-                                font: { size: 11, weight: 'bold' }
-                            }
-                        }
+                        legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
                     },
                     scales: {
-                        x: {
-                            ticks: { color: isDark ? '#94a3b8' : '#475569', font: { size: 10 } },
-                            grid: { color: isDark ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.8)' }
-                        },
-                        y: {
-                            ticks: { color: isDark ? '#94a3b8' : '#475569' },
-                            grid: { color: isDark ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.8)' }
-                        }
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
                     }
                 }
             });
+        }
+
+        function updateChart(items) {
+            if (!chartInstance) return;
+            chartInstance.data.labels = items.map(i => i.name.length > 15 ? i.name.substring(0, 15) + '...' : i.name);
+            chartInstance.data.datasets[0].data = items.map(i => i.stock);
+            chartInstance.data.datasets[1].data = items.map(i => i.annualConsumption);
+            chartInstance.data.datasets[2].data = items.map(i => i.requested);
+            chartInstance.update();
+        }
+
+        // RENDERIZAÇÃO DO DASHBOARD COMPLETO
+        function renderDashboard() {
+            const data = DATABASE[currentFab];
+            if (!data) return;
+
+            // 1. Last PO Info
+            document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById("lastPoDate").innerText = data.lastPoDate;
+
+            // 2. Cálculos Globais
+            let totalCurrentPo = 0;
+            let totalDailyCons = 0;
+            let totalStock = 0;
+
+            let mostConsumed = { name: '-', qty: -1 };
+            let leastConsumed = { name: '-', qty: Infinity };
+
+            data.items.forEach(item => {
+                totalCurrentPo += (item.requested * item.unitPrice);
+                const daily = item.annualConsumption / 365;
+                totalDailyCons += daily;
+                totalStock += item.stock;
+
+                if (item.annualConsumption > mostConsumed.qty) {
+                    mostConsumed = { name: item.name, qty: item.annualConsumption };
+                }
+                if (item.annualConsumption < leastConsumed.qty) {
+                    leastConsumed = { name: item.name, qty: item.annualConsumption };
+                }
+            });
+
+            document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById("avgDailyCons").innerText = `${totalDailyCons.toFixed(2)} un/dia`;
+
+            const avgCoverage = totalDailyCons > 0 ? Math.round(totalStock / totalDailyCons) : 0;
+            document.getElementById("stockCoverage").innerText = `${avgCoverage} Dias`;
+
+            // Rankings
+            document.getElementById("mostConsumedName").innerText = mostConsumed.name;
+            document.getElementById("mostConsumedQty").innerText = `${mostConsumed.qty} un`;
+
+            document.getElementById("leastConsumedName").innerText = leastConsumed.qty === Infinity ? '-' : leastConsumed.name;
+            document.getElementById("leastConsumedQty").innerText = leastConsumed.qty === Infinity ? '0 un' : `${leastConsumed.qty} un`;
+
+            // Atualiza o Gráfico
+            updateChart(data.items);
+
+            // 3. Renderização da Tabela
+            const tbody = document.getElementById("partsTableBody");
+            tbody.innerHTML = "";
+
+            data.items.forEach((item, index) => {
+                const dailyCons = (item.annualConsumption / 365).toFixed(2);
+                const coverageDays = dailyCons > 0 ? Math.round(item.stock / dailyCons) : "∞";
+                const itemTotal = (item.requested * item.unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+                const disabledAttr = !isAuthorized ? "disabled" : "";
+                const inputBg = isAuthorized ? "bg-slate-800 text-white border-slate-600 focus:border-cyan-400" : "bg-transparent text-slate-300 border-transparent";
+
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/60";
+
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <input type="text" value="${item.name}" ${disabledAttr} onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full px-2 py-1 rounded-lg border text-sm font-medium ${inputBg}">
+                    </td>
+                    <td class="p-3 text-center">
+                        <input type="number" value="${item.stock}" ${disabledAttr} onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-16 text-center px-1 py-1 rounded-lg border text-sm font-bold ${inputBg}">
+                    </td>
+                    <td class="p-3 text-center">
+                        <input type="number" value="${item.imported}" ${disabledAttr} onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-16 text-center px-1 py-1 rounded-lg border text-sm ${inputBg}">
+                    </td>
+                    <td class="p-3 text-center">
+                        <input type="number" value="${item.annualConsumption}" ${disabledAttr} onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-16 text-center px-1 py-1 rounded-lg border text-sm ${inputBg}">
+                    </td>
+                    <td class="p-3 text-center text-xs font-mono text-slate-400">
+                        ${dailyCons} /d
+                    </td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-bold ${coverageDays < 30 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
+                            ${coverageDays} d
+                        </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        <input type="number" value="${item.requested}" ${disabledAttr} onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-16 text-center px-1 py-1 rounded-lg border text-sm font-black text-cyan-400 ${inputBg}">
+                    </td>
+                    <td class="p-3 text-center">
+                        <input type="number" step="0.01" value="${item.unitPrice}" ${disabledAttr} onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-20 text-center px-1 py-1 rounded-lg border text-sm ${inputBg}">
+                    </td>
+                    <td class="p-3 text-right font-bold text-cyan-400">
+                        US$ ${itemTotal}
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteItem(${index})" ${disabledAttr} class="text-slate-500 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
         }
     </script>
 </body>
