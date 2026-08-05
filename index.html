@@ -16,43 +16,32 @@
     <!-- Firebase JS SDK (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    /* Quando NÃO ESTIVER em light-mode (ou seja, Modo Escuro Ativo) */
-body:not(.light-mode) {
-    background-color: #0f172a !important; /* Fundo escuro */
-    color: #f8fafc !important;
-}
+   <style>
+    /* Transição suave ao trocar de tema */
+    body {
+        transition: filter 0.3s ease, background-color 0.3s ease;
+    }
 
-body:not(.light-mode) header,
-body:not(.light-mode) .card-bg,
-body:not(.light-mode) div.bg-white {
-    background-color: #1e293b !important; /* Cards escuros */
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-}
+    /* ESTÉTICA MODO CLARO ORIGINAL (Comportamento Padrão) */
+    body.light-mode {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+    }
 
-body:not(.light-mode) h1, 
-body:not(.light-mode) h2, 
-body:not(.light-mode) h3, 
-body:not(.light-mode) p, 
-body:not(.light-mode) span {
-    color: #f8fafc !important;
-}
+    /* MODO ESCURO REAL: Quando a classe 'light-mode' é removida */
+    body:not(.light-mode) {
+        filter: invert(0.93) hue-rotate(180deg) !important;
+        background-color: #f8fafc !important;
+    }
 
-body:not(.light-mode) .text-slate-800,
-body:not(.light-mode) .text-slate-700,
-body:not(.light-mode) .text-slate-600 {
-    color: #cbd5e1 !important;
-}
-</head>
-<body id="appBody" class="light-mode font-sans min-h-screen transition-colors duration-300">
-
-    <!-- HEADER / NAVIGATION -->
-    <header class="border-b bg-white sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
-                    <i data-lucide="box" class="w-6 h-6"></i>
-                </div>
+    /* Correção para imagens, ícones e gráficos não ficarem com cores invertidas estranhas no modo escuro */
+    body:not(.light-mode) img,
+    body:not(.light-mode) canvas,
+    body:not(.light-mode) svg,
+    body:not(.light-mode) .lucide {
+        filter: invert(1) hue-rotate(180deg) !important;
+    }
+</style>
                 <div>
                     <h1 class="font-black text-xl tracking-wider text-blue-600 flex items-center gap-2">
                         Importação 2026 <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200 font-bold tracking-normal">PRO</span>
