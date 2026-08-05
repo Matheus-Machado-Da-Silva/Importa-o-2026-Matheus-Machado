@@ -21,10 +21,9 @@
                         }
                     },
                     boxShadow: {
-                        'neon-cyan': '0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.1)',
-                        'neon-green': '0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 15px rgba(57, 255, 20, 0.1)',
-                        'neon-magenta': '0 0 15px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.1)',
-                        'neon-purple': '0 0 15px rgba(181, 0, 255, 0.4)'
+                        'neon-cyan': '0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.05)',
+                        'neon-green': '0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 15px rgba(57, 255, 20, 0.05)',
+                        'neon-magenta': '0 0 15px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.05)',
                     }
                 }
             }
@@ -35,25 +34,69 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Neon Aesthetics */
-        .neon-border-cyan { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
-        .neon-border-green { border-color: #39ff14; box-shadow: 0 0 10px rgba(57, 255, 20, 0.3); }
-        .neon-border-magenta { border-color: #ff007f; box-shadow: 0 0 10px rgba(255, 0, 127, 0.3); }
-        
-        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); color: #00f3ff; }
-        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); color: #39ff14; }
-        .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.6); color: #ff007f; }
+        /* Dark Theme Styles */
+        html.dark body {
+            background-color: #020617;
+            color: #f8fafc;
+        }
+        html.dark .card-bg {
+            background-color: rgba(15, 23, 42, 0.85);
+            border-color: rgba(51, 65, 85, 0.6);
+        }
+        html.dark .table-head {
+            background-color: #020617;
+            color: #94a3b8;
+        }
+        html.dark .input-bg {
+            background-color: #020617;
+            color: #ffffff;
+            border-color: #334155;
+        }
 
-        /* Custom Scrollbar */
+        /* Light Theme Styles */
+        html:not(.dark) body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        html:not(.dark) .card-bg {
+            background-color: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        html:not(.dark) .table-head {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        html:not(.dark) .input-bg {
+            background-color: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        html:not(.dark) .text-slate-100, html:not(.dark) .text-white {
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-400 {
+            color: #64748b !important;
+        }
+        html:not(.dark) header {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        /* Neon Text & Border Utility */
+        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); color: #00f3ff; }
+        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); color: #22c55e; }
+        .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); color: #ff007f; }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #00f3ff; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-slate-950 dark:bg-slate-950 text-slate-100 transition-colors duration-300 min-h-screen font-sans antialiased">
+<body class="transition-colors duration-300 min-h-screen font-sans antialiased">
 
-    <!-- Header & Navigation -->
-    <header class="bg-slate-900/90 dark:bg-slate-900/90 border-b border-cyan-500/30 backdrop-blur sticky top-0 z-50">
+    <!-- Header Navigation -->
+    <header class="card-bg border-b backdrop-blur sticky top-0 z-40 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
             <!-- Brand Logo -->
@@ -63,17 +106,17 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-xl tracking-wide neon-text-cyan flex items-center gap-2">
-                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-magenta-500 text-neon-magenta">NEON v2.0</span>
+                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-pink-500 text-neon-magenta">NEON PRO</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Gestão Dinâmica e Editável de Estoque & Importação</p>
+                    <p class="text-xs text-slate-400">Gestão Dinâmica de Peças & Importação</p>
                 </div>
             </div>
 
             <!-- Header Controls -->
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
                 
-                <!-- Manufacturer Dropdown -->
-                <div class="flex items-center space-x-2 bg-slate-950/80 border border-cyan-500/40 px-3 py-1.5 rounded-xl shadow-neon-cyan">
+                <!-- Manufacturer Select Dropdown -->
+                <div class="flex items-center space-x-2 bg-slate-800/20 border border-cyan-500/40 px-3 py-1.5 rounded-xl shadow-neon-cyan">
                     <i data-lucide="factory" class="w-4 h-4 text-neon-cyan"></i>
                     <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-bold text-neon-cyan focus:outline-none cursor-pointer">
                         <option value="ODEWAY" class="bg-slate-900 text-white">ODEWAY</option>
@@ -85,38 +128,52 @@
                     </select>
                 </div>
 
-                <!-- Theme Toggle Button (Light/Dark) -->
-                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-800 dark:bg-slate-800 border border-slate-700 hover:border-cyan-400 p-2 rounded-xl transition-all shadow-md">
-                    <i id="themeIcon" data-lucide="sun" class="w-5 h-5 text-neon-yellow"></i>
-                    <span id="themeText" class="text-xs font-semibold hidden sm:inline">Modo Claro</span>
+                <!-- Auth/Login Status Button -->
+                <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center space-x-2 bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 hover:border-amber-400 transition-all shadow-md">
+                    <i data-lucide="lock" class="w-4 h-4 text-amber-400" id="authIcon"></i>
+                    <span id="authText">Login / Desbloquear</span>
+                </button>
+
+                <!-- Light/Dark Mode Switcher -->
+                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-800 dark:bg-slate-800 border border-slate-700 hover:border-cyan-400 p-2.5 rounded-xl transition-all shadow-md">
+                    <i id="themeIcon" data-lucide="sun" class="w-4 h-4 text-neon-yellow"></i>
+                    <span id="themeText" class="text-xs font-bold text-slate-200">Claro</span>
                 </button>
 
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
         <!-- Title Banner -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-5 shadow-neon-cyan gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between card-bg border rounded-2xl p-5 shadow-neon-cyan gap-4">
             <div>
                 <span class="text-xs px-3 py-1 rounded-full bg-cyan-500/10 text-neon-cyan border border-cyan-500/40 font-bold tracking-wider uppercase" id="currentFabBadge">ODEWAY</span>
                 <h2 class="text-2xl font-black text-white mt-2 flex items-center gap-2">
-                    Painel do Fabricante: <span id="manufacturerTitle" class="neon-text-cyan">ODEWAY</span>
+                    Fabricante: <span id="manufacturerTitle" class="neon-text-cyan">ODEWAY</span>
                 </h2>
             </div>
-            <button onclick="addNewRow()" class="flex items-center justify-center space-x-2 bg-neon-green/10 border border-neon-green text-neon-green hover:bg-neon-green/20 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-neon-green">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>Adicionar Nova Peça</span>
-            </button>
+            
+            <div class="flex items-center space-x-3">
+                <span id="lockBadge" class="text-xs px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5">
+                    <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                    <span>Modo Somente Leitura</span>
+                </span>
+                
+                <button id="addBtn" onclick="addNewRow()" disabled class="opacity-50 cursor-not-allowed flex items-center justify-center space-x-2 bg-emerald-500/10 border border-emerald-500 text-emerald-400 px-4 py-2 rounded-xl font-bold text-sm transition-all shadow-neon-green">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Adicionar Peça</span>
+                </button>
+            </div>
         </div>
 
-        <!-- 4 Top KPI Cards -->
+        <!-- 4 Top Metric KPI Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <!-- Card 1: Último Pedido -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-500/50 transition-all">
+            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Último Pedido (P.O)</span>
                     <i data-lucide="history" class="w-4 h-4 text-neon-cyan"></i>
@@ -128,41 +185,41 @@
             </div>
 
             <!-- Card 2: Pedido Atual -->
-            <div class="bg-slate-900/80 border border-neon-cyan rounded-2xl p-5 flex flex-col justify-between shadow-neon-cyan">
+            <div class="card-bg border border-cyan-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-neon-cyan">
                 <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    <span>Pedido Atual Calculado</span>
+                    <span>Pedido Atual (Calculado)</span>
                     <i data-lucide="shopping-cart" class="w-4 h-4 text-neon-cyan"></i>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-black neon-text-cyan" id="currentPoValue">US$ 0,00</div>
-                    <div class="text-xs text-neon-green mt-1 flex items-center gap-1">
+                    <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
                         <i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i>
-                        <span>Recálculo automático ativo</span>
+                        <span>Recálculo em Tempo Real</span>
                     </div>
                 </div>
             </div>
 
             <!-- Card 3: Consumo Médio Diário -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-neon-magenta/50 transition-all">
+            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Consumo Médio Diário</span>
                     <i data-lucide="trending-up" class="w-4 h-4 text-neon-magenta"></i>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-black neon-text-magenta" id="avgDailyConsumption">0.00 un/dia</div>
-                    <div class="text-xs text-slate-400 mt-1">Soma de todas as saídas / 365</div>
+                    <div class="text-xs text-slate-400 mt-1">Soma de Saídas / 365 dias</div>
                 </div>
             </div>
 
-            <!-- Card 4: Cobertura Média de Estoque -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-neon-green/50 transition-all">
+            <!-- Card 4: Cobertura de Estoque -->
+            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Cobertura do Estoque</span>
-                    <i data-lucide="shield-check" class="w-4 h-4 text-neon-green"></i>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-black neon-text-green" id="stockCoverageDays">0 Dias</div>
-                    <div class="text-xs text-slate-400 mt-1">Estimativa de Duração em dias</div>
+                    <div class="text-xs text-slate-400 mt-1">Duração estimada do estoque</div>
                 </div>
             </div>
 
@@ -172,34 +229,34 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <!-- Ranking Panel (1/3) -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700/50 pb-3">
                     <h3 class="font-bold text-white flex items-center space-x-2">
                         <i data-lucide="trophy" class="w-4 h-4 text-neon-yellow"></i>
                         <span>Ranking Neon de Consumo</span>
                     </h3>
-                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Saídas 1 Ano</span>
+                    <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Saídas 1 Ano</span>
                 </div>
 
                 <div class="space-y-4 flex-grow flex flex-col justify-center">
                     <!-- Mais Consumido -->
-                    <div class="bg-slate-950/80 border border-neon-green/40 rounded-xl p-4 shadow-neon-green">
+                    <div class="bg-slate-950/40 border border-emerald-500/40 rounded-xl p-4 shadow-neon-green">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black text-neon-green flex items-center gap-1">
+                            <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> PEÇA MAIS CONSUMIDA
                             </span>
-                            <span class="text-xs font-black text-neon-green bg-neon-green/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
                         </div>
                         <div class="text-sm font-bold text-white truncate" id="mostConsumedName">-</div>
                     </div>
 
                     <!-- Menos Consumido -->
-                    <div class="bg-slate-950/80 border border-neon-magenta/40 rounded-xl p-4 shadow-neon-magenta">
+                    <div class="bg-slate-950/40 border border-pink-500/40 rounded-xl p-4 shadow-neon-magenta">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-xs font-black text-neon-magenta flex items-center gap-1">
                                 <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i> PEÇA MENOS CONSUMIDA
                             </span>
-                            <span class="text-xs font-black text-neon-magenta bg-neon-magenta/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-neon-magenta bg-pink-500/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
                         </div>
                         <div class="text-sm font-bold text-white truncate" id="leastConsumedName">-</div>
                     </div>
@@ -207,11 +264,11 @@
             </div>
 
             <!-- Chart Section (2/3) -->
-            <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
+            <div class="lg:col-span-2 card-bg border rounded-2xl p-5">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-white flex items-center space-x-2">
                         <i data-lucide="bar-chart-3" class="w-4 h-4 text-neon-cyan"></i>
-                        <span>Comparativo Dinâmico (Estoque vs Saídas vs Solicitado)</span>
+                        <span>Comparativo (Estoque vs Saídas vs Solicitado)</span>
                     </h3>
                 </div>
                 <div class="h-64 w-full">
@@ -221,29 +278,29 @@
 
         </div>
 
-        <!-- Fully Editable Interactive Table -->
-        <div class="bg-slate-900/90 border border-cyan-500/30 rounded-2xl overflow-hidden shadow-neon-cyan">
-            <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- Dynamic Editable Table -->
+        <div class="card-bg border rounded-2xl overflow-hidden shadow-neon-cyan">
+            <div class="p-5 border-b border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-bold text-lg text-white flex items-center space-x-2">
-                        <i data-lucide="edit-3" class="w-5 h-5 text-neon-green"></i>
-                        <span>Tabela 100% Editável de Peças</span>
+                        <i data-lucide="table" class="w-5 h-5 text-neon-cyan"></i>
+                        <span>Tabela Completa de Peças</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-1">Altere qualquer campo abaixo. Todos os totais, médias e gráficos serão recalculados na hora.</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
                 </div>
-                <div class="flex items-center space-x-2 text-xs bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-neon-green">
-                    <i data-lucide="check-circle" class="w-4 h-4"></i>
-                    <span>Modo Edição Livre Ativo</span>
+                <div id="tableEditStatus" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                    <span>Modo Leitura (Bloqueado)</span>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-950 text-xs uppercase font-extrabold text-slate-400 border-b border-slate-800">
+                    <thead class="table-head text-xs uppercase font-extrabold border-b border-slate-700">
                         <tr>
                             <th class="py-3.5 px-4 min-w-[220px]">Nome da Peça</th>
-                            <th class="py-3.5 px-3 text-center w-28">Estoque Atual</th>
-                            <th class="py-3.5 px-3 text-center w-28">Qtd Entrada</th>
+                            <th class="py-3.5 px-3 text-center w-28">Estoque Actual</th>
+                            <th class="py-3.5 px-3 text-center w-28">Entradas</th>
                             <th class="py-3.5 px-3 text-center w-28">Saídas (1 Ano)</th>
                             <th class="py-3.5 px-3 text-center w-28">Consumo Diário</th>
                             <th class="py-3.5 px-3 text-center w-28">Cobertura</th>
@@ -253,8 +310,8 @@
                             <th class="py-3.5 px-3 text-center w-16">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="partsTableBody" class="divide-y divide-slate-800/80">
-                        <!-- Dynamic Editable Rows -->
+                    <tbody id="partsTableBody" class="divide-y divide-slate-700/40">
+                        <!-- Dynamic Rows Injected via JS -->
                     </tbody>
                 </table>
             </div>
@@ -262,8 +319,45 @@
 
     </main>
 
+    <!-- Login Modal -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card-bg border border-cyan-500/50 rounded-2xl p-6 max-w-md w-full shadow-neon-cyan space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-neon-cyan"></i>
+                    <span>Autenticação de Usuário</span>
+                </h3>
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-400">
+                Digite seu e-mail e senha autorizados para liberar o modo de edição completa e exclusão de itens.
+            </p>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">E-mail do Usuário</label>
+                    <input type="email" id="loginEmail" value="matheussmmacahdo@outlook.com" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Senha (Padrão: admin)</label>
+                    <input type="password" id="loginPassword" value="admin" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-cyan-400">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 pt-2">
+                <button onclick="performLogin()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-2.5 rounded-xl text-sm transition-all shadow-neon-cyan">
+                    Entrar e Liberar Edição
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Master Logic -->
     <script>
-        // Full Initial Editable Database
+        // Database extracted from Official Excel Spreadsheets
         const DATABASE = {
             "ODEWAY": {
                 lastPoValue: 20808.00,
@@ -328,9 +422,10 @@
             }
         };
 
-        // State variables
+        // State Variables
         let currentFab = "ODEWAY";
         let isDarkMode = true;
+        let isAuthorized = false;
         let partsChart = null;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -338,7 +433,7 @@
             renderDashboard();
         });
 
-        // Toggle Dark / Light Theme
+        // Toggle Theme Mode (Light / Dark)
         function toggleTheme() {
             isDarkMode = !isDarkMode;
             const html = document.documentElement;
@@ -348,17 +443,84 @@
             if (isDarkMode) {
                 html.classList.add("dark");
                 themeIcon.setAttribute("data-lucide", "sun");
-                themeText.innerText = "Modo Claro";
+                themeText.innerText = "Claro";
             } else {
                 html.classList.remove("dark");
                 themeIcon.setAttribute("data-lucide", "moon");
-                themeText.innerText = "Modo Escuro";
+                themeText.innerText = "Escuro";
             }
             lucide.createIcons();
             renderChart(DATABASE[currentFab].items);
         }
 
-        // Change Manufacturer Select
+        // Toggle Login Modal
+        function toggleAuthModal() {
+            if (isAuthorized) {
+                // Logout
+                isAuthorized = false;
+                updateAuthUI();
+                renderDashboard();
+            } else {
+                const modal = document.getElementById("authModal");
+                modal.classList.toggle("hidden");
+            }
+        }
+
+        // Perform Login
+        function performLogin() {
+            const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+            const pass = document.getElementById("loginPassword").value;
+
+            if (email === "matheussmmacahdo@outlook.com" && pass === "admin") {
+                isAuthorized = true;
+                document.getElementById("authModal").classList.add("hidden");
+                updateAuthUI();
+                renderDashboard();
+            } else {
+                alert("E-mail ou senha incorretos! Utilize a senha padrão 'admin'.");
+            }
+        }
+
+        // Update Authentication Status UI
+        function updateAuthUI() {
+            const authBtn = document.getElementById("authBtn");
+            const authIcon = document.getElementById("authIcon");
+            const authText = document.getElementById("authText");
+            const lockBadge = document.getElementById("lockBadge");
+            const addBtn = document.getElementById("addBtn");
+            const tableEditStatus = document.getElementById("tableEditStatus");
+
+            if (isAuthorized) {
+                authBtn.className = "flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-400 hover:border-emerald-400 transition-all shadow-neon-green";
+                authIcon.setAttribute("data-lucide", "unlock");
+                authText.innerText = "Sair (Modo Edição)";
+
+                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 font-bold flex items-center gap-1.5";
+                lockBadge.innerHTML = `<i data-lucide="unlock" class="w-4 h-4"></i><span>Modo Edição Ativo</span>`;
+
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5";
+                tableEditStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>Edição Total Liberada</span>`;
+
+                addBtn.disabled = false;
+                addBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            } else {
+                authBtn.className = "flex items-center space-x-2 bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 hover:border-amber-400 transition-all shadow-md";
+                authIcon.setAttribute("data-lucide", "lock");
+                authText.innerText = "Login / Desbloquear";
+
+                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5";
+                lockBadge.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i><span>Modo Somente Leitura</span>`;
+
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5";
+                tableEditStatus.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i><span>Modo Leitura (Bloqueado)</span>`;
+
+                addBtn.disabled = true;
+                addBtn.classList.add("opacity-50", "cursor-not-allowed");
+            }
+            lucide.createIcons();
+        }
+
+        // Change Manufacturer
         function changeManufacturer(fab) {
             currentFab = fab;
             document.getElementById("currentFabBadge").innerText = fab;
@@ -366,8 +528,9 @@
             renderDashboard();
         }
 
-        // Add new piece row
+        // Add New Editable Item Row
         function addNewRow() {
+            if (!isAuthorized) return;
             DATABASE[currentFab].items.push({
                 name: "Nova Peça Editável",
                 stock: 0,
@@ -381,34 +544,34 @@
 
         // Delete Row
         function deleteRow(index) {
+            if (!isAuthorized) return;
             DATABASE[currentFab].items.splice(index, 1);
             renderDashboard();
         }
 
-        // Update Field Value Dinamically
+        // Update Field Value and Recalculate
         function updateFieldValue(index, field, value) {
+            if (!isAuthorized) return;
             const item = DATABASE[currentFab].items[index];
 
             if (field === 'name') {
                 item.name = value;
             } else {
-                const parsedVal = parseFloat(value) || 0;
-                item[field] = parsedVal >= 0 ? parsedVal : 0;
+                const parsed = parseFloat(value) || 0;
+                item[field] = parsed >= 0 ? parsed : 0;
             }
-
-            // Recalculate Dashboard Automatically
             renderDashboard();
         }
 
-        // Dashboard Master Calculation & Render
+        // Master Dashboard Render
         function renderDashboard() {
             const data = DATABASE[currentFab];
 
-            // 1. Last PO
+            // 1. Last P.O Info
             document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
             document.getElementById("lastPoDate").innerText = data.lastPoDate;
 
-            // 2. Dynamic Automations
+            // 2. Automations & Totals
             let totalCurrentPo = 0;
             let totalAnnualConsumption = 0;
             let totalStock = 0;
@@ -419,7 +582,6 @@
                 totalStock += item.stock;
             });
 
-            // Update Header KPI Cards
             document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
             
             const avgDaily = (totalAnnualConsumption / 365);
@@ -438,7 +600,7 @@
             renderChart(data.items);
         }
 
-        // Render Ranking (Mais / Menos Consumidos)
+        // Render Ranking Section
         function renderRanking(items) {
             if (!items || items.length === 0) {
                 document.getElementById("mostConsumedName").innerText = "Sem dados";
@@ -461,7 +623,7 @@
             document.getElementById("leastConsumedQty").innerText = `${minVal} un/ano`;
         }
 
-        // Render Fully Editable Table
+        // Render Table (Editable if Authorized)
         function renderTable() {
             const tbody = document.getElementById("partsTableBody");
             tbody.innerHTML = "";
@@ -474,69 +636,61 @@
                 const totalItemPrice = (item.requested * item.unitPrice);
 
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-800/50 transition-colors";
+                tr.className = "hover:bg-slate-500/10 transition-colors";
 
-                tr.innerHTML = `
-                    <!-- Nome da Peça Editável -->
-                    <td class="py-2.5 px-3">
-                        <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)"
-                            class="w-full bg-slate-950 border border-slate-700 hover:border-cyan-400 focus:border-cyan-400 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none transition-all">
-                    </td>
-
-                    <!-- Estoque Atual -->
-                    <td class="py-2.5 px-2">
-                        <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)"
-                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-lg py-1 text-xs font-bold text-cyan-300 focus:outline-none">
-                    </td>
-
-                    <!-- Qtd Entrada -->
-                    <td class="py-2.5 px-2">
-                        <input type="number" min="0" value="${item.imported}" onchange="updateFieldValue(${index}, 'imported', this.value)"
-                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-lg py-1 text-xs font-semibold text-slate-300 focus:outline-none">
-                    </td>
-
-                    <!-- Saídas (Consumo Anual) -->
-                    <td class="py-2.5 px-2">
-                        <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)"
-                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-neon-magenta rounded-lg py-1 text-xs font-bold text-neon-magenta focus:outline-none">
-                    </td>
-
-                    <!-- Consumo Diário Calculado -->
-                    <td class="py-2.5 px-2 text-center text-xs font-medium text-slate-400">
-                        ${dailyAvg} /dia
-                    </td>
-
-                    <!-- Cobertura Estimada -->
-                    <td class="py-2.5 px-2 text-center">
-                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-neon-magenta/20 text-neon-magenta border border-neon-magenta/40' : 'bg-slate-800 text-neon-green'}">
-                            ${coverage}
-                        </span>
-                    </td>
-
-                    <!-- Qtd Solicitada -->
-                    <td class="py-2.5 px-2">
-                        <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)"
-                            class="w-full text-center bg-slate-950 border border-cyan-500/60 focus:border-neon-cyan rounded-lg py-1 text-xs font-black text-neon-cyan focus:outline-none shadow-neon-cyan">
-                    </td>
-
-                    <!-- Valor Unitário (US$) -->
-                    <td class="py-2.5 px-2">
-                        <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)"
-                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-neon-green rounded-lg py-1 text-xs font-bold text-neon-green focus:outline-none">
-                    </td>
-
-                    <!-- Total Item (Calculado Auto) -->
-                    <td class="py-2.5 px-3 text-right font-black text-xs text-neon-cyan">
-                        US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </td>
-
-                    <!-- Excluir Peça -->
-                    <td class="py-2.5 px-2 text-center">
-                        <button onclick="deleteRow(${index})" class="text-slate-500 hover:text-neon-magenta transition-colors" title="Excluir Item">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                `;
+                if (isAuthorized) {
+                    tr.innerHTML = `
+                        <td class="py-2 px-3">
+                            <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full input-bg rounded-lg px-2 py-1 text-xs font-bold focus:outline-none focus:border-cyan-400">
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-cyan-400 focus:outline-none">
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="number" min="0" value="${item.imported}" onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-semibold focus:outline-none">
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-neon-magenta focus:outline-none">
+                        </td>
+                        <td class="py-2 px-2 text-center text-xs font-medium text-slate-400">${dailyAvg} /d</td>
+                        <td class="py-2 px-2 text-center">
+                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-pink-500/20 text-neon-magenta border border-pink-500/40' : 'bg-emerald-500/10 text-emerald-400'}">${coverage}</span>
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-black text-neon-cyan focus:outline-none border-cyan-500/50 shadow-neon-cyan">
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-emerald-400 focus:outline-none">
+                        </td>
+                        <td class="py-2 px-3 text-right font-black text-xs text-neon-cyan">
+                            US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                        <td class="py-2 px-2 text-center">
+                            <button onclick="deleteRow(${index})" class="text-slate-400 hover:text-neon-magenta transition-colors" title="Excluir Peça">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-bold text-slate-100">${item.name}</td>
+                        <td class="py-3 px-3 text-center font-bold text-cyan-400">${item.stock}</td>
+                        <td class="py-3 px-3 text-center text-slate-300">${item.imported}</td>
+                        <td class="py-3 px-3 text-center font-bold text-neon-magenta">${item.annualConsumption}</td>
+                        <td class="py-3 px-3 text-center text-xs text-slate-400">${dailyAvg} /dia</td>
+                        <td class="py-3 px-3 text-center">
+                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-pink-500/20 text-neon-magenta border border-pink-500/40' : 'bg-emerald-500/10 text-emerald-400'}">${coverage}</span>
+                        </td>
+                        <td class="py-3 px-3 text-center font-black text-neon-cyan">${item.requested}</td>
+                        <td class="py-3 px-3 text-center font-bold text-emerald-400">US$ ${item.unitPrice.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-right font-black text-neon-cyan">
+                            US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                        <td class="py-3 px-2 text-center">
+                            <i data-lucide="lock" class="w-4 h-4 text-slate-500 inline-block" title="Faça login para editar"></i>
+                        </td>
+                    `;
+                }
 
                 tbody.appendChild(tr);
             });
@@ -570,7 +724,7 @@
                             borderWidth: 1.5
                         },
                         {
-                            label: 'Saídas (Consumo 1 Ano)',
+                            label: 'Saídas (1 Ano)',
                             data: consumptionData,
                             backgroundColor: 'rgba(255, 0, 127, 0.7)',
                             borderColor: '#ff007f',
@@ -591,7 +745,7 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: isDarkMode ? '#e2e8f0' : '#0f172a',
+                                color: isDarkMode ? '#f8fafc' : '#0f172a',
                                 font: { size: 11, weight: 'bold' }
                             }
                         }
@@ -599,11 +753,11 @@
                     scales: {
                         x: {
                             ticks: { color: isDarkMode ? '#94a3b8' : '#475569', font: { size: 10 } },
-                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.5)' }
+                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.6)' }
                         },
                         y: {
                             ticks: { color: isDarkMode ? '#94a3b8' : '#475569' },
-                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.5)' }
+                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.6)' }
                         }
                     }
                 }
