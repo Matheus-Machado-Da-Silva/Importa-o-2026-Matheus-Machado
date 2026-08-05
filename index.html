@@ -17,30 +17,61 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
    <style>
-    /* Transição suave ao trocar de tema */
-    body {
-        transition: filter 0.3s ease, background-color 0.3s ease;
-    }
+    /* RESET E PADRÃO: Layout limpo */
+body {
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease;
+}
 
-    /* ESTÉTICA MODO CLARO ORIGINAL (Comportamento Padrão) */
-    body.light-mode {
-        background-color: #f8fafc !important;
-        color: #0f172a !important;
-    }
+/* 
+ * ESTÉTICA MODO CLARO (PADRÃO)
+ * Força o fundo branco e textos escuros nas classes Tailwind
+ */
+body.light-mode {
+    background-color: #f8fafc !important; /* bg-slate-50 original */
+    color: #1e293b !important; /* text-slate-800 */
+}
 
-    /* MODO ESCURO REAL: Quando a classe 'light-mode' é removida */
-    body:not(.light-mode) {
-        filter: invert(0.93) hue-rotate(180deg) !important;
-        background-color: #f8fafc !important;
-    }
+/* Força os cards e o header brancos no modo claro */
+body.light-mode header,
+body.light-mode .card-bg,
+body.light-mode div.bg-white {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
 
-    /* Correção para imagens, ícones e gráficos não ficarem com cores invertidas estranhas no modo escuro */
-    body:not(.light-mode) img,
-    body:not(.light-mode) canvas,
-    body:not(.light-mode) svg,
-    body:not(.light-mode) .lucide {
-        filter: invert(1) hue-rotate(180deg) !important;
-    }
+/* 
+ * ESTÉTICA MODO ESCURO REAL (Quando remove .light-mode)
+ * Força cores escuras de verdade sem filtros
+ */
+body:not(.light-mode) {
+    background-color: #0f172a !important; /* Azul escuro Slate-900 */
+    color: #f1f5f9 !important; /* text-slate-100 */
+}
+
+/* Cards e Header Escuros (Slate-800) */
+body:not(.light-mode) header,
+body:not(.light-mode) .card-bg,
+body:not(.light-mode) div.bg-white {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* Correção de textos em cards e título para ficarem brancos */
+body:not(.light-mode) h1,
+body:not(.light-mode) h2,
+body:not(.light-mode) h3,
+body:not(.light-mode) p,
+body:not(.light-mode) span {
+    color: #f1f5f9 !important;
+}
+
+/* Botões específicos no header e badges de fabricante (para não ficarem brancos) */
+body:not(.light-mode) .text-slate-600,
+body:not(.light-mode) .text-slate-700 {
+    color: #e2e8f0 !important;
+}
 </style>
                 <div>
                     <h1 class="font-black text-xl tracking-wider text-blue-600 flex items-center gap-2">
