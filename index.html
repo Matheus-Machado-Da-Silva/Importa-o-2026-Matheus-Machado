@@ -362,12 +362,13 @@
             });
         });
 
-        function toggleTheme() {
-            const body = document.getElementById("appBody");
-            const themeText = document.getElementById("themeText");
-            body.classList.toggle("light-mode");
-            themeText.innerText = body.classList.contains("light-mode") ? "Escuro" : "Claro";
-        }
+        ffunction toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    const themeText = document.getElementById("themeText");
+    if (themeText) {
+        themeText.innerText = isDark ? "Claro" : "Escuro";
+    }
+}
 
         function toggleAuth() {
             isAuthorized = !isAuthorized;
