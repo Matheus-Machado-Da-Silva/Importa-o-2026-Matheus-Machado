@@ -337,7 +337,7 @@
                 items: []
             }
         };
-
+        let selectedPartIndex = null;
         let currentFab = "ODEWAY";
         let isAuthorized = true;
         let chartInstance = null;
@@ -414,6 +414,7 @@
         }
 
         function changeFabricante(fab) {
+            selectedPartIndex = null;
             currentFab = fab;
             document.getElementById("currentFabBadge").innerText = fab;
             document.getElementById("currentFabTitle").innerText = fab;
@@ -502,14 +503,30 @@
             });
         }
 
-        function updateChart(items) {
-            if (!chartInstance) return;
-            chartInstance.data.labels = items.map(i => i.name.length > 15 ? i.name.substring(0, 15) + '...' : i.name);
-            chartInstance.data.datasets[0].data = items.map(i => i.stock);
-            chartInstance.data.datasets[1].data = items.map(i => i.annualConsumption);
-            chartInstance.data.datasets[2].data = items.map(i => i.requested);
-            chartInstance.update();
-        }
+        function selectPartForChart(index) {
+    if (selectedPartIndex === index) {
+        selectedPartIndex = null;
+    } else {
+        selectedPartIndex = index;
+    }
+    const items = DATABASE[currentFab]?.items || [];
+    updateChart(items);
+}
+
+function updateChart(items) {
+    if (!chartInstance) return;
+
+    let displayItems = items;
+    if (selectedPartIndex !== null && items[selectedPartIndex]) {
+        displayItems = [items[selectedPartIndex]];
+    }
+
+    chartInstance.data.labels = displayItems.map(i => i.name.length > 15 ? i.name.substring(0, 15) + '...' : i.name);
+    chartInstance.data.datasets[0].data = displayItems.map(i => i.stock);
+    chartInstance.data.datasets[1].data = displayItems.map(i => i.annualConsumption);
+    chartInstance.data.datasets[2].data = displayItems.map(i => i.requested);
+    chartInstance.update();
+}
 
         function renderDashboard() {
             const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
@@ -569,7 +586,12 @@
                 const disabledAttr = !isAuthorized ? "disabled" : "";
 
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+tr.className = "hover:bg-slate-50 transition border-b border-slate-100 cursor-pointer";
+
+tr.onclick = (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.closest('button')) return;
+    selectPartForChart(index);
+};
 
                 tr.innerHTML = `
                     <td class="p-3">
