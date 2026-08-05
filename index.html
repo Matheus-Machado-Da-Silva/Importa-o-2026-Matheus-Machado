@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Neon de Importação de Peças</title>
+    <title>Dashboard de Importação de Peças</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,11 +19,6 @@
                             yellow: '#ffe600',
                             purple: '#b500ff'
                         }
-                    },
-                    boxShadow: {
-                        'neon-cyan': '0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.05)',
-                        'neon-green': '0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 15px rgba(57, 255, 20, 0.05)',
-                        'neon-magenta': '0 0 15px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.05)',
                     }
                 }
             }
@@ -34,7 +29,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Dark Theme Styles */
+        /* Dark Theme Styles (Efeitos Visuais Exclusivos do Modo Escuro) */
         html.dark body {
             background-color: #020617;
             color: #f8fafc;
@@ -52,63 +47,72 @@
             color: #ffffff;
             border-color: #334155;
         }
+        html.dark .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.35), inset 0 0 10px rgba(0, 243, 255, 0.05);
+        }
+        html.dark .neon-glow-green {
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.35), inset 0 0 10px rgba(57, 255, 20, 0.05);
+        }
+        html.dark .neon-glow-magenta {
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.35), inset 0 0 10px rgba(255, 0, 127, 0.05);
+        }
+        html.dark .neon-txt-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); color: #00f3ff; }
+        html.dark .neon-txt-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); color: #22c55e; }
+        html.dark .neon-txt-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); color: #ff007f; }
 
-        /* Light Theme Styles */
+        /* Light Theme Styles (Modo Claro Corporativo Limpo e Sem Efeitos) */
         html:not(.dark) body {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: #0f172a;
         }
         html:not(.dark) .card-bg {
             background-color: #ffffff;
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-color: #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         }
         html:not(.dark) .table-head {
-            background-color: #e2e8f0;
-            color: #334155;
+            background-color: #f1f5f9;
+            color: #475569;
         }
         html:not(.dark) .input-bg {
             background-color: #ffffff;
             color: #0f172a;
             border-color: #cbd5e1;
         }
-        html:not(.dark) .text-slate-100, html:not(.dark) .text-white {
-            color: #0f172a !important;
+        html:not(.dark) .neon-glow-cyan,
+        html:not(.dark) .neon-glow-green,
+        html:not(.dark) .neon-glow-magenta {
+            box-shadow: none !important;
         }
-        html:not(.dark) .text-slate-400 {
-            color: #64748b !important;
-        }
-        html:not(.dark) header {
-            background-color: rgba(255, 255, 255, 0.9) !important;
-            border-color: #cbd5e1 !important;
-        }
+        html:not(.dark) .neon-txt-cyan { text-shadow: none !important; color: #0284c7 !important; }
+        html:not(.dark) .neon-txt-green { text-shadow: none !important; color: #16a34a !important; }
+        html:not(.dark) .neon-txt-magenta { text-shadow: none !important; color: #d97706 !important; }
 
-        /* Neon Text & Border Utility */
-        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); color: #00f3ff; }
-        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); color: #22c55e; }
-        .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.5); color: #ff007f; }
+        html:not(.dark) text, html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, html:not(.dark) span {
+            color: inherit;
+        }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #00f3ff; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #0284c7; border-radius: 3px; }
     </style>
 </head>
 <body class="transition-colors duration-300 min-h-screen font-sans antialiased">
 
     <!-- Header Navigation -->
-    <header class="card-bg border-b backdrop-blur sticky top-0 z-40 transition-colors duration-300">
+    <header class="card-bg border-b sticky top-0 z-40 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
             <!-- Brand Logo -->
             <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-cyan-500/10 border border-cyan-500/50 rounded-xl shadow-neon-cyan">
-                    <i data-lucide="zap" class="w-6 h-6 text-neon-cyan"></i>
+                <div class="p-2.5 bg-blue-500/10 dark:bg-cyan-500/10 border border-blue-500/30 dark:border-cyan-500/50 rounded-xl neon-glow-cyan">
+                    <i data-lucide="package" class="w-6 h-6 text-blue-600 dark:text-neon-cyan"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-wide neon-text-cyan flex items-center gap-2">
-                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-pink-500 text-neon-magenta">NEON PRO</span>
+                    <h1 class="font-extrabold text-xl tracking-wide text-slate-900 dark:text-cyan-400 neon-txt-cyan flex items-center gap-2">
+                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 font-semibold">PRO</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Gestão Dinâmica de Peças & Importação</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Gestão Dinâmica de Peças & Importação</p>
                 </div>
             </div>
 
@@ -116,28 +120,28 @@
             <div class="flex items-center space-x-3">
                 
                 <!-- Manufacturer Select Dropdown -->
-                <div class="flex items-center space-x-2 bg-slate-800/20 border border-cyan-500/40 px-3 py-1.5 rounded-xl shadow-neon-cyan">
-                    <i data-lucide="factory" class="w-4 h-4 text-neon-cyan"></i>
-                    <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-bold text-neon-cyan focus:outline-none cursor-pointer">
-                        <option value="ODEWAY" class="bg-slate-900 text-white">ODEWAY</option>
-                        <option value="ESWING" class="bg-slate-900 text-white">ESWING</option>
-                        <option value="CHIC ROBOT" class="bg-slate-900 text-white">CHIC ROBOT</option>
-                        <option value="YY (YAN-YANG)" class="bg-slate-900 text-white">YY (YAN-YANG)</option>
-                        <option value="JGNE" class="bg-slate-900 text-white">JGNE</option>
-                        <option value="ZAMWHEI" class="bg-slate-900 text-white">ZAMWHEI</option>
+                <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/40 border border-slate-300 dark:border-cyan-500/40 px-3 py-1.5 rounded-xl neon-glow-cyan">
+                    <i data-lucide="factory" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
+                    <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-bold text-slate-800 dark:text-neon-cyan focus:outline-none cursor-pointer">
+                        <option value="ODEWAY" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ODEWAY</option>
+                        <option value="ESWING" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ESWING</option>
+                        <option value="CHIC ROBOT" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">CHIC ROBOT</option>
+                        <option value="YY (YAN-YANG)" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">YY (YAN-YANG)</option>
+                        <option value="JGNE" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">JGNE</option>
+                        <option value="ZAMWHEI" class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">ZAMWHEI</option>
                     </select>
                 </div>
 
                 <!-- Auth/Login Status Button -->
-                <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center space-x-2 bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 hover:border-amber-400 transition-all shadow-md">
-                    <i data-lucide="lock" class="w-4 h-4 text-amber-400" id="authIcon"></i>
+                <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center space-x-2 bg-amber-50 dark:bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-400 hover:border-amber-500 transition-all shadow-sm">
+                    <i data-lucide="lock" class="w-4 h-4 text-amber-600 dark:text-amber-400" id="authIcon"></i>
                     <span id="authText">Login / Desbloquear</span>
                 </button>
 
                 <!-- Light/Dark Mode Switcher -->
-                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-800 dark:bg-slate-800 border border-slate-700 hover:border-cyan-400 p-2.5 rounded-xl transition-all shadow-md">
-                    <i id="themeIcon" data-lucide="sun" class="w-4 h-4 text-neon-yellow"></i>
-                    <span id="themeText" class="text-xs font-bold text-slate-200">Claro</span>
+                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-cyan-400 p-2.5 rounded-xl transition-all shadow-sm">
+                    <i id="themeIcon" data-lucide="sun" class="w-4 h-4 text-amber-500 dark:text-neon-yellow"></i>
+                    <span id="themeText" class="text-xs font-bold text-slate-700 dark:text-slate-200">Claro</span>
                 </button>
 
             </div>
@@ -148,21 +152,21 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
         <!-- Title Banner -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between card-bg border rounded-2xl p-5 shadow-neon-cyan gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between card-bg border rounded-2xl p-5 neon-glow-cyan gap-4">
             <div>
-                <span class="text-xs px-3 py-1 rounded-full bg-cyan-500/10 text-neon-cyan border border-cyan-500/40 font-bold tracking-wider uppercase" id="currentFabBadge">ODEWAY</span>
-                <h2 class="text-2xl font-black text-white mt-2 flex items-center gap-2">
-                    Fabricante: <span id="manufacturerTitle" class="neon-text-cyan">ODEWAY</span>
+                <span class="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-cyan-500/10 text-blue-700 dark:text-neon-cyan border border-blue-300 dark:border-cyan-500/40 font-bold tracking-wider uppercase" id="currentFabBadge">ODEWAY</span>
+                <h2 class="text-2xl font-black text-slate-900 dark:text-white mt-2 flex items-center gap-2">
+                    Fabricante: <span id="manufacturerTitle" class="text-blue-600 dark:text-neon-cyan neon-txt-cyan">ODEWAY</span>
                 </h2>
             </div>
             
             <div class="flex items-center space-x-3">
-                <span id="lockBadge" class="text-xs px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5">
+                <span id="lockBadge" class="text-xs px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 font-bold flex items-center gap-1.5">
                     <i data-lucide="shield-alert" class="w-4 h-4"></i>
                     <span>Modo Somente Leitura</span>
                 </span>
                 
-                <button id="addBtn" onclick="addNewRow()" disabled class="opacity-50 cursor-not-allowed flex items-center justify-center space-x-2 bg-emerald-500/10 border border-emerald-500 text-emerald-400 px-4 py-2 rounded-xl font-bold text-sm transition-all shadow-neon-green">
+                <button id="addBtn" onclick="addNewRow()" disabled class="opacity-50 cursor-not-allowed flex items-center justify-center space-x-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-500 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl font-bold text-sm transition-all neon-glow-green">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Adicionar Peça</span>
                 </button>
@@ -174,25 +178,25 @@
             
             <!-- Card 1: Último Pedido -->
             <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Último Pedido (P.O)</span>
-                    <i data-lucide="history" class="w-4 h-4 text-neon-cyan"></i>
+                    <i data-lucide="history" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-black text-white" id="lastPoValue">US$ 0,00</div>
-                    <div class="text-xs text-slate-400 mt-1" id="lastPoDate">Referência Histórica</div>
+                    <div class="text-2xl font-black text-slate-900 dark:text-white" id="lastPoValue">US$ 0,00</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="lastPoDate">Referência Histórica</div>
                 </div>
             </div>
 
             <!-- Card 2: Pedido Atual -->
-            <div class="card-bg border border-cyan-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-neon-cyan">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+            <div class="card-bg border border-blue-300 dark:border-cyan-500/60 rounded-2xl p-5 flex flex-col justify-between neon-glow-cyan">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Pedido Atual (Calculado)</span>
-                    <i data-lucide="shopping-cart" class="w-4 h-4 text-neon-cyan"></i>
+                    <i data-lucide="shopping-cart" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-black neon-text-cyan" id="currentPoValue">US$ 0,00</div>
-                    <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+                    <div class="text-2xl font-black text-blue-600 dark:text-neon-cyan neon-txt-cyan" id="currentPoValue">US$ 0,00</div>
+                    <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
                         <i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i>
                         <span>Recálculo em Tempo Real</span>
                     </div>
@@ -201,25 +205,25 @@
 
             <!-- Card 3: Consumo Médio Diário -->
             <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Consumo Médio Diário</span>
-                    <i data-lucide="trending-up" class="w-4 h-4 text-neon-magenta"></i>
+                    <i data-lucide="trending-up" class="w-4 h-4 text-amber-600 dark:text-neon-magenta"></i>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-black neon-text-magenta" id="avgDailyConsumption">0.00 un/dia</div>
-                    <div class="text-xs text-slate-400 mt-1">Soma de Saídas / 365 dias</div>
+                    <div class="text-2xl font-black text-amber-600 dark:text-neon-magenta neon-txt-magenta" id="avgDailyConsumption">0.00 un/dia</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Soma de Saídas / 365 dias</div>
                 </div>
             </div>
 
             <!-- Card 4: Cobertura de Estoque -->
             <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Cobertura do Estoque</span>
-                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-black neon-text-green" id="stockCoverageDays">0 Dias</div>
-                    <div class="text-xs text-slate-400 mt-1">Duração estimada do estoque</div>
+                    <div class="text-2xl font-black text-emerald-600 dark:text-neon-green neon-txt-green" id="stockCoverageDays">0 Dias</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Duração estimada do estoque</div>
                 </div>
             </div>
 
@@ -230,35 +234,35 @@
 
             <!-- Ranking Panel (1/3) -->
             <div class="card-bg border rounded-2xl p-5 flex flex-col justify-between space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-700/50 pb-3">
-                    <h3 class="font-bold text-white flex items-center space-x-2">
-                        <i data-lucide="trophy" class="w-4 h-4 text-neon-yellow"></i>
-                        <span>Ranking Neon de Consumo</span>
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/50 pb-3">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                        <i data-lucide="trophy" class="w-4 h-4 text-amber-500 dark:text-neon-yellow"></i>
+                        <span>Ranking de Consumo</span>
                     </h3>
-                    <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Saídas 1 Ano</span>
+                    <span class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-semibold">Saídas 1 Ano</span>
                 </div>
 
                 <div class="space-y-4 flex-grow flex flex-col justify-center">
                     <!-- Mais Consumido -->
-                    <div class="bg-slate-950/40 border border-emerald-500/40 rounded-xl p-4 shadow-neon-green">
+                    <div class="bg-emerald-50/50 dark:bg-slate-950/40 border border-emerald-300 dark:border-emerald-500/40 rounded-xl p-4 neon-glow-green">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
+                            <span class="text-xs font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> PEÇA MAIS CONSUMIDA
                             </span>
-                            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-emerald-800 dark:text-emerald-400 bg-emerald-200/60 dark:bg-emerald-500/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
                         </div>
-                        <div class="text-sm font-bold text-white truncate" id="mostConsumedName">-</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white truncate" id="mostConsumedName">-</div>
                     </div>
 
                     <!-- Menos Consumido -->
-                    <div class="bg-slate-950/40 border border-pink-500/40 rounded-xl p-4 shadow-neon-magenta">
+                    <div class="bg-rose-50/50 dark:bg-slate-950/40 border border-rose-300 dark:border-pink-500/40 rounded-xl p-4 neon-glow-magenta">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black text-neon-magenta flex items-center gap-1">
+                            <span class="text-xs font-black text-rose-700 dark:text-neon-magenta flex items-center gap-1">
                                 <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i> PEÇA MENOS CONSUMIDA
                             </span>
-                            <span class="text-xs font-black text-neon-magenta bg-pink-500/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-rose-800 dark:text-neon-magenta bg-rose-200/60 dark:bg-pink-500/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
                         </div>
-                        <div class="text-sm font-bold text-white truncate" id="leastConsumedName">-</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white truncate" id="leastConsumedName">-</div>
                     </div>
                 </div>
             </div>
@@ -266,8 +270,8 @@
             <!-- Chart Section (2/3) -->
             <div class="lg:col-span-2 card-bg border rounded-2xl p-5">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-white flex items-center space-x-2">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-neon-cyan"></i>
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-600 dark:text-neon-cyan"></i>
                         <span>Comparativo (Estoque vs Saídas vs Solicitado)</span>
                     </h3>
                 </div>
@@ -279,16 +283,16 @@
         </div>
 
         <!-- Dynamic Editable Table -->
-        <div class="card-bg border rounded-2xl overflow-hidden shadow-neon-cyan">
-            <div class="p-5 border-b border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="card-bg border rounded-2xl overflow-hidden neon-glow-cyan">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h3 class="font-bold text-lg text-white flex items-center space-x-2">
-                        <i data-lucide="table" class="w-5 h-5 text-neon-cyan"></i>
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center space-x-2">
+                        <i data-lucide="table" class="w-5 h-5 text-blue-600 dark:text-neon-cyan"></i>
                         <span>Tabela Completa de Peças</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
                 </div>
-                <div id="tableEditStatus" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                <div id="tableEditStatus" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 flex items-center gap-1.5">
                     <i data-lucide="lock" class="w-3.5 h-3.5"></i>
                     <span>Modo Leitura (Bloqueado)</span>
                 </div>
@@ -296,7 +300,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="table-head text-xs uppercase font-extrabold border-b border-slate-700">
+                    <thead class="table-head text-xs uppercase font-extrabold border-b border-slate-200 dark:border-slate-700">
                         <tr>
                             <th class="py-3.5 px-4 min-w-[220px]">Nome da Peça</th>
                             <th class="py-3.5 px-3 text-center w-28">Estoque Actual</th>
@@ -310,7 +314,7 @@
                             <th class="py-3.5 px-3 text-center w-16">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="partsTableBody" class="divide-y divide-slate-700/40">
+                    <tbody id="partsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700/40">
                         <!-- Dynamic Rows Injected via JS -->
                     </tbody>
                 </table>
@@ -321,34 +325,34 @@
 
     <!-- Login Modal -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="card-bg border border-cyan-500/50 rounded-2xl p-6 max-w-md w-full shadow-neon-cyan space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-neon-cyan"></i>
+        <div class="card-bg border border-blue-400 dark:border-cyan-500/50 rounded-2xl p-6 max-w-md w-full neon-glow-cyan space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 dark:text-neon-cyan"></i>
                     <span>Autenticação de Usuário</span>
                 </h3>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-white">
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             
-            <p class="text-xs text-slate-400">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
                 Digite seu e-mail e senha autorizados para liberar o modo de edição completa e exclusão de itens.
             </p>
 
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">E-mail do Usuário</label>
-                    <input type="email" id="loginEmail" value="matheussmmacahdo@outlook.com" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-cyan-400">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">E-mail do Usuário</label>
+                    <input type="email" id="loginEmail" value="matheussmmacahdo@outlook.com" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Senha (Padrão: admin)</label>
-                    <input type="password" id="loginPassword" value="admin" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-cyan-400">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Senha (Padrão: admin)</label>
+                    <input type="password" id="loginPassword" value="admin" class="w-full input-bg rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
                 </div>
             </div>
 
             <div class="flex items-center space-x-3 pt-2">
-                <button onclick="performLogin()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-2.5 rounded-xl text-sm transition-all shadow-neon-cyan">
+                <button onclick="performLogin()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 font-black py-2.5 rounded-xl text-sm transition-all neon-glow-cyan">
                     Entrar e Liberar Edição
                 </button>
             </div>
@@ -491,27 +495,27 @@
             const tableEditStatus = document.getElementById("tableEditStatus");
 
             if (isAuthorized) {
-                authBtn.className = "flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-400 hover:border-emerald-400 transition-all shadow-neon-green";
+                authBtn.className = "flex items-center space-x-2 bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-500 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-400 hover:border-emerald-600 transition-all neon-glow-green";
                 authIcon.setAttribute("data-lucide", "unlock");
                 authText.innerText = "Sair (Modo Edição)";
 
-                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 font-bold flex items-center gap-1.5";
+                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400 dark:border-emerald-500/40 font-bold flex items-center gap-1.5";
                 lockBadge.innerHTML = `<i data-lucide="unlock" class="w-4 h-4"></i><span>Modo Edição Ativo</span>`;
 
-                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5";
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400 dark:border-emerald-500/40 flex items-center gap-1.5";
                 tableEditStatus.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>Edição Total Liberada</span>`;
 
                 addBtn.disabled = false;
                 addBtn.classList.remove("opacity-50", "cursor-not-allowed");
             } else {
-                authBtn.className = "flex items-center space-x-2 bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 hover:border-amber-400 transition-all shadow-md";
+                authBtn.className = "flex items-center space-x-2 bg-amber-50 dark:bg-slate-800 border border-amber-500/50 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-400 hover:border-amber-500 transition-all shadow-sm";
                 authIcon.setAttribute("data-lucide", "lock");
                 authText.innerText = "Login / Desbloquear";
 
-                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5";
+                lockBadge.className = "text-xs px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 font-bold flex items-center gap-1.5";
                 lockBadge.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i><span>Modo Somente Leitura</span>`;
 
-                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5";
+                tableEditStatus.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 flex items-center gap-1.5";
                 tableEditStatus.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i><span>Modo Leitura (Bloqueado)</span>`;
 
                 addBtn.disabled = true;
@@ -636,58 +640,58 @@
                 const totalItemPrice = (item.requested * item.unitPrice);
 
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-500/10 transition-colors";
+                tr.className = "hover:bg-slate-100 dark:hover:bg-slate-500/10 transition-colors";
 
                 if (isAuthorized) {
                     tr.innerHTML = `
                         <td class="py-2 px-3">
-                            <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full input-bg rounded-lg px-2 py-1 text-xs font-bold focus:outline-none focus:border-cyan-400">
+                            <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full input-bg rounded-lg px-2 py-1 text-xs font-bold focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400">
                         </td>
                         <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-cyan-400 focus:outline-none">
+                            <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-blue-600 dark:text-cyan-400 focus:outline-none">
                         </td>
                         <td class="py-2 px-2">
                             <input type="number" min="0" value="${item.imported}" onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-semibold focus:outline-none">
                         </td>
                         <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-neon-magenta focus:outline-none">
+                            <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-amber-600 dark:text-neon-magenta focus:outline-none">
                         </td>
-                        <td class="py-2 px-2 text-center text-xs font-medium text-slate-400">${dailyAvg} /d</td>
+                        <td class="py-2 px-2 text-center text-xs font-medium text-slate-500 dark:text-slate-400">${dailyAvg} /d</td>
                         <td class="py-2 px-2 text-center">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-pink-500/20 text-neon-magenta border border-pink-500/40' : 'bg-emerald-500/10 text-emerald-400'}">${coverage}</span>
+                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-rose-100 dark:bg-pink-500/20 text-rose-700 dark:text-neon-magenta border border-rose-300 dark:border-pink-500/40' : 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400'}">${coverage}</span>
                         </td>
                         <td class="py-2 px-2">
-                            <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-black text-neon-cyan focus:outline-none border-cyan-500/50 shadow-neon-cyan">
+                            <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-black text-blue-600 dark:text-neon-cyan focus:outline-none border-blue-400 dark:border-cyan-500/50 neon-glow-cyan">
                         </td>
                         <td class="py-2 px-2">
-                            <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-emerald-400 focus:outline-none">
+                            <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-full text-center input-bg rounded-lg py-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none">
                         </td>
-                        <td class="py-2 px-3 text-right font-black text-xs text-neon-cyan">
+                        <td class="py-2 px-3 text-right font-black text-xs text-blue-600 dark:text-neon-cyan">
                             US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td class="py-2 px-2 text-center">
-                            <button onclick="deleteRow(${index})" class="text-slate-400 hover:text-neon-magenta transition-colors" title="Excluir Peça">
+                            <button onclick="deleteRow(${index})" class="text-slate-400 hover:text-rose-600 dark:hover:text-neon-magenta transition-colors" title="Excluir Peça">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </td>
                     `;
                 } else {
                     tr.innerHTML = `
-                        <td class="py-3 px-4 font-bold text-slate-100">${item.name}</td>
-                        <td class="py-3 px-3 text-center font-bold text-cyan-400">${item.stock}</td>
-                        <td class="py-3 px-3 text-center text-slate-300">${item.imported}</td>
-                        <td class="py-3 px-3 text-center font-bold text-neon-magenta">${item.annualConsumption}</td>
-                        <td class="py-3 px-3 text-center text-xs text-slate-400">${dailyAvg} /dia</td>
+                        <td class="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">${item.name}</td>
+                        <td class="py-3 px-3 text-center font-bold text-blue-600 dark:text-cyan-400">${item.stock}</td>
+                        <td class="py-3 px-3 text-center text-slate-700 dark:text-slate-300">${item.imported}</td>
+                        <td class="py-3 px-3 text-center font-bold text-amber-600 dark:text-neon-magenta">${item.annualConsumption}</td>
+                        <td class="py-3 px-3 text-center text-xs text-slate-500 dark:text-slate-400">${dailyAvg} /dia</td>
                         <td class="py-3 px-3 text-center">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-pink-500/20 text-neon-magenta border border-pink-500/40' : 'bg-emerald-500/10 text-emerald-400'}">${coverage}</span>
+                            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-rose-100 dark:bg-pink-500/20 text-rose-700 dark:text-neon-magenta border border-rose-300 dark:border-pink-500/40' : 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400'}">${coverage}</span>
                         </td>
-                        <td class="py-3 px-3 text-center font-black text-neon-cyan">${item.requested}</td>
-                        <td class="py-3 px-3 text-center font-bold text-emerald-400">US$ ${item.unitPrice.toFixed(2)}</td>
-                        <td class="py-3 px-3 text-right font-black text-neon-cyan">
+                        <td class="py-3 px-3 text-center font-black text-blue-600 dark:text-neon-cyan">${item.requested}</td>
+                        <td class="py-3 px-3 text-center font-bold text-emerald-700 dark:text-emerald-400">US$ ${item.unitPrice.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-right font-black text-blue-600 dark:text-neon-cyan">
                             US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td class="py-3 px-2 text-center">
-                            <i data-lucide="lock" class="w-4 h-4 text-slate-500 inline-block" title="Faça login para editar"></i>
+                            <i data-lucide="lock" class="w-4 h-4 text-slate-400 dark:text-slate-500 inline-block" title="Faça login para editar"></i>
                         </td>
                     `;
                 }
@@ -711,6 +715,8 @@
             const consumptionData = items.map(i => i.annualConsumption);
             const requestedData = items.map(i => i.requested);
 
+            const isDark = document.documentElement.classList.contains("dark");
+
             partsChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -719,22 +725,22 @@
                         {
                             label: 'Estoque Actual',
                             data: stockData,
-                            backgroundColor: 'rgba(100, 116, 139, 0.7)',
-                            borderColor: '#64748b',
+                            backgroundColor: isDark ? 'rgba(100, 116, 139, 0.7)' : 'rgba(148, 163, 184, 0.8)',
+                            borderColor: isDark ? '#64748b' : '#64748b',
                             borderWidth: 1.5
                         },
                         {
                             label: 'Saídas (1 Ano)',
                             data: consumptionData,
-                            backgroundColor: 'rgba(255, 0, 127, 0.7)',
-                            borderColor: '#ff007f',
+                            backgroundColor: isDark ? 'rgba(255, 0, 127, 0.7)' : 'rgba(217, 119, 6, 0.8)',
+                            borderColor: isDark ? '#ff007f' : '#b45309',
                             borderWidth: 1.5
                         },
                         {
                             label: 'Qtd Solicitada',
                             data: requestedData,
-                            backgroundColor: 'rgba(0, 243, 255, 0.7)',
-                            borderColor: '#00f3ff',
+                            backgroundColor: isDark ? 'rgba(0, 243, 255, 0.7)' : 'rgba(2, 132, 199, 0.8)',
+                            borderColor: isDark ? '#00f3ff' : '#0369a1',
                             borderWidth: 1.5
                         }
                     ]
@@ -745,19 +751,19 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: isDarkMode ? '#f8fafc' : '#0f172a',
+                                color: isDark ? '#f8fafc' : '#0f172a',
                                 font: { size: 11, weight: 'bold' }
                             }
                         }
                     },
                     scales: {
                         x: {
-                            ticks: { color: isDarkMode ? '#94a3b8' : '#475569', font: { size: 10 } },
-                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.6)' }
+                            ticks: { color: isDark ? '#94a3b8' : '#475569', font: { size: 10 } },
+                            grid: { color: isDark ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.8)' }
                         },
                         y: {
-                            ticks: { color: isDarkMode ? '#94a3b8' : '#475569' },
-                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.6)' }
+                            ticks: { color: isDark ? '#94a3b8' : '#475569' },
+                            grid: { color: isDark ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.8)' }
                         }
                     }
                 }
