@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Solicitação de Importação de Peças</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Dashboard Neon de Importação de Peças</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,81 +12,85 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#035485',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                        neon: {
+                            cyan: '#00f3ff',
+                            magenta: '#ff007f',
+                            green: '#39ff14',
+                            yellow: '#ffe600',
+                            purple: '#b500ff'
                         }
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.1)',
+                        'neon-green': '0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 15px rgba(57, 255, 20, 0.1)',
+                        'neon-magenta': '0 0 15px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.1)',
+                        'neon-purple': '0 0 15px rgba(181, 0, 255, 0.4)'
                     }
                 }
             }
         }
     </script>
-    <!-- Chart.js CDN -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* Neon Aesthetics */
+        .neon-border-cyan { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+        .neon-border-green { border-color: #39ff14; box-shadow: 0 0 10px rgba(57, 255, 20, 0.3); }
+        .neon-border-magenta { border-color: #ff007f; box-shadow: 0 0 10px rgba(255, 0, 127, 0.3); }
+        
+        .neon-text-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); color: #00f3ff; }
+        .neon-text-green { text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); color: #39ff14; }
+        .neon-text-magenta { text-shadow: 0 0 8px rgba(255, 0, 127, 0.6); color: #ff007f; }
+
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #00f3ff; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-950 dark:bg-slate-950 text-slate-100 transition-colors duration-300 min-h-screen font-sans antialiased">
 
-    <!-- Top Navigation Header -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Header & Navigation -->
+    <header class="bg-slate-900/90 dark:bg-slate-900/90 border-b border-cyan-500/30 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
             <div class="flex items-center space-x-3">
-                <div class="p-2 bg-brand-600/20 text-brand-500 rounded-lg">
-                    <i data-lucide="ship" class="w-6 h-6"></i>
+                <div class="p-2.5 bg-cyan-500/10 border border-cyan-500/50 rounded-xl shadow-neon-cyan">
+                    <i data-lucide="zap" class="w-6 h-6 text-neon-cyan"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight">Dashboard de Importação de Peças</h1>
-                    <p class="text-xs text-slate-400">Gestão de Peças & Planejamento de Estoque</p>
+                    <h1 class="font-extrabold text-xl tracking-wide neon-text-cyan flex items-center gap-2">
+                        IMPORT DYNAMICS <span class="text-xs px-2 py-0.5 rounded border border-magenta-500 text-neon-magenta">NEON v2.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Gestão Dinâmica e Editável de Estoque & Importação</p>
                 </div>
             </div>
 
-            <!-- Controls (Manufacturer & Auth Status) -->
+            <!-- Header Controls -->
             <div class="flex items-center space-x-4">
-                <!-- Manufacturer Select Dropdown -->
-                <div class="flex items-center space-x-2 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-lg">
-                    <i data-lucide="factory" class="w-4 h-4 text-brand-500"></i>
-                    <label for="manufacturerSelect" class="text-xs text-slate-400 font-medium">Fabricante:</label>
-                    <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-semibold text-slate-100 focus:outline-none cursor-pointer">
-                        <option value="ODEWAY" class="bg-slate-900">ODEWAY</option>
-                        <option value="ESWING" class="bg-slate-900">ESWING</option>
-                        <option value="CHIC ROBOT" class="bg-slate-900">CHIC ROBOT</option>
-                        <option value="YY (YAN-YANG)" class="bg-slate-900">YY (YAN-YANG)</option>
-                        <option value="JGNE" class="bg-slate-900">JGNE</option>
-                        <option value="ZAMWHEI" class="bg-slate-900">ZAMWHEI</option>
+                
+                <!-- Manufacturer Dropdown -->
+                <div class="flex items-center space-x-2 bg-slate-950/80 border border-cyan-500/40 px-3 py-1.5 rounded-xl shadow-neon-cyan">
+                    <i data-lucide="factory" class="w-4 h-4 text-neon-cyan"></i>
+                    <select id="manufacturerSelect" onchange="changeManufacturer(this.value)" class="bg-transparent text-sm font-bold text-neon-cyan focus:outline-none cursor-pointer">
+                        <option value="ODEWAY" class="bg-slate-900 text-white">ODEWAY</option>
+                        <option value="ESWING" class="bg-slate-900 text-white">ESWING</option>
+                        <option value="CHIC ROBOT" class="bg-slate-900 text-white">CHIC ROBOT</option>
+                        <option value="YY (YAN-YANG)" class="bg-slate-900 text-white">YY (YAN-YANG)</option>
+                        <option value="JGNE" class="bg-slate-900 text-white">JGNE</option>
+                        <option value="ZAMWHEI" class="bg-slate-900 text-white">ZAMWHEI</option>
                     </select>
                 </div>
 
-                <!-- User Mode / Permission Badge -->
-                <div id="authStatusBadge" class="flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
-                    <span id="lockIcon" class="text-amber-500"><i data-lucide="lock" class="w-4 h-4"></i></span>
-                    <span id="modeText" class="text-slate-300 font-medium">Somente Visualização</span>
-                    <button onclick="toggleUserAuth()" class="ml-2 text-slate-400 hover:text-white transition-colors" title="Alternar usuário">
-                        <i data-lucide="user-check" class="w-4 h-4"></i>
-                    </button>
-                </div>
+                <!-- Theme Toggle Button (Light/Dark) -->
+                <button onclick="toggleTheme()" class="flex items-center space-x-2 bg-slate-800 dark:bg-slate-800 border border-slate-700 hover:border-cyan-400 p-2 rounded-xl transition-all shadow-md">
+                    <i id="themeIcon" data-lucide="sun" class="w-5 h-5 text-neon-yellow"></i>
+                    <span id="themeText" class="text-xs font-semibold hidden sm:inline">Modo Claro</span>
+                </button>
+
             </div>
         </div>
     </header>
@@ -94,83 +98,71 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-        <!-- Banner / Header Status -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between bg-slate-900 border border-slate-800 rounded-xl p-5 gap-4">
+        <!-- Title Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-5 shadow-neon-cyan gap-4">
             <div>
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-400 font-semibold border border-brand-500/20" id="currentFabBadge">ODEWAY</span>
-                    <span class="text-xs text-slate-400">Análise e Gestão Anual de Suprimentos</span>
-                </div>
-                <h2 class="text-xl font-bold mt-1 text-slate-100" id="manufacturerTitle">Fabricante: ODEWAY</h2>
+                <span class="text-xs px-3 py-1 rounded-full bg-cyan-500/10 text-neon-cyan border border-cyan-500/40 font-bold tracking-wider uppercase" id="currentFabBadge">ODEWAY</span>
+                <h2 class="text-2xl font-black text-white mt-2 flex items-center gap-2">
+                    Painel do Fabricante: <span id="manufacturerTitle" class="neon-text-cyan">ODEWAY</span>
+                </h2>
             </div>
-            <div class="flex items-center space-x-3 text-xs text-slate-400 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/80">
-                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
-                <span>Usuário Autorizado de Edição: <strong class="text-slate-200">matheussmmacahdo@outlook.com</strong></span>
-            </div>
+            <button onclick="addNewRow()" class="flex items-center justify-center space-x-2 bg-neon-green/10 border border-neon-green text-neon-green hover:bg-neon-green/20 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-neon-green">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Adicionar Nova Peça</span>
+            </button>
         </div>
 
-        <!-- Top Metrics KPI Cards (4 Grid) -->
+        <!-- 4 Top KPI Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <!-- Card 1: Último Pedido -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-sm">
-                    <span>Último Pedido (P.O.)</span>
-                    <div class="p-2 bg-slate-800 rounded-lg text-slate-300">
-                        <i data-lucide="history" class="w-4 h-4"></i>
-                    </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-500/50 transition-all">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    <span>Último Pedido (P.O)</span>
+                    <i data-lucide="history" class="w-4 h-4 text-neon-cyan"></i>
                 </div>
-                <div class="mt-4">
-                    <div class="text-2xl font-bold text-slate-100" id="lastPoValue">US$ 20.808,00</div>
-                    <div class="text-xs text-slate-400 mt-1 flex items-center space-x-1">
-                        <i data-lucide="calendar" class="w-3 h-3"></i>
-                        <span id="lastPoDate">Referência Histórica</span>
+                <div class="mt-3">
+                    <div class="text-2xl font-black text-white" id="lastPoValue">US$ 0,00</div>
+                    <div class="text-xs text-slate-400 mt-1" id="lastPoDate">Referência Histórica</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Pedido Atual -->
+            <div class="bg-slate-900/80 border border-neon-cyan rounded-2xl p-5 flex flex-col justify-between shadow-neon-cyan">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    <span>Pedido Atual Calculado</span>
+                    <i data-lucide="shopping-cart" class="w-4 h-4 text-neon-cyan"></i>
+                </div>
+                <div class="mt-3">
+                    <div class="text-2xl font-black neon-text-cyan" id="currentPoValue">US$ 0,00</div>
+                    <div class="text-xs text-neon-green mt-1 flex items-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i>
+                        <span>Recálculo automático ativo</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 2: Pedido Atual Em Elaboração -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-brand-500">
-                <div class="flex items-center justify-between text-slate-400 text-sm">
-                    <span>Pedido Atual (Elaboração)</span>
-                    <div class="p-2 bg-brand-500/10 text-brand-400 rounded-lg">
-                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <div class="text-2xl font-bold text-brand-400" id="currentPoValue">US$ 5.800,00</div>
-                    <div class="text-xs text-slate-400 mt-1 flex items-center space-x-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3 text-emerald-400"></i>
-                        <span>Atualização em Tempo Real</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Consumo Médio Diário Geral -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-sm">
+            <!-- Card 3: Consumo Médio Diário -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-neon-magenta/50 transition-all">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
                     <span>Consumo Médio Diário</span>
-                    <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
-                        <i data-lucide="trending-up" class="w-4 h-4"></i>
-                    </div>
+                    <i data-lucide="trending-up" class="w-4 h-4 text-neon-magenta"></i>
                 </div>
-                <div class="mt-4">
-                    <div class="text-2xl font-bold text-amber-400" id="avgDailyConsumption">0.85 un/dia</div>
-                    <div class="text-xs text-slate-400 mt-1">Período de Análise: 365 dias</div>
+                <div class="mt-3">
+                    <div class="text-2xl font-black neon-text-magenta" id="avgDailyConsumption">0.00 un/dia</div>
+                    <div class="text-xs text-slate-400 mt-1">Soma de todas as saídas / 365</div>
                 </div>
             </div>
 
-            <!-- Card 4: Cobertura Estimada de Estoque -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
-                <div class="flex items-center justify-between text-slate-400 text-sm">
-                    <span>Cobertura Médio do Estoque</span>
-                    <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
-                        <i data-lucide="shield-alert" class="w-4 h-4"></i>
-                    </div>
+            <!-- Card 4: Cobertura Média de Estoque -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-neon-green/50 transition-all">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    <span>Cobertura do Estoque</span>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-neon-green"></i>
                 </div>
-                <div class="mt-4">
-                    <div class="text-2xl font-bold text-emerald-400" id="stockCoverageDays">142 Dias</div>
-                    <div class="text-xs text-slate-400 mt-1">Estimativa com base no consumo diário</div>
+                <div class="mt-3">
+                    <div class="text-2xl font-black neon-text-green" id="stockCoverageDays">0 Dias</div>
+                    <div class="text-xs text-slate-400 mt-1">Estimativa de Duração em dias</div>
                 </div>
             </div>
 
@@ -179,49 +171,47 @@
         <!-- Ranking Panels & Visual Chart Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- Ranking De Consumo (1/3) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <!-- Ranking Panel (1/3) -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h3 class="font-bold text-slate-200 flex items-center space-x-2">
-                        <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>
-                        <span>Ranking de Consumo (1 Ano)</span>
+                    <h3 class="font-bold text-white flex items-center space-x-2">
+                        <i data-lucide="trophy" class="w-4 h-4 text-neon-yellow"></i>
+                        <span>Ranking Neon de Consumo</span>
                     </h3>
-                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Consumo Anual</span>
+                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Saídas 1 Ano</span>
                 </div>
 
                 <div class="space-y-4 flex-grow flex flex-col justify-center">
                     <!-- Mais Consumido -->
-                    <div class="bg-slate-950/60 border border-emerald-500/20 rounded-lg p-3.5 space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-emerald-400 flex items-center space-x-1">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                                <span>PEÇA MAIS CONSUMIDA</span>
+                    <div class="bg-slate-950/80 border border-neon-green/40 rounded-xl p-4 shadow-neon-green">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-black text-neon-green flex items-center gap-1">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> PEÇA MAIS CONSUMIDA
                             </span>
-                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-neon-green bg-neon-green/10 px-2 py-0.5 rounded" id="mostConsumedQty">0 un</span>
                         </div>
-                        <div class="text-sm font-bold text-slate-100" id="mostConsumedName">Nenhuma Peça Registrada</div>
+                        <div class="text-sm font-bold text-white truncate" id="mostConsumedName">-</div>
                     </div>
 
                     <!-- Menos Consumido -->
-                    <div class="bg-slate-950/60 border border-rose-500/20 rounded-lg p-3.5 space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-rose-400 flex items-center space-x-1">
-                                <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i>
-                                <span>PEÇA MENOS CONSUMIDA</span>
+                    <div class="bg-slate-950/80 border border-neon-magenta/40 rounded-xl p-4 shadow-neon-magenta">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-black text-neon-magenta flex items-center gap-1">
+                                <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i> PEÇA MENOS CONSUMIDA
                             </span>
-                            <span class="text-xs font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
+                            <span class="text-xs font-black text-neon-magenta bg-neon-magenta/10 px-2 py-0.5 rounded" id="leastConsumedQty">0 un</span>
                         </div>
-                        <div class="text-sm font-bold text-slate-100" id="leastConsumedName">Nenhuma Peça Registrada</div>
+                        <div class="text-sm font-bold text-white truncate" id="leastConsumedName">-</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Chart Comparison Section (2/3) -->
-            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <!-- Chart Section (2/3) -->
+            <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-slate-200 flex items-center space-x-2">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-500"></i>
-                        <span>Comparativo de Peças (Estoque vs Consumo vs Pedido Solicitado)</span>
+                    <h3 class="font-bold text-white flex items-center space-x-2">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-neon-cyan"></i>
+                        <span>Comparativo Dinâmico (Estoque vs Saídas vs Solicitado)</span>
                     </h3>
                 </div>
                 <div class="h-64 w-full">
@@ -231,37 +221,40 @@
 
         </div>
 
-        <!-- Table Section: Complete Parts Breakdown -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <!-- Fully Editable Interactive Table -->
+        <div class="bg-slate-900/90 border border-cyan-500/30 rounded-2xl overflow-hidden shadow-neon-cyan">
             <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h3 class="font-bold text-slate-200 flex items-center space-x-2">
-                        <i data-lucide="table" class="w-4 h-4 text-brand-500"></i>
-                        <span>Tabela Completa de Peças</span>
+                    <h3 class="font-bold text-lg text-white flex items-center space-x-2">
+                        <i data-lucide="edit-3" class="w-5 h-5 text-neon-green"></i>
+                        <span>Tabela 100% Editável de Peças</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Relação mantida exclusivamente pelo nome oficial da peça</p>
+                    <p class="text-xs text-slate-400 mt-1">Altere qualquer campo abaixo. Todos os totais, médias e gráficos serão recalculados na hora.</p>
                 </div>
-                <div class="text-xs text-slate-400 flex items-center space-x-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-brand-500"></span>
-                    <span>Modo de Edição restrito a <strong class="text-slate-300">matheussmmacahdo@outlook.com</strong></span>
+                <div class="flex items-center space-x-2 text-xs bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-neon-green">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>Modo Edição Livre Ativo</span>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-300">
-                    <thead class="bg-slate-950/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-950 text-xs uppercase font-extrabold text-slate-400 border-b border-slate-800">
                         <tr>
-                            <th class="py-3.5 px-4">Nome da Peça</th>
-                            <th class="py-3.5 px-4 text-right">Estoque Atual</th>
-                            <th class="py-3.5 px-4 text-right">Qtd Importada</th>
-                            <th class="py-3.5 px-4 text-right">Qtd Solicitada</th>
-                            <th class="py-3.5 px-4 text-right">Consumo (1 Ano)</th>
-                            <th class="py-3.5 px-4 text-right">Consumo Diário Médio</th>
-                            <th class="py-3.5 px-4 text-right">Cobertura Estimada</th>
+                            <th class="py-3.5 px-4 min-w-[220px]">Nome da Peça</th>
+                            <th class="py-3.5 px-3 text-center w-28">Estoque Atual</th>
+                            <th class="py-3.5 px-3 text-center w-28">Qtd Entrada</th>
+                            <th class="py-3.5 px-3 text-center w-28">Saídas (1 Ano)</th>
+                            <th class="py-3.5 px-3 text-center w-28">Consumo Diário</th>
+                            <th class="py-3.5 px-3 text-center w-28">Cobertura</th>
+                            <th class="py-3.5 px-3 text-center w-28">Qtd Solicitada</th>
+                            <th class="py-3.5 px-3 text-center w-28">Valor Un. (US$)</th>
+                            <th class="py-3.5 px-3 text-right w-32">Total Item (US$)</th>
+                            <th class="py-3.5 px-3 text-center w-16">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="partsTableBody" class="divide-y divide-slate-800/60">
-                        <!-- Dynamic Rows Injected Here -->
+                    <tbody id="partsTableBody" class="divide-y divide-slate-800/80">
+                        <!-- Dynamic Editable Rows -->
                     </tbody>
                 </table>
             </div>
@@ -269,179 +262,183 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <p>Dashboard de Solicitação de Importação de Peças &copy; 2026 - Dados integrados exclusivamente das planilhas oficiais.</p>
-    </footer>
-
-    <!-- Logic JavaScript -->
     <script>
-        // Database extracted directly from the uploaded spreadsheets
+        // Full Initial Editable Database
         const DATABASE = {
             "ODEWAY": {
                 lastPoValue: 20808.00,
                 lastPoDate: "2025/2026 Processo 93",
                 items: [
-                    { name: "S10 / S10X - MOTOR HUB SEM ESCOVAS 2500W C60", stock: 24, imported: 30, requested: 0, unitPrice: 100, annualConsumption: 6 },
-                    { name: "S10 / S10X - PAINEL LED, VERSÃO 2024-11", stock: 24, imported: 30, requested: 0, unitPrice: 15, annualConsumption: 6 },
-                    { name: "S10 / S10X - T COM MANOPLAS BORRACHA C60 / X60", stock: 9, imported: 35, requested: 10, unitPrice: 20, annualConsumption: 26 },
-                    { name: "S10X - PLACA MÃE CONTROLADORA, VERSÃO 2024-11", stock: 10, imported: 24, requested: 10, unitPrice: 40, annualConsumption: 14 },
-                    { name: "S10 / S10X - CAIXA DE BATERIA DE S10/S10X", stock: 36, imported: 69, requested: 0, unitPrice: 15, annualConsumption: 33 },
-                    { name: "S10 / S10X - CARENAGEM/CAIXA FRONTAL S10/S10X", stock: 36, imported: 74, requested: 10, unitPrice: 10, annualConsumption: 38 },
-                    { name: "S10 / S10X - CARREGADOR DE S10/S10X", stock: 1, imported: 60, requested: 20, unitPrice: 40, annualConsumption: 59 },
-                    { name: "S10 / S10X - FENDER S10", stock: 6, imported: 32, requested: 10, unitPrice: 20, annualConsumption: 26 },
-                    { name: "S10 / S10X - FENDER S10X", stock: 11, imported: 29, requested: 10, unitPrice: 20, annualConsumption: 18 },
-                    { name: "S10 / S10X - PAR DE TAPETE DE S10/S10X", stock: 34, imported: 57, requested: 10, unitPrice: 10, annualConsumption: 23 }
+                    { name: "S10 / S10X - MOTOR HUB SEM ESCOVAS 2500W C60", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 100.00 },
+                    { name: "S10 / S10X - PAINEL LED, VERSÃO 2024-11", stock: 24, imported: 30, annualConsumption: 6, requested: 0, unitPrice: 15.00 },
+                    { name: "S10 / S10X - T COM MANOPLAS BORRACHA C60 / X60", stock: 9, imported: 35, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
+                    { name: "S10X - PLACA MÃE CONTROLADORA, VERSÃO 2024-11", stock: 10, imported: 24, annualConsumption: 14, requested: 10, unitPrice: 40.00 },
+                    { name: "S10 / S10X - CAIXA DE BATERIA DE S10/S10X", stock: 36, imported: 69, annualConsumption: 33, requested: 0, unitPrice: 15.00 },
+                    { name: "S10 / S10X - CARENAGEM/CAIXA FRONTAL S10/S10X", stock: 36, imported: 74, annualConsumption: 38, requested: 10, unitPrice: 10.00 },
+                    { name: "S10 / S10X - CARREGADOR DE S10/S10X", stock: 1, imported: 60, annualConsumption: 59, requested: 20, unitPrice: 40.00 },
+                    { name: "S10 / S10X - FENDER S10", stock: 6, imported: 32, annualConsumption: 26, requested: 10, unitPrice: 20.00 },
+                    { name: "S10 / S10X - FENDER S10X", stock: 11, imported: 29, annualConsumption: 18, requested: 10, unitPrice: 20.00 },
+                    { name: "S10 / S10X - PAR DE TAPETE DE S10/S10X", stock: 34, imported: 57, annualConsumption: 23, requested: 10, unitPrice: 10.00 }
                 ]
             },
             "ESWING": {
                 lastPoValue: 16622.00,
                 lastPoDate: "2025/2026 Processo 92",
                 items: [
-                    { name: "GABINETE CENTRAL CONSOLE S9/SE", stock: 18, imported: 79, requested: 100, unitPrice: 10, annualConsumption: 61 },
-                    { name: "CAIXA DE BATERIA S9/H9", stock: 15, imported: 54, requested: 40, unitPrice: 9, annualConsumption: 39 },
-                    { name: "COUPLING COMPLETO S9/S9X", stock: 30, imported: 604, requested: 300, unitPrice: 5, annualConsumption: 574 },
-                    { name: "SENSOR DO PIVÔ S9/S9X", stock: 8, imported: 121, requested: 50, unitPrice: 4, annualConsumption: 113 },
-                    { name: "MOTOR BRUSHLESS S9/SE", stock: 4, imported: 19, requested: 10, unitPrice: 85, annualConsumption: 15 },
-                    { name: "PLACA MAE S9/S9X", stock: 0, imported: 101, requested: 50, unitPrice: 35, annualConsumption: 101 },
-                    { name: "PLACA DE CONTROLES + PAINEL LED S9/SE DISPLAY", stock: 5, imported: 86, requested: 40, unitPrice: 25, annualConsumption: 81 },
-                    { name: "MANOPLA S9/SE", stock: 21, imported: 119, requested: 50, unitPrice: 6, annualConsumption: 98 },
-                    { name: "REGULADOR DE ALTURA MANIPLO S9/SE", stock: 45, imported: 87, requested: 20, unitPrice: 8, annualConsumption: 42 },
-                    { name: "BARRA TRASNVESSAL S9/SE", stock: 26, imported: 39, requested: 10, unitPrice: 6, annualConsumption: 13 }
+                    { name: "GABINETE CENTRAL CONSOLE S9/SE", stock: 18, imported: 79, annualConsumption: 61, requested: 100, unitPrice: 10.00 },
+                    { name: "CAIXA DE BATERIA S9/H9", stock: 15, imported: 54, annualConsumption: 39, requested: 40, unitPrice: 9.00 },
+                    { name: "COUPLING COMPLETO S9/S9X", stock: 30, imported: 604, annualConsumption: 574, requested: 300, unitPrice: 5.00 },
+                    { name: "SENSOR DO PIVÔ S9/S9X", stock: 8, imported: 121, annualConsumption: 113, requested: 50, unitPrice: 4.00 },
+                    { name: "MOTOR BRUSHLESS S9/SE", stock: 4, imported: 19, annualConsumption: 15, requested: 10, unitPrice: 85.00 },
+                    { name: "PLACA MAE S9/S9X", stock: 0, imported: 101, annualConsumption: 101, requested: 50, unitPrice: 35.00 }
                 ]
             },
             "CHIC ROBOT": {
                 lastPoValue: 0.00,
                 lastPoDate: "Sem registro na P.O Anterior",
                 items: [
-                    { name: "PAR DE MANOPLA ORIGINAL", stock: 5, imported: 10, requested: 20, unitPrice: 6.0, annualConsumption: 5 },
-                    { name: "T' (Tope tube)", stock: 2, imported: 5, requested: 10, unitPrice: 23.0, annualConsumption: 3 },
-                    { name: "FENDER METALICO", stock: 4, imported: 8, requested: 20, unitPrice: 17.0, annualConsumption: 4 },
-                    { name: "PARA-LAMA PLÁSTICO (Esquerdo e Direito)", stock: 12, imported: 25, requested: 40, unitPrice: 14.0, annualConsumption: 13 },
-                    { name: "ACABAMENTO DIATEIRO CABEÇA DO PIVÔ", stock: 8, imported: 10, requested: 0, unitPrice: 9.0, annualConsumption: 2 },
-                    { name: "ACRILICO TAPETE", stock: 15, imported: 20, requested: 10, unitPrice: 1.0, annualConsumption: 5 }
+                    { name: "PAR DE MANOPLA ORIGINAL", stock: 5, imported: 10, annualConsumption: 5, requested: 20, unitPrice: 6.00 },
+                    { name: "T' (Tope tube)", stock: 2, imported: 5, annualConsumption: 3, requested: 10, unitPrice: 23.00 },
+                    { name: "FENDER METALICO", stock: 4, imported: 8, annualConsumption: 4, requested: 20, unitPrice: 17.00 }
                 ]
             },
             "YY (YAN-YANG)": {
                 lastPoValue: 435.00,
                 lastPoDate: "2025/2026 Processo YY",
                 items: [
-                    { name: "BMS YANYANG 15S 20A PARA NCM 3.7V", stock: 0, imported: 14, requested: 20, unitPrice: 12.0, annualConsumption: 14 },
-                    { name: "BMS YANYANG 17S 20A LFP 3.2V", stock: 21, imported: 27, requested: 25, unitPrice: 13.5, annualConsumption: 6 },
-                    { name: "MODULO BLUETOOTH 15S 20A 3.7V YANYANG", stock: 0, imported: 12, requested: 15, unitPrice: 5.0, annualConsumption: 12 },
-                    { name: "BMS 14S-20S NCM/LFP MARCA YANYANG", stock: 10, imported: 51, requested: 50, unitPrice: 14.5, annualConsumption: 41 }
+                    { name: "BMS YANYANG 15S 20A PARA NCM 3.7V", stock: 0, imported: 14, annualConsumption: 14, requested: 20, unitPrice: 12.00 },
+                    { name: "BMS YANYANG 17S 20A LFP 3.2V", stock: 21, imported: 27, annualConsumption: 6, requested: 25, unitPrice: 13.50 }
                 ]
             },
             "JGNE": {
                 lastPoValue: 7125.00,
                 lastPoDate: "2025/2026 Processo JGNE",
                 items: [
-                    { name: "CÉLULAS INR (JGCNR-2600mah-18650-3.6v)", stock: 500, imported: 5000, requested: 3000, unitPrice: 1.65, annualConsumption: 4500 },
-                    { name: "CÉLULAS LFP (JGCNR-2200mah-18650-3.2v)", stock: 200, imported: 1000, requested: 0, unitPrice: 1.50, annualConsumption: 800 }
+                    { name: "CÉLULAS INR (JGCNR-2600mah-18650-3.6v)", stock: 500, imported: 5000, annualConsumption: 4500, requested: 3000, unitPrice: 1.65 },
+                    { name: "CÉLULAS LFP (JGCNR-2200mah-18650-3.2v)", stock: 200, imported: 1000, annualConsumption: 800, requested: 0, unitPrice: 1.50 }
                 ]
             },
             "ZAMWHEI": {
                 lastPoValue: 2225.00,
                 lastPoDate: "2025/2026 Processo 95",
                 items: [
-                    { name: "CONTROLE DE I2/X2 (Infokey for Segway PT/SE)", stock: 3, imported: 10, requested: 5, unitPrice: 125.0, annualConsumption: 7 },
-                    { name: "PIVO MECANICO DE I2/X2", stock: 2, imported: 8, requested: 5, unitPrice: 80.0, annualConsumption: 6 }
+                    { name: "CONTROLE DE I2/X2 (Infokey for Segway PT/SE)", stock: 3, imported: 10, annualConsumption: 7, requested: 5, unitPrice: 125.00 },
+                    { name: "PIVO MECANICO DE I2/X2", stock: 2, imported: 8, annualConsumption: 6, requested: 5, unitPrice: 80.00 }
                 ]
             }
         };
 
         // State variables
         let currentFab = "ODEWAY";
-        let isAuthorized = false; // Default: Read-Only Mode
-        const authorizedEmail = "matheussmmacahdo@outlook.com";
+        let isDarkMode = true;
         let partsChart = null;
 
-        // Initialize icons & views on page load
         document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
             renderDashboard();
         });
 
-        // Change Manufacturer
+        // Toggle Dark / Light Theme
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            const html = document.documentElement;
+            const themeIcon = document.getElementById("themeIcon");
+            const themeText = document.getElementById("themeText");
+
+            if (isDarkMode) {
+                html.classList.add("dark");
+                themeIcon.setAttribute("data-lucide", "sun");
+                themeText.innerText = "Modo Claro";
+            } else {
+                html.classList.remove("dark");
+                themeIcon.setAttribute("data-lucide", "moon");
+                themeText.innerText = "Modo Escuro";
+            }
+            lucide.createIcons();
+            renderChart(DATABASE[currentFab].items);
+        }
+
+        // Change Manufacturer Select
         function changeManufacturer(fab) {
             currentFab = fab;
             document.getElementById("currentFabBadge").innerText = fab;
-            document.getElementById("manufacturerTitle").innerText = `Fabricante: ${fab}`;
+            document.getElementById("manufacturerTitle").innerText = fab;
             renderDashboard();
         }
 
-        // Toggle User Authorization Simulation
-        function toggleUserAuth() {
-            if (!isAuthorized) {
-                const emailInput = prompt("Para ativar o Modo de Edição, confirme seu e-mail autorizado:", authorizedEmail);
-                if (emailInput && emailInput.trim().toLowerCase() === authorizedEmail.toLowerCase()) {
-                    isAuthorized = true;
-                    alert("Acesso de EDIÇÃO concedido com sucesso!");
-                } else if (emailInput !== null) {
-                    alert("E-mail não autorizado! O dashboard permanecerá em modo de Somente Visualização.");
-                }
-            } else {
-                isAuthorized = false;
-                alert("Você alternou para o modo Somente Visualização.");
-            }
-            updateAuthBadge();
-            renderTable();
+        // Add new piece row
+        function addNewRow() {
+            DATABASE[currentFab].items.push({
+                name: "Nova Peça Editável",
+                stock: 0,
+                imported: 0,
+                annualConsumption: 0,
+                requested: 0,
+                unitPrice: 0.00
+            });
+            renderDashboard();
         }
 
-        function updateAuthBadge() {
-            const badge = document.getElementById("authStatusBadge");
-            const lockIcon = document.getElementById("lockIcon");
-            const modeText = document.getElementById("modeText");
-
-            if (isAuthorized) {
-                lockIcon.innerHTML = `<i data-lucide="unlock" class="w-4 h-4 text-emerald-400"></i>`;
-                modeText.innerText = "Modo Edição Ativo";
-                badge.className = "flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-xs text-emerald-300";
-            } else {
-                lockIcon.innerHTML = `<i data-lucide="lock" class="w-4 h-4 text-amber-500"></i>`;
-                modeText.innerText = "Somente Visualização";
-                badge.className = "flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs";
-            }
-            lucide.createIcons();
+        // Delete Row
+        function deleteRow(index) {
+            DATABASE[currentFab].items.splice(index, 1);
+            renderDashboard();
         }
 
-        // Main Rendering Logic
+        // Update Field Value Dinamically
+        function updateFieldValue(index, field, value) {
+            const item = DATABASE[currentFab].items[index];
+
+            if (field === 'name') {
+                item.name = value;
+            } else {
+                const parsedVal = parseFloat(value) || 0;
+                item[field] = parsedVal >= 0 ? parsedVal : 0;
+            }
+
+            // Recalculate Dashboard Automatically
+            renderDashboard();
+        }
+
+        // Dashboard Master Calculation & Render
         function renderDashboard() {
             const data = DATABASE[currentFab];
 
-            // 1. Last P.O Metrics
+            // 1. Last PO
             document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
             document.getElementById("lastPoDate").innerText = data.lastPoDate;
 
-            // 2. Calculate Current P.O Value dynamically
-            let currentPoTotal = 0;
-            let totalConsumption = 0;
+            // 2. Dynamic Automations
+            let totalCurrentPo = 0;
+            let totalAnnualConsumption = 0;
             let totalStock = 0;
 
             data.items.forEach(item => {
-                currentPoTotal += (item.requested * item.unitPrice);
-                totalConsumption += item.annualConsumption;
+                totalCurrentPo += (item.requested * item.unitPrice);
+                totalAnnualConsumption += item.annualConsumption;
                 totalStock += item.stock;
             });
 
-            document.getElementById("currentPoValue").innerText = `US$ ${currentPoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-
-            // 3. Consumo Diário Médio & Cobertura
-            const avgDaily = (totalConsumption / 365);
+            // Update Header KPI Cards
+            document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            
+            const avgDaily = (totalAnnualConsumption / 365);
             document.getElementById("avgDailyConsumption").innerText = `${avgDaily.toFixed(2)} un/dia`;
 
-            const coverageDays = avgDaily > 0 ? Math.round(totalStock / avgDaily) : "N/A";
+            const coverageDays = avgDaily > 0 ? Math.round(totalStock / avgDaily) : "∞";
             document.getElementById("stockCoverageDays").innerText = typeof coverageDays === 'number' ? `${coverageDays} Dias` : coverageDays;
 
-            // 4. Ranking (Mais e Menos Consumido)
+            // 3. Render Table
+            renderTable();
+
+            // 4. Render Ranking
             renderRanking(data.items);
 
-            // 5. Render Table & Chart
-            renderTable();
+            // 5. Render Chart
             renderChart(data.items);
         }
 
-        // Render Ranking Section (Handles Ties)
+        // Render Ranking (Mais / Menos Consumidos)
         function renderRanking(items) {
             if (!items || items.length === 0) {
                 document.getElementById("mostConsumedName").innerText = "Sem dados";
@@ -451,24 +448,20 @@
                 return;
             }
 
-            // Find Max
             const maxVal = Math.max(...items.map(i => i.annualConsumption));
             const mostConsumed = items.filter(i => i.annualConsumption === maxVal);
-            
-            // Find Min
+
             const minVal = Math.min(...items.map(i => i.annualConsumption));
             const leastConsumed = items.filter(i => i.annualConsumption === minVal);
 
-            // Set Most Consumed UI
             document.getElementById("mostConsumedName").innerText = mostConsumed.map(i => i.name).join(" / ");
             document.getElementById("mostConsumedQty").innerText = `${maxVal} un/ano`;
 
-            // Set Least Consumed UI
             document.getElementById("leastConsumedName").innerText = leastConsumed.map(i => i.name).join(" / ");
             document.getElementById("leastConsumedQty").innerText = `${minVal} un/ano`;
         }
 
-        // Render Table Rows with Editing Option for Authorized Email
+        // Render Fully Editable Table
         function renderTable() {
             const tbody = document.getElementById("partsTableBody");
             tbody.innerHTML = "";
@@ -477,42 +470,81 @@
 
             items.forEach((item, index) => {
                 const dailyAvg = (item.annualConsumption / 365).toFixed(2);
-                const coverage = dailyAvg > 0 ? `${Math.round(item.stock / dailyAvg)} dias` : "∞";
+                const coverage = dailyAvg > 0 ? `${Math.round(item.stock / dailyAvg)} d` : "∞";
+                const totalItemPrice = (item.requested * item.unitPrice);
 
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-800/40 transition-colors";
+                tr.className = "hover:bg-slate-800/50 transition-colors";
 
                 tr.innerHTML = `
-                    <td class="py-3 px-4 font-medium text-slate-200">${item.name}</td>
-                    <td class="py-3 px-4 text-right">${item.stock}</td>
-                    <td class="py-3 px-4 text-right">${item.imported}</td>
-                    <td class="py-3 px-4 text-right">
-                        ${isAuthorized 
-                            ? `<input type="number" min="0" value="${item.requested}" onchange="updateQuantity('${currentFab}', ${index}, this.value)" class="w-20 text-right bg-slate-950 border border-brand-500 rounded px-2 py-1 text-slate-100 font-bold focus:outline-none focus:ring-1 focus:ring-brand-500">`
-                            : `<span class="font-bold ${item.requested > 0 ? 'text-brand-400' : 'text-slate-500'}">${item.requested}</span>`
-                        }
+                    <!-- Nome da Peça Editável -->
+                    <td class="py-2.5 px-3">
+                        <input type="text" value="${item.name}" onchange="updateFieldValue(${index}, 'name', this.value)"
+                            class="w-full bg-slate-950 border border-slate-700 hover:border-cyan-400 focus:border-cyan-400 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none transition-all">
                     </td>
-                    <td class="py-3 px-4 text-right text-amber-400 font-semibold">${item.annualConsumption}</td>
-                    <td class="py-3 px-4 text-right text-slate-400">${dailyAvg} un/dia</td>
-                    <td class="py-3 px-4 text-right">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${item.stock <= 5 ? 'bg-rose-500/10 text-rose-400' : 'bg-slate-800 text-slate-300'}">
+
+                    <!-- Estoque Atual -->
+                    <td class="py-2.5 px-2">
+                        <input type="number" min="0" value="${item.stock}" onchange="updateFieldValue(${index}, 'stock', this.value)"
+                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-lg py-1 text-xs font-bold text-cyan-300 focus:outline-none">
+                    </td>
+
+                    <!-- Qtd Entrada -->
+                    <td class="py-2.5 px-2">
+                        <input type="number" min="0" value="${item.imported}" onchange="updateFieldValue(${index}, 'imported', this.value)"
+                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-lg py-1 text-xs font-semibold text-slate-300 focus:outline-none">
+                    </td>
+
+                    <!-- Saídas (Consumo Anual) -->
+                    <td class="py-2.5 px-2">
+                        <input type="number" min="0" value="${item.annualConsumption}" onchange="updateFieldValue(${index}, 'annualConsumption', this.value)"
+                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-neon-magenta rounded-lg py-1 text-xs font-bold text-neon-magenta focus:outline-none">
+                    </td>
+
+                    <!-- Consumo Diário Calculado -->
+                    <td class="py-2.5 px-2 text-center text-xs font-medium text-slate-400">
+                        ${dailyAvg} /dia
+                    </td>
+
+                    <!-- Cobertura Estimada -->
+                    <td class="py-2.5 px-2 text-center">
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${item.stock <= 5 ? 'bg-neon-magenta/20 text-neon-magenta border border-neon-magenta/40' : 'bg-slate-800 text-neon-green'}">
                             ${coverage}
                         </span>
+                    </td>
+
+                    <!-- Qtd Solicitada -->
+                    <td class="py-2.5 px-2">
+                        <input type="number" min="0" value="${item.requested}" onchange="updateFieldValue(${index}, 'requested', this.value)"
+                            class="w-full text-center bg-slate-950 border border-cyan-500/60 focus:border-neon-cyan rounded-lg py-1 text-xs font-black text-neon-cyan focus:outline-none shadow-neon-cyan">
+                    </td>
+
+                    <!-- Valor Unitário (US$) -->
+                    <td class="py-2.5 px-2">
+                        <input type="number" step="0.01" min="0" value="${item.unitPrice}" onchange="updateFieldValue(${index}, 'unitPrice', this.value)"
+                            class="w-full text-center bg-slate-950 border border-slate-700 focus:border-neon-green rounded-lg py-1 text-xs font-bold text-neon-green focus:outline-none">
+                    </td>
+
+                    <!-- Total Item (Calculado Auto) -->
+                    <td class="py-2.5 px-3 text-right font-black text-xs text-neon-cyan">
+                        US$ ${totalItemPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+
+                    <!-- Excluir Peça -->
+                    <td class="py-2.5 px-2 text-center">
+                        <button onclick="deleteRow(${index})" class="text-slate-500 hover:text-neon-magenta transition-colors" title="Excluir Item">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </td>
                 `;
 
                 tbody.appendChild(tr);
             });
+
+            lucide.createIcons();
         }
 
-        // Handle Quantity Update for Authorized User
-        function updateQuantity(fab, index, newQty) {
-            const qty = parseInt(newQty) || 0;
-            DATABASE[fab].items[index].requested = qty;
-            renderDashboard();
-        }
-
-        // Chart.js Visualization
+        // Render Chart.js
         function renderChart(items) {
             const ctx = document.getElementById('partsChart').getContext('2d');
 
@@ -520,7 +552,7 @@
                 partsChart.destroy();
             }
 
-            const labels = items.map(i => i.name.length > 20 ? i.name.substring(0, 20) + '...' : i.name);
+            const labels = items.map(i => i.name.length > 18 ? i.name.substring(0, 18) + '...' : i.name);
             const stockData = items.map(i => i.stock);
             const consumptionData = items.map(i => i.annualConsumption);
             const requestedData = items.map(i => i.requested);
@@ -531,25 +563,25 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Estoque Atual',
+                            label: 'Estoque Actual',
                             data: stockData,
-                            backgroundColor: 'rgba(51, 65, 85, 0.8)',
-                            borderColor: 'rgba(100, 116, 139, 1)',
-                            borderWidth: 1
+                            backgroundColor: 'rgba(100, 116, 139, 0.7)',
+                            borderColor: '#64748b',
+                            borderWidth: 1.5
                         },
                         {
-                            label: 'Consumo (1 Ano)',
+                            label: 'Saídas (Consumo 1 Ano)',
                             data: consumptionData,
-                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
-                            borderColor: 'rgba(245, 158, 11, 1)',
-                            borderWidth: 1
+                            backgroundColor: 'rgba(255, 0, 127, 0.7)',
+                            borderColor: '#ff007f',
+                            borderWidth: 1.5
                         },
                         {
                             label: 'Qtd Solicitada',
                             data: requestedData,
-                            backgroundColor: 'rgba(2, 132, 199, 0.8)',
-                            borderColor: 'rgba(2, 132, 199, 1)',
-                            borderWidth: 1
+                            backgroundColor: 'rgba(0, 243, 255, 0.7)',
+                            borderColor: '#00f3ff',
+                            borderWidth: 1.5
                         }
                     ]
                 },
@@ -559,19 +591,19 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: '#94a3b8',
-                                font: { size: 12 }
+                                color: isDarkMode ? '#e2e8f0' : '#0f172a',
+                                font: { size: 11, weight: 'bold' }
                             }
                         }
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#64748b', font: { size: 10 } },
-                            grid: { color: 'rgba(51, 65, 85, 0.3)' }
+                            ticks: { color: isDarkMode ? '#94a3b8' : '#475569', font: { size: 10 } },
+                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.5)' }
                         },
                         y: {
-                            ticks: { color: '#64748b' },
-                            grid: { color: 'rgba(51, 65, 85, 0.3)' }
+                            ticks: { color: isDarkMode ? '#94a3b8' : '#475569' },
+                            grid: { color: isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(203, 213, 225, 0.5)' }
                         }
                     }
                 }
