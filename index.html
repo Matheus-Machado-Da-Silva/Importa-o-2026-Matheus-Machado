@@ -16,43 +16,33 @@
     <!-- Firebase JS SDK (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        /* ESTÉTICA MODO CLARO ORIGINAL */
-        body.light-mode {
-            background-color: #f8fafc !important;
-            color: #0f172a !important;
-        }
-        body.light-mode header {
-            background-color: #ffffff !important;
-            border-color: #e2e8f0 !important;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        }
-        body.light-mode .card-bg {
-            background-color: #ffffff !important;
-            border-color: #e2e8f0 !important;
-            color: #0f172a !important;
-            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
-        }
-        body.light-mode input {
-            background-color: transparent !important;
-            color: #0f172a !important;
-            border-color: transparent !important;
-        }
-        body.light-mode input:focus {
-            background-color: #ffffff !important;
-            border-color: #3b82f6 !important;
-        }
-        body.light-mode th {
-            background-color: #f8fafc !important;
-            color: #475569 !important;
-        }
-        body.light-mode td {
-            border-color: #f1f5f9 !important;
-        }
-        body.light-mode .subtext {
-            color: #64748b !important;
-        }
-    </style>
+    /* Quando NÃO ESTIVER em light-mode (ou seja, Modo Escuro Ativo) */
+body:not(.light-mode) {
+    background-color: #0f172a !important; /* Fundo escuro */
+    color: #f8fafc !important;
+}
+
+body:not(.light-mode) header,
+body:not(.light-mode) .card-bg,
+body:not(.light-mode) div.bg-white {
+    background-color: #1e293b !important; /* Cards escuros */
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+body:not(.light-mode) h1, 
+body:not(.light-mode) h2, 
+body:not(.light-mode) h3, 
+body:not(.light-mode) p, 
+body:not(.light-mode) span {
+    color: #f8fafc !important;
+}
+
+body:not(.light-mode) .text-slate-800,
+body:not(.light-mode) .text-slate-700,
+body:not(.light-mode) .text-slate-600 {
+    color: #cbd5e1 !important;
+}
 </head>
 <body id="appBody" class="light-mode font-sans min-h-screen transition-colors duration-300">
 
