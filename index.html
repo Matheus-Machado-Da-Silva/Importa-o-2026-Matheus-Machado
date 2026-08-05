@@ -452,9 +452,19 @@
         let isAuthorized = false;
         let partsChart = null;
 
-        document.addEventListener("DOMContentLoaded", () => {
+       document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
-            renderDashboard();
+            
+            // Conecta no Firebase e carrega as informações salvas
+            db.ref("fabricantes").on("value", (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.assign(DATABASE, data);
+                    renderDashboard();
+                } else {
+                    db.ref("fabricantes").set(DATABASE);
+                }
+            });
         });
 
         // Toggle Theme Mode (Light / Dark)
@@ -584,6 +594,7 @@
                 const parsed = parseFloat(value) || 0;
                 item[field] = parsed >= 0 ? parsed : 0;
             }
+            db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
             renderDashboard();
         }
 
