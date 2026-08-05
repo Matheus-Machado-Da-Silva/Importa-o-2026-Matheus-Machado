@@ -1,25 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMPORT DYNAMICS PRO - Gestão de Peças</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0b0f19',
-                        cardBg: '#111827',
-                        borderBg: '#1f2937'
-                    }
-                }
-            }
-        }
-    </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Chart.js -->
@@ -28,27 +14,38 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        /* Estilos do Modo Claro */
+        body.light-mode {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
         }
-        ::-webkit-scrollbar-track {
-            background: #0b0f19;
+        body.light-mode header {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 4px;
+        body.light-mode .card-bg {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #374151;
+        body.light-mode input {
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-mode th {
+            background-color: #f1f5f9 !important;
+            color: #475569 !important;
+        }
+        body.light-mode td {
+            border-color: #e2e8f0 !important;
         }
     </style>
 </head>
-<body class="bg-slate-950 dark:bg-[#0b0f19] text-slate-100 font-sans min-h-screen transition-colors duration-300">
+<body id="appBody" class="bg-slate-950 text-slate-100 font-sans min-h-screen transition-colors duration-300">
 
     <!-- HEADER / NAVIGATION -->
-    <header class="border-b border-slate-800 bg-slate-900/80 dark:bg-[#111827]/80 backdrop-blur sticky top-0 z-40">
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10">
@@ -65,7 +62,7 @@
             <div class="flex items-center space-x-3">
                 <!-- Select Fabricante -->
                 <div class="relative">
-                    <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-900 dark:bg-slate-800 border border-slate-700 text-cyan-400 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 cursor-pointer appearance-none pr-10">
+                    <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-900 border border-slate-700 text-cyan-400 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 cursor-pointer appearance-none pr-10 card-bg">
                         <option value="ODEWAY">ODEWAY</option>
                     </select>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
@@ -78,7 +75,7 @@
                 </button>
 
                 <!-- Botão Tema (Claro/Escuro) -->
-                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 card-bg">
                     <i data-lucide="sun" class="w-4 h-4"></i>
                     <span id="themeText">Claro</span>
                 </button>
@@ -90,10 +87,10 @@
     <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
 
         <!-- BANNER TOPO -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/60 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-800 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/60 p-5 rounded-2xl border border-slate-800 gap-4 card-bg">
             <div>
                 <span id="currentFabBadge" class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 tracking-wide uppercase">ODEWAY</span>
-                <h2 class="text-2xl font-black mt-2 text-white">Fabricante: <span id="currentFabTitle" class="text-cyan-400">ODEWAY</span></h2>
+                <h2 class="text-2xl font-black mt-2">Fabricante: <span id="currentFabTitle" class="text-cyan-400">ODEWAY</span></h2>
             </div>
             <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
                 <span id="lockBadge" class="text-xs px-3 py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold flex items-center gap-1.5">
@@ -109,28 +106,28 @@
         <!-- CARDS INDICADORES (KPIs) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- ÚLTIMO PEDIDO (P.O) -->
-            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition card-bg">
                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Último Pedido (P.O)</span>
-                <p id="lastPoValue" class="text-2xl font-black text-white mt-1">US$ 0,00</p>
+                <p id="lastPoValue" class="text-2xl font-black mt-1">US$ 0,00</p>
                 <span id="lastPoDate" class="text-xs text-slate-500 mt-1 block">Referência Histórica</span>
             </div>
 
             <!-- PEDIDO ATUAL (CALCULADO) -->
-            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm border-l-4 border-l-cyan-500 hover:border-slate-700 transition">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl shadow-sm border-l-4 border-l-cyan-500 hover:border-slate-700 transition card-bg">
                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Pedido Atual (Calculado)</span>
                 <p id="currentPoValue" class="text-2xl font-black text-cyan-400 mt-1">US$ 0,00</p>
                 <span class="text-xs text-emerald-400 mt-1 block font-medium">Recálculo em Tempo Real</span>
             </div>
 
             <!-- CONSUMO MÉDIO DIÁRIO -->
-            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition card-bg">
                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Consumo Médio Diário</span>
                 <p id="avgDailyCons" class="text-2xl font-black text-pink-500 mt-1">0.00 un/dia</p>
                 <span class="text-xs text-slate-500 mt-1 block">Soma de Saídas / 365 dias</span>
             </div>
 
             <!-- COBERTURA DO ESTOQUE -->
-            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl shadow-sm hover:border-slate-700 transition card-bg">
                 <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Cobertura do Estoque</span>
                 <p id="stockCoverage" class="text-2xl font-black text-emerald-400 mt-1">0 Dias</p>
                 <span class="text-xs text-slate-500 mt-1 block">Duração estimada do estoque</span>
@@ -140,10 +137,10 @@
         <!-- SEÇÃO DE GRÁFICOS E RANKINGS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- RANKING DE CONSUMO -->
-            <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between card-bg">
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-base text-white">Ranking de Consumo</h3>
+                        <h3 class="font-bold text-base">Ranking de Consumo</h3>
                         <span class="text-[10px] bg-slate-800 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-700">Saídas 1 Ano</span>
                     </div>
 
@@ -154,7 +151,7 @@
                                 <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Peça Mais Consumida</span>
                                 <span id="mostConsumedQty" class="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded">0 un</span>
                             </div>
-                            <p id="mostConsumedName" class="text-sm font-bold text-slate-200 mt-2">-</p>
+                            <p id="mostConsumedName" class="text-sm font-bold mt-2">-</p>
                         </div>
 
                         <!-- Peça Menos Consumida -->
@@ -163,15 +160,15 @@
                                 <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Peça Menos Consumida</span>
                                 <span id="leastConsumedQty" class="text-xs bg-pink-500/20 text-pink-300 font-bold px-2 py-0.5 rounded">0 un</span>
                             </div>
-                            <p id="leastConsumedName" class="text-sm font-bold text-slate-200 mt-2">-</p>
+                            <p id="leastConsumedName" class="text-sm font-bold mt-2">-</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- GRÁFICO COMPARATIVO -->
-            <div class="lg:col-span-2 bg-slate-900/60 dark:bg-[#111827] border border-slate-800 p-5 rounded-2xl">
-                <h3 class="font-bold text-base text-white mb-4">Comparativo (Estoque vs Saídas vs Solicitado)</h3>
+            <div class="lg:col-span-2 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl card-bg">
+                <h3 class="font-bold text-base mb-4">Comparativo (Estoque vs Saídas vs Solicitado)</h3>
                 <div class="h-64 relative">
                     <canvas id="comparisonChart"></canvas>
                 </div>
@@ -179,10 +176,10 @@
         </div>
 
         <!-- TABELA COMPLETA DE PEÇAS -->
-        <div class="bg-slate-900/60 dark:bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl card-bg">
             <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                 <div>
-                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
                         <i data-lucide="table" class="text-cyan-400 w-5 h-5"></i> Tabela Completa de Peças
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Faça login para habilitar a edição total dos valores, nomes e quantidades</p>
@@ -194,7 +191,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-950/60 dark:bg-slate-900/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                    <thead class="bg-slate-950/60 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
                         <tr>
                             <th class="p-3.5">Nome da Peça</th>
                             <th class="p-3.5 text-center">Estoque Actual</th>
@@ -219,42 +216,42 @@
 
     <!-- MODAL ADICIONAR NOVA PEÇA -->
     <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative card-bg">
             <button onclick="closeAddModal()" class="absolute right-4 top-4 text-slate-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                 <i data-lucide="plus-circle" class="text-cyan-400"></i> Adicionar Nova Peça
             </h3>
 
             <form onsubmit="handleAddPiece(event)" class="space-y-3">
                 <div>
                     <label class="text-xs font-bold text-slate-400 uppercase">Nome da Peça</label>
-                    <input type="text" id="newPartName" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    <input type="text" id="newPartName" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase">Estoque Actual</label>
-                        <input type="number" id="newPartStock" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                        <input type="number" id="newPartStock" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase">Entradas</label>
-                        <input type="number" id="newPartImported" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                        <input type="number" id="newPartImported" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase">Saídas (1 Ano)</label>
-                        <input type="number" id="newPartAnnual" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                        <input type="number" id="newPartAnnual" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase">Qtd Solicitada</label>
-                        <input type="number" id="newPartRequested" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                        <input type="number" id="newPartRequested" value="0" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                     </div>
                 </div>
                 <div>
                     <label class="text-xs font-bold text-slate-400 uppercase">Valor Unitário (US$)</label>
-                    <input type="number" step="0.01" id="newPartPrice" value="0.00" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 mt-1">
+                    <input type="number" step="0.01" id="newPartPrice" value="0.00" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 mt-1">
                 </div>
 
                 <div class="pt-3 flex justify-end space-x-2">
@@ -275,7 +272,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ESTRUTURA DE DADOS OFICIAL (22 ITENS COMPLETOS)
+        // ESTRUTURA DE DADOS OFICIAL (TODOS OS 22 ITENS COM AS QUANTIDADES EXATAS)
         const DATABASE = {
             "ODEWAY": {
                 lastPoValue: 20808.00,
@@ -317,28 +314,32 @@
             lucide.createIcons();
             initChart();
 
-            // Sincronização em Tempo Real com o Firebase
+            // 1. RENDERIZA IMEDIATAMENTE COM OS DADOS LOCAIS (Garante que nunca fica zerado!)
+            renderDashboard();
+
+            // 2. Conecta no Firebase sem permitir apagar a tela se ele estiver vazio
             db.ref("fabricantes").on("value", (snapshot) => {
                 const data = snapshot.val();
-                if (data && data[currentFab]) {
-                    Object.assign(DATABASE, data);
+                if (data && data[currentFab] && data[currentFab].items && data[currentFab].items.length > 0) {
+                    DATABASE[currentFab] = data[currentFab];
                 } else {
-                    // Garante a gravação inicial caso o banco esteja vazio
+                    // Força a gravação da nossa DATABASE completa no banco
                     db.ref("fabricantes").set(DATABASE);
                 }
                 renderDashboard();
             });
         });
 
-        // TEMA CLARO / ESCURO
+        // TEMA CLARO / ESCURO (CORRIGIDO)
         function toggleTheme() {
-            const html = document.documentElement;
+            const body = document.getElementById("appBody");
             const themeText = document.getElementById("themeText");
-            if (html.classList.contains("dark")) {
-                html.classList.remove("dark");
+            
+            body.classList.toggle("light-mode");
+            
+            if (body.classList.contains("light-mode")) {
                 themeText.innerText = "Escuro";
             } else {
-                html.classList.add("dark");
                 themeText.innerText = "Claro";
             }
         }
@@ -503,7 +504,7 @@
         // RENDERIZAÇÃO DO DASHBOARD COMPLETO
         function renderDashboard() {
             const data = DATABASE[currentFab];
-            if (!data) return;
+            if (!data || !data.items) return;
 
             // 1. Last PO Info
             document.getElementById("lastPoValue").innerText = `US$ ${data.lastPoValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
@@ -557,7 +558,7 @@
                 const itemTotal = (item.requested * item.unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
                 const disabledAttr = !isAuthorized ? "disabled" : "";
-                const inputBg = isAuthorized ? "bg-slate-800 text-white border-slate-600 focus:border-cyan-400" : "bg-transparent text-slate-300 border-transparent";
+                const inputBg = isAuthorized ? "bg-slate-800 border-slate-600 focus:border-cyan-400" : "bg-transparent border-transparent";
 
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/60";
