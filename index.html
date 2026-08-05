@@ -362,14 +362,13 @@
             });
         });
 
-        ffunction toggleTheme() {
+        function toggleTheme() {
     const isDark = document.documentElement.classList.toggle('dark');
     const themeText = document.getElementById("themeText");
     if (themeText) {
         themeText.innerText = isDark ? "Claro" : "Escuro";
     }
-}
-
+        }
         function toggleAuth() {
             isAuthorized = !isAuthorized;
             updateAuthUI();
