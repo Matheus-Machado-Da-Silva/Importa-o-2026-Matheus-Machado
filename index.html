@@ -293,7 +293,20 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
+// =========================
+// FIREBASE SAVE (CORRIGIDO)
+// =========================
+async function saveCurrentFabricante() {
+    try {
+        await db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
+        console.log("✔ Dados salvos:", currentFab);
+        return true;
+    } catch (error) {
+        console.error("❌ Erro ao salvar:", error);
+        alert("Erro ao salvar no Firebase.\n\nVerifique as regras do banco ou sua conexão.");
+        return false;
+    }
+}
         // OBJETO COMPLETO DE FABRICANTES
         const DATABASE = {
             "ODEWAY": {
@@ -417,30 +430,43 @@
             renderDashboard();
         }
 
-        function updateFieldValue(index, field, value) {
-            if (!isAuthorized) return;
-            const item = DATABASE[currentFab].items[index];
+        async function updateFieldValue(index, field, value) {
 
-            if (field === 'name') {
-                item.name = value;
-            } else {
-                const parsed = parseFloat(value) || 0;
-                item[field] = parsed >= 0 ? parsed : 0;
-            }
+    if (!isAuthorized) return;
 
-            db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
-            renderDashboard();
-        }
+    const item = DATABASE[currentFab].items[index];
 
-        function deleteItem(index) {
-            if (!isAuthorized) return;
-            if (confirm(`Tem certeza que deseja excluir "${DATABASE[currentFab].items[index].name}"?`)) {
-                DATABASE[currentFab].items.splice(index, 1);
-                db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
-                renderDashboard();
-            }
-        }
+    if (field === "name") {
+        item.name = value;
+    } else {
+        const parsed = parseFloat(value) || 0;
+        item[field] = parsed >= 0 ? parsed : 0;
+    }
 
+    const ok = await saveCurrentFabricante();
+
+    if (ok) {
+        renderDashboard();
+    }
+
+}
+
+     async function deleteItem(index) {
+
+    if (!isAuthorized) return;
+
+    if (!confirm(`Tem certeza que deseja excluir "${DATABASE[currentFab].items[index].name}"?`))
+        return;
+
+    DATABASE[currentFab].items.splice(index, 1);
+
+    const ok = await saveCurrentFabricante();
+
+    if (ok) {
+        renderDashboard();
+    }
+
+}
         function openAddModal() {
             if (!isAuthorized) return;
             document.getElementById("addModal").classList.remove("hidden");
@@ -450,28 +476,46 @@
             document.getElementById("addModal").classList.add("hidden");
         }
 
-        function handleAddPiece(event) {
-            event.preventDefault();
-            if (!isAuthorized) return;
+        async function handleAddPiece(event) {
 
-            if (!DATABASE[currentFab].items) DATABASE[currentFab].items = [];
+    event.preventDefault();
 
-            const newPart = {
-                name: document.getElementById("newPartName").value,
-                stock: parseFloat(document.getElementById("newPartStock").value) || 0,
-                imported: parseFloat(document.getElementById("newPartImported").value) || 0,
-                annualConsumption: parseFloat(document.getElementById("newPartAnnual").value) || 0,
-                requested: parseFloat(document.getElementById("newPartRequested").value) || 0,
-                unitPrice: parseFloat(document.getElementById("newPartPrice").value) || 0
-            };
+    if (!isAuthorized) return;
 
-            DATABASE[currentFab].items.push(newPart);
-            db.ref("fabricantes/" + currentFab).set(DATABASE[currentFab]);
+    if (!DATABASE[currentFab].items)
+        DATABASE[currentFab].items = [];
 
-            closeAddModal();
-            renderDashboard();
-            event.target.reset();
-        }
+    const newPart = {
+
+        name: document.getElementById("newPartName").value.trim(),
+
+        stock: parseFloat(document.getElementById("newPartStock").value) || 0,
+
+        imported: parseFloat(document.getElementById("newPartImported").value) || 0,
+
+        annualConsumption: parseFloat(document.getElementById("newPartAnnual").value) || 0,
+
+        requested: parseFloat(document.getElementById("newPartRequested").value) || 0,
+
+        unitPrice: parseFloat(document.getElementById("newPartPrice").value) || 0
+
+    };
+
+    DATABASE[currentFab].items.push(newPart);
+
+    const ok = await saveCurrentFabricante();
+
+    if (ok) {
+
+        closeAddModal();
+
+        renderDashboard();
+
+        event.target.reset();
+
+    }
+
+}
 
         function initChart() {
             const ctx = document.getElementById('comparisonChart').getContext('2d');
