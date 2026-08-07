@@ -287,10 +287,25 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        function salvarPecaDireto() {
-    console.log("Iniciando salvamento...");
+function salvarPecaDireto() {
+    console.log("👉 PASSAGEM 1: Entrou na funcao");
 
     const elNome = document.getElementById('newPartName');
+    console.log("👉 PASSAGEM 2: Pegou elNome ->", elNome);
+
+    if (!elNome) {
+        alert("Erro: O campo com id='newPartName' NAO existe no seu HTML!");
+        return;
+    }
+
+    const nome = elNome.value ? elNome.value.trim() : '';
+    console.log("👉 PASSAGEM 3: Nome digitado ->", nome);
+
+    if (!nome) {
+        alert("Por favor, preencha o Nome da Peça!");
+        return;
+    }
+
     const elEstoque = document.getElementById('newPartStock');
     const elEntradas = document.getElementById('newPartImported');
     const elSaidas = document.getElementById('newPartAnnual');
@@ -298,23 +313,16 @@
     const elValor = document.getElementById('newPartPrice');
     const elFab = document.getElementById('fabSelect');
 
-    if (!elNome) {
-        alert("Erro: O campo de nome 'newPartName' não foi encontrado!");
-        return;
-    }
-
-    const nome = elNome.value.trim();
-    if (!nome) {
-        alert("Por favor, preencha o Nome da Peça!");
-        return;
-    }
-
-    const fabricante = elFab ? elFab.value : 'ODEWAY';
+    const fabricante = (elFab && elFab.value) ? elFab.value : 'ODEWAY';
     const estoque = parseFloat(elEstoque ? elEstoque.value : 0) || 0;
     const entradas = parseFloat(elEntradas ? elEntradas.value : 0) || 0;
     const saidas = parseFloat(elSaidas ? elSaidas.value : 0) || 0;
     const solicitada = parseFloat(elSolicitada ? elSolicitada.value : 0) || 0;
     const valor = parseFloat(elValor ? elValor.value : 0) || 0;
+
+    console.log("👉 PASSAGEM 4: Valores lidos com sucesso!", {
+        nome, fabricante, estoque, entradas, saidas, solicitada, valor
+    });
 
     const novaPeca = {
         name: nome,
@@ -325,18 +333,29 @@
         price: valor
     };
 
-    if (typeof firebase !== 'undefined' && firebase.database) {
-        firebase.database().ref('parts/' + fabricante).push(novaPeca)
+    console.log("👉 PASSAGEM 5: Tentando enviar ao Firebase...");
+
+    if (typeof firebase === 'undefined') {
+        alert("Erro: A biblioteca do Firebase nao foi carregada no HTML!");
+        return;
+    }
+
+    // Tenta salvar usando o db global
+    try {
+        firebase.database().ref("fabricantes/" + fabricante + "/pecas").push(novaPeca)
             .then(() => {
-                alert("✅ Peça salva com sucesso no banco de dados!");
+                console.log("👉 PASSAGEM 6: Salvo no Firebase com SUCESSO!");
+                alert("✅ Peça salva com sucesso no Firebase!");
                 if (typeof closeAddModal === 'function') closeAddModal();
+                if (typeof render === 'function') render();
             })
             .catch((err) => {
-                console.error("Erro Firebase:", err);
-                alert("Erro ao salvar no banco: " + err.message);
+                console.error("❌ ERRO NO FIREBASE:", err);
+                alert("Erro Firebase: " + err.message);
             });
-    } else {
-        alert("Erro: Firebase não está ativo nesta página!");
+    } catch (e) {
+        console.error("❌ ERRO AO CHAMAR FIREBASE:", e);
+        alert("Erro de conexao: " + e.message);
     }
 }
         const firebaseConfig = {
