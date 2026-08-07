@@ -290,30 +290,22 @@
 function salvarPecaDireto(event) {
     if (event) event.preventDefault();
 
-    console.log("👉 PASSAGEM 1: Entrou na funcao");
+    console.log("Iniciando salvamento com salvarPecaDireto...");
 
+    // 1. Captura os elementos e valores do modal
     const elNome = document.getElementById('newPartName');
-    console.log("👉 PASSAGEM 2: Pegou elNome ->", elNome);
-
-    if (!elNome) {
-        alert("Erro: O campo com id='newPartName' NAO existe no seu HTML!");
-        return;
-    }
-
-    const nome = elNome.value ? elNome.value.trim() : '';
-    console.log("👉 PASSAGEM 3: Nome digitado ->", nome);
-
-    if (!nome) {
-        alert("Por favor, preencha o Nome da Peça!");
-        return;
-    }
-
     const elEstoque = document.getElementById('newPartStock');
     const elEntradas = document.getElementById('newPartImported');
     const elSaidas = document.getElementById('newPartAnnual');
     const elSolicitada = document.getElementById('newPartRequested');
     const elValor = document.getElementById('newPartPrice');
     const elFab = document.getElementById('fabSelect');
+
+    const nome = elNome ? elNome.value.trim() : '';
+    if (!nome) {
+        alert("Por favor, preencha o Nome da Peça!");
+        return;
+    }
 
     const fabricante = (elFab && elFab.value) ? elFab.value : 'ODEWAY';
     const estoque = parseFloat(elEstoque ? elEstoque.value : 0) || 0;
@@ -322,11 +314,6 @@ function salvarPecaDireto(event) {
     const solicitada = parseFloat(elSolicitada ? elSolicitada.value : 0) || 0;
     const valor = parseFloat(elValor ? elValor.value : 0) || 0;
 
-    console.log("👉 PASSAGEM 4: Valores lidos com sucesso!", {
-        nome, fabricante, estoque, entradas, saidas, solicitada, valor
-    });
-
-    // Chaves ajustadas para o padrão do seu DATABASE (annualConsumption e unitPrice)
     const novaPeca = {
         name: nome,
         stock: estoque,
@@ -336,14 +323,9 @@ function salvarPecaDireto(event) {
         unitPrice: valor
     };
 
-    console.log("👉 PASSAGEM 5: Tentando enviar ao Firebase...");
+    console.log("Enviando para o Firebase...", novaPeca);
 
-    if (typeof firebase === 'undefined') {
-        alert("Erro: A biblioteca do Firebase nao foi carregada no HTML!");
-        return;
-    }
-
-    // Garante inicialização com a URL exata do seu projeto 2026
+    // Configuração com a URL exata do seu projeto no Firebase
     const firebaseConfig = {
         databaseURL: "https://dashboard-importacao-2026-default-rtdb.firebaseio.com"
     };
@@ -357,24 +339,20 @@ function salvarPecaDireto(event) {
 
     const database = firebase.database(dbApp);
 
-    // Salva no caminho correto: "items"
+    // Salva a peça no Firebase na rota do fabricante
     database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
         .then(() => {
-            console.log("👉 PASSAGEM 6: Salvo no Firebase com SUCESSO!");
-            alert("✅ Peça salva com sucesso no Firebase!");
+            alert("✅ Peça '" + nome + "' salva com sucesso!");
 
-            // Atualiza a memória local para não sumir nada da tela
-            if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
-                if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
-                DATABASE[fabricante].items.push(novaPeca);
-            }
-
+            // Fecha o modal
             if (typeof closeAddModal === 'function') closeAddModal();
+
+            // Recarrega a página para puxar os dados atualizados do banco
             window.location.reload();
         })
-        .catch((err) => {
-            console.error("❌ ERRO NO FIREBASE:", err);
-            alert("Erro Firebase: " + err.message);
+        .catch((error) => {
+            console.error("❌ ERRO NO FIREBASE:", error);
+            alert("Erro ao salvar no Firebase: " + error.message);
         });
 }
   const firebaseConfig = {
