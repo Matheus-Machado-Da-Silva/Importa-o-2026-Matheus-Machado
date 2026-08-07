@@ -622,11 +622,6 @@ function salvarPecaDireto(event) {
         .then(() => {
             alert("✅ Peça '" + nome + "' salva com sucesso!");
 
-            if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
-                if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
-                DATABASE[fabricante].items.push(novaPeca);
-            }
-
             if (typeof closeAddModal === 'function') closeAddModal();
 
             if (typeof renderDashboard === 'function') {
