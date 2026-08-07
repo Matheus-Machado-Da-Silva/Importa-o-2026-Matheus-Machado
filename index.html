@@ -287,7 +287,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-function salvarPecaDireto() {
+function salvarPecaDireto(event) {
+    if (event) event.preventDefault();
+
     console.log("👉 PASSAGEM 1: Entrou na funcao");
 
     const elNome = document.getElementById('newPartName');
@@ -324,13 +326,14 @@ function salvarPecaDireto() {
         nome, fabricante, estoque, entradas, saidas, solicitada, valor
     });
 
+    // Chaves ajustadas para o padrão do seu DATABASE (annualConsumption e unitPrice)
     const novaPeca = {
         name: nome,
         stock: estoque,
         imported: entradas,
-        annual: saidas,
+        annualConsumption: saidas,
         requested: solicitada,
-        price: valor
+        unitPrice: valor
     };
 
     console.log("👉 PASSAGEM 5: Tentando enviar ao Firebase...");
@@ -340,23 +343,39 @@ function salvarPecaDireto() {
         return;
     }
 
-    // Tenta salvar usando o db global
-    try {
-        firebase.database().ref("fabricantes/" + fabricante + "/pecas").push(novaPeca)
-            .then(() => {
-                console.log("👉 PASSAGEM 6: Salvo no Firebase com SUCESSO!");
-                alert("✅ Peça salva com sucesso no Firebase!");
-                if (typeof closeAddModal === 'function') closeAddModal();
-                if (typeof render === 'function') render();
-            })
-            .catch((err) => {
-                console.error("❌ ERRO NO FIREBASE:", err);
-                alert("Erro Firebase: " + err.message);
-            });
-    } catch (e) {
-        console.error("❌ ERRO AO CHAMAR FIREBASE:", e);
-        alert("Erro de conexao: " + e.message);
+    // Garante inicialização com a URL exata do seu projeto 2026
+    const firebaseConfig = {
+        databaseURL: "https://dashboard-importacao-2026-default-rtdb.firebaseio.com"
+    };
+
+    let dbApp;
+    if (!firebase.apps.length) {
+        dbApp = firebase.initializeApp(firebaseConfig);
+    } else {
+        dbApp = firebase.app();
     }
+
+    const database = firebase.database(dbApp);
+
+    // Salva no caminho correto: "items"
+    database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
+        .then(() => {
+            console.log("👉 PASSAGEM 6: Salvo no Firebase com SUCESSO!");
+            alert("✅ Peça salva com sucesso no Firebase!");
+
+            // Atualiza a memória local para não sumir nada da tela
+            if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
+                if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
+                DATABASE[fabricante].items.push(novaPeca);
+            }
+
+            if (typeof closeAddModal === 'function') closeAddModal();
+            window.location.reload();
+        })
+        .catch((err) => {
+            console.error("❌ ERRO NO FIREBASE:", err);
+            alert("Erro Firebase: " + err.message);
+        });
 }
   const firebaseConfig = {
     databaseURL: "https://dashboard-importacao-2026-default-rtdb.firebaseio.com"
