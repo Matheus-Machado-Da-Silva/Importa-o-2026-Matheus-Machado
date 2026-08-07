@@ -475,20 +475,45 @@ async function saveCurrentFabricante() {
         function closeAddModal() {
             document.getElementById("addModal").classList.add("hidden");
         }
-
+function listenToParts(fabricante) {
+    const fab = fabricante || (document.getElementById('fabSelect') ? document.getElementById('fabSelect').value : 'ODEWAY');
+    
+    // Escuta as alterações no banco em tempo real
+    firebase.database().ref('parts/' + fab).on('value', (snapshot) => {
+        const data = snapshot.val();
+        const partsList = [];
+        
+        if (data) {
+            Object.keys(data).forEach(key => {
+                partsList.push({
+                    id: key,
+                    ...data[key]
+                });
+            });
+        }
+        
+        // Chame a sua função existente que desenha a tabela/gráficos na tela
+        if (typeof renderPartsTable === 'function') {
+            renderPartsTable(partsList);
+        } else if (typeof updateUI === 'function') {
+            updateUI(partsList);
+        }
+    });
+}
+        
 function handleAddPiece(e) {
     e.preventDefault();
 
-    // 1. Pega o fabricante atualmente selecionado
+    // 1. Pega o fabricante selecionado no select do topo
     const fabSelect = document.getElementById('fabSelect');
     const currentFab = fabSelect ? fabSelect.value : 'ODEWAY';
 
-    // 2. Pega os valores exatamente pelos IDs do seu HTML
+    // 2. Coleta e converte os valores dos campos do modal
     const name = document.getElementById('newPartName').value.trim();
-    const stock = parseInt(document.getElementById('newPartStock').value) || 0;
-    const imported = parseInt(document.getElementById('newPartImported').value) || 0;
-    const annual = parseInt(document.getElementById('newPartAnnual').value) || 0;
-    const requested = parseInt(document.getElementById('newPartRequested').value) || 0;
+    const stock = parseFloat(document.getElementById('newPartStock').value) || 0;
+    const imported = parseFloat(document.getElementById('newPartImported').value) || 0;
+    const annual = parseFloat(document.getElementById('newPartAnnual').value) || 0;
+    const requested = parseFloat(document.getElementById('newPartRequested').value) || 0;
     const price = parseFloat(document.getElementById('newPartPrice').value) || 0;
 
     if (!name) {
@@ -496,26 +521,27 @@ function handleAddPiece(e) {
         return;
     }
 
-    // 3. Estrutura os dados para salvar
+    // 3. Monta o objeto da peça
     const newPiece = {
         name: name,
         stock: stock,
         imported: imported,
         annual: annual,
         requested: requested,
-        price: price
+        price: price,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
     };
 
-    // 4. Salva no Firebase Database
+    // 4. Salva no Firebase Database na chave do fabricante atual
     firebase.database().ref('parts/' + currentFab).push(newPiece)
         .then(() => {
             // Limpa o formulário e fecha o modal
             e.target.reset();
             closeAddModal();
-            alert('Peça adicionada com sucesso!');
+            alert('Peça salva com sucesso no banco de dados!');
         })
         .catch((error) => {
-            console.error("Erro ao salvar:", error);
+            console.error("Erro ao salvar no Firebase:", error);
             alert('Erro ao salvar no banco de dados: ' + error.message);
         });
 }
