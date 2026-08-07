@@ -514,21 +514,30 @@ async function saveCurrentFabricante() {
 
 }
 
-     async function deleteItem(index) {
-
+   async function deleteItem(index) {
     if (!isAuthorized) return;
 
-    if (!confirm(`Tem certeza que deseja excluir "${DATABASE[currentFab].items[index].name}"?`))
-        return;
+    let items = DATABASE[currentFab] && DATABASE[currentFab].items ? DATABASE[currentFab].items : [];
+    let itemArray = Array.isArray(items) ? items : Object.entries(items).map(([id, val]) => ({ id, ...val }));
 
-    DATABASE[currentFab].items.splice(index, 1);
+    const targetItem = itemArray[index];
+    if (!targetItem) return;
 
-    const ok = await saveCurrentFabricante();
+    if (!confirm(`Tem certeza que deseja excluir "${targetItem.name}"?`)) return;
 
-    if (ok) {
-        renderDashboard();
+    if (targetItem.id) {
+        // Se tem ID do Firebase, apaga direto lá
+        const fabricante = currentFab || 'ODEWAY';
+        await firebase.database().ref(`fabricantes/${fabricante}/items/${targetItem.id}`).remove();
+        window.location.reload();
+    } else {
+        // Fallback caso seja array local
+        items.splice(index, 1);
+        const ok = await saveCurrentFabricante();
+        if (ok) {
+            renderDashboard();
+        }
     }
-
 }
         function openAddModal() {
             if (!isAuthorized) return;
