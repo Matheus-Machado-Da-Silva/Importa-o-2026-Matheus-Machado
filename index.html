@@ -704,6 +704,8 @@ function renderDashboard() {
 if (data.items) {
     items = Array.isArray(data.items) ? data.items : Object.values(data.items);
 }
+document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
     let totalCurrentPo = 0;
     let totalDailyCons = 0;
     let totalStock = 0;
