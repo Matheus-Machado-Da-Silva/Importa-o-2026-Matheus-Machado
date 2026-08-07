@@ -623,19 +623,29 @@ function salvarPecaDireto(event) {
         dbApp = firebase.app();
     }
 
-    const database = firebase.database(dbApp);
+   database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
+    .then(() => {
+        alert("✅ Peça '" + nome + "' salva com sucesso!");
+        
+        // Atualiza a lista 'items' local para exibir na hora na tabela
+        if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
+            if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
+            DATABASE[fabricante].items.push(novaPeca);
+        }
 
-    database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
-        .then(() => {
-            alert("✅ Peça '" + nome + "' salva com sucesso!");
-            if (typeof closeAddModal === 'function') closeAddModal();
+        if (typeof closeAddModal === 'function') closeAddModal();
+        
+        // Se houver uma função para redesenhar a tabela, chama ela, senão recarrega a página
+        if (typeof renderTable === 'function') {
+            renderTable();
+        } else {
             window.location.reload();
-        })
-        .catch((error) => {
-            console.error("❌ ERRO NO FIREBASE:", error);
-            alert("Erro ao salvar no Firebase: " + error.message);
-        });
-}
+        }
+    })
+    .catch((error) => {
+        console.error("❌ ERRO NO FIREBASE:", error);
+        alert("Erro ao salvar no Firebase: " + error.message);
+    });
 
         function initChart() {
             const ctx = document.getElementById('comparisonChart').getContext('2d');
