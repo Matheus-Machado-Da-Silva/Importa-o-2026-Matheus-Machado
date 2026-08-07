@@ -325,7 +325,6 @@ function salvarPecaDireto(event) {
 
     console.log("Enviando para o Firebase...", novaPeca);
 
-    // Configuração com a URL exata do seu projeto no Firebase
     const firebaseConfig = {
         databaseURL: "https://dashboard-importacao-2026-default-rtdb.firebaseio.com"
     };
@@ -339,15 +338,15 @@ function salvarPecaDireto(event) {
 
     const database = firebase.database(dbApp);
 
-    // Salva a peça no Firebase na rota do fabricante
+    // Salva a peça diretamente no Firebase
     database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
         .then(() => {
             alert("✅ Peça '" + nome + "' salva com sucesso!");
 
-            // Fecha o modal
+            // Fecha o modal de cadastro
             if (typeof closeAddModal === 'function') closeAddModal();
 
-            // Recarrega a página para puxar os dados atualizados do banco
+            // Recarrega a página para puxar a lista atualizada do Firebase sem erros
             window.location.reload();
         })
         .catch((error) => {
@@ -679,7 +678,8 @@ function selectPartForChart(index) {
     } else {
         selectedPartIndex = index;
     }
-    const items = DATABASE[currentFab]?.items || [];
+    const rawItems = DATABASE[currentFab]?.items || [];
+const items = Array.isArray(rawItems) ? rawItems : Object.values(rawItems);
     updateChart(items);
 }
 
@@ -700,11 +700,10 @@ function updateChart(items) {
 
 function renderDashboard() {
     const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
-    const items = data.items || [];
-
-    document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-    document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
-
+ let items = [];
+if (data.items) {
+    items = Array.isArray(data.items) ? data.items : Object.values(data.items);
+}
     let totalCurrentPo = 0;
     let totalDailyCons = 0;
     let totalStock = 0;
