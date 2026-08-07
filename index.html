@@ -292,7 +292,6 @@ function salvarPecaDireto(event) {
 
     console.log("Iniciando salvamento com salvarPecaDireto...");
 
-    // 1. Captura os elementos e valores do modal
     const elNome = document.getElementById('newPartName');
     const elEstoque = document.getElementById('newPartStock');
     const elEntradas = document.getElementById('newPartImported');
@@ -307,7 +306,7 @@ function salvarPecaDireto(event) {
         return;
     }
 
-    const fabricante = (elFab && elFab.value) ? elFab.value : 'ODEWAY';
+    const fabricante = (elFab && elFab.value) ? elFab.value : (typeof currentFab !== 'undefined' ? currentFab : 'ODEWAY');
     const estoque = parseFloat(elEstoque ? elEstoque.value : 0) || 0;
     const entradas = parseFloat(elEntradas ? elEntradas.value : 0) || 0;
     const saidas = parseFloat(elSaidas ? elSaidas.value : 0) || 0;
@@ -338,15 +337,11 @@ function salvarPecaDireto(event) {
 
     const database = firebase.database(dbApp);
 
-    // Salva a peça diretamente no Firebase
+    // Salva direto no nó do Firebase correspondente ao fabricante
     database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
         .then(() => {
             alert("✅ Peça '" + nome + "' salva com sucesso!");
-
-            // Fecha o modal de cadastro
             if (typeof closeAddModal === 'function') closeAddModal();
-
-            // Recarrega a página para puxar a lista atualizada do Firebase sem erros
             window.location.reload();
         })
         .catch((error) => {
