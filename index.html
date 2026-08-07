@@ -568,30 +568,32 @@ async function saveCurrentFabricante() {
         }
 function listenToParts(fabricante) {
     const fab = fabricante || (document.getElementById('fabSelect') ? document.getElementById('fabSelect').value : 'ODEWAY');
-    
+
     // Escuta as alterações no banco em tempo real
-    firebase.database().ref('parts/' + fab).on('value', (snapshot) => {
-        const data = snapshot.val();
-        const partsList = [];
-        
-        if (data) {
-            Object.keys(data).forEach(key => {
-                partsList.push({
-                    id: key,
-                    ...data[key]
+    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+        firebase.database().ref('parts/' + fab).on('value', (snapshot) => {
+            const data = snapshot.val();
+            const partsList = [];
+
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    partsList.push({
+                        id: key,
+                        ...data[key]
+                    });
                 });
-            });
-        }
-        
-        // Chame a sua função existente que desenha a tabela/gráficos na tela
-        if (typeof renderPartsTable === 'function') {
-            renderPartsTable(partsList);
-        } else if (typeof updateUI === 'function') {
-            updateUI(partsList);
-        }
-    });
+            }
+
+            // Atualiza a interface se a função existir
+            if (typeof renderPartsTable === 'function') {
+                renderPartsTable(partsList);
+            } else if (typeof updateUI === 'function') {
+                updateUI(partsList);
+            }
+        });
+    }
 }
-        
+
 function salvarPecaDireto(event) {
     if (event) event.preventDefault();
 
@@ -642,57 +644,58 @@ function salvarPecaDireto(event) {
         dbApp = firebase.app();
     }
 
-   database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
-    .then(() => {
-        alert("✅ Peça '" + nome + "' salva com sucesso!");
-        
-        // Atualiza a lista 'items' local para exibir na hora na tabela
-        if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
-            if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
-            DATABASE[fabricante].items.push(novaPeca);
-        }
+    const database = firebase.database(dbApp);
 
-        if (typeof closeAddModal === 'function') closeAddModal();
-        
-        // Se houver uma função para redesenhar a tabela, chama ela, senão recarrega a página
-        if (typeof renderTable === 'function') {
-            renderTable();
-        } else {
-            window.location.reload();
+    database.ref("fabricantes/" + fabricante + "/items").push(novaPeca)
+        .then(() => {
+            alert("✅ Peça '" + nome + "' salva com sucesso!");
+
+            if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
+                if (!DATABASE[fabricante].items) DATABASE[fabricante].items = [];
+                DATABASE[fabricante].items.push(novaPeca);
+            }
+
+            if (typeof closeAddModal === 'function') closeAddModal();
+
+            if (typeof renderDashboard === 'function') {
+                renderDashboard();
+            } else {
+                window.location.reload();
+            }
+        })
+        .catch((error) => {
+            console.error("❌ ERRO NO FIREBASE:", error);
+            alert("Erro ao salvar no Firebase: " + error.message);
+        });
+}
+
+function initChart() {
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [
+                { label: 'Estoque Actual', data: [], backgroundColor: '#94a3b8' },
+                { label: 'Saídas (1 Ano)', data: [], backgroundColor: '#d97706' },
+                { label: 'Qtd Solicitada', data: [], backgroundColor: '#0284c7' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#475569', font: { size: 11, weight: 'bold' } } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
+                y: { ticks: { color: '#64748b' }, grid: { color: '#f1f5f9' } }
+            }
         }
-    })
-    .catch((error) => {
-        console.error("❌ ERRO NO FIREBASE:", error);
-        alert("Erro ao salvar no Firebase: " + error.message);
     });
+}
 
-        function initChart() {
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: 'Estoque Actual', data: [], backgroundColor: '#94a3b8' },
-                        { label: 'Saídas (1 Ano)', data: [], backgroundColor: '#d97706' },
-                        { label: 'Qtd Solicitada', data: [], backgroundColor: '#0284c7' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#475569', font: { size: 11, weight: 'bold' } } }
-                    },
-                    scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b' }, grid: { color: '#f1f5f9' } }
-                    }
-                }
-            });
-        }
-
-        function selectPartForChart(index) {
+function selectPartForChart(index) {
     if (selectedPartIndex === index) {
         selectedPartIndex = null;
     } else {
@@ -717,128 +720,125 @@ function updateChart(items) {
     chartInstance.update();
 }
 
-        function renderDashboard() {
-            const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
-            const items = data.items || [];
+function renderDashboard() {
+    const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
+    const items = data.items || [];
 
-            document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
+    document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
 
-            let totalCurrentPo = 0;
-            let totalDailyCons = 0;
-            let totalStock = 0;
+    let totalCurrentPo = 0;
+    let totalDailyCons = 0;
+    let totalStock = 0;
 
-            let mostConsumed = { name: '-', qty: -1 };
-            let leastConsumed = { name: '-', qty: Infinity };
+    let mostConsumed = { name: '-', qty: -1 };
+    let leastConsumed = { name: '-', qty: Infinity };
 
-            items.forEach(item => {
-                totalCurrentPo += (item.requested * item.unitPrice);
-                const daily = item.annualConsumption / 365;
-                totalDailyCons += daily;
-                totalStock += item.stock;
+    items.forEach(item => {
+        totalCurrentPo += (item.requested * item.unitPrice);
+        const daily = item.annualConsumption / 365;
+        totalDailyCons += daily;
+        totalStock += item.stock;
 
-                if (item.annualConsumption > mostConsumed.qty) {
-                    mostConsumed = { name: item.name, qty: item.annualConsumption };
-                }
-                if (item.annualConsumption < leastConsumed.qty) {
-                    leastConsumed = { name: item.name, qty: item.annualConsumption };
-                }
-            });
-
-            document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            document.getElementById("avgDailyCons").innerText = `${totalDailyCons.toFixed(2)} un/dia`;
-
-            const avgCoverage = totalDailyCons > 0 ? Math.round(totalStock / totalDailyCons) : 0;
-            document.getElementById("stockCoverage").innerText = `${avgCoverage} Dias`;
-
-            document.getElementById("mostConsumedName").innerText = mostConsumed.qty >= 0 ? mostConsumed.name : '-';
-            document.getElementById("mostConsumedQty").innerText = `${mostConsumed.qty >= 0 ? mostConsumed.qty : 0} un/ano`;
-
-            document.getElementById("leastConsumedName").innerText = leastConsumed.qty === Infinity ? '-' : leastConsumed.name;
-            document.getElementById("leastConsumedQty").innerText = leastConsumed.qty === Infinity ? '0 un/ano' : `${leastConsumed.qty} un/ano`;
-
-            updateChart(items);
-
-            const tbody = document.getElementById("partsTableBody");
-            tbody.innerHTML = "";
-
-            if (items.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">Nenhuma peça cadastrada para este fabricante. Clique em "Adicionar Peça" para começar.</td></tr>`;
-                return;
-            }
-
-            items.forEach((item, index) => {
-                const dailyCons = (item.annualConsumption / 365).toFixed(2);
-                const coverageDays = dailyCons > 0 ? Math.round(item.stock / dailyCons) : 0;
-                const itemTotal = (item.requested * item.unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-
-                const disabledAttr = !isAuthorized ? "disabled" : "";
-
-                const tr = document.createElement("tr");
-tr.className = "hover:bg-slate-50 transition border-b border-slate-100 cursor-pointer";
-
-tr.onclick = (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.closest('button')) return;
-    selectPartForChart(index);
-};
-
-                tr.innerHTML = `
-                    <td class="p-3">
-                        <input type="text" value="${item.name}" ${disabledAttr} onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full px-2 py-1 rounded-lg text-sm font-semibold text-slate-800">
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" value="${item.stock}" ${disabledAttr} onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm font-bold text-slate-700">
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" value="${item.imported}" ${disabledAttr} onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm text-slate-600">
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" value="${item.annualConsumption}" ${disabledAttr} onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm text-slate-600">
-                    </td>
-                    <td class="p-3 text-center text-xs font-medium text-slate-500">
-                        ${dailyCons} /d
-                    </td>
-                    <td class="p-3 text-center">
-                        <span class="px-2.5 py-1 rounded-md text-xs font-bold ${coverageDays < 30 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'}">
-                            ${coverageDays} d
-                        </span>
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" value="${item.requested}" ${disabledAttr} onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm font-bold text-slate-800">
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" step="0.01" value="${item.unitPrice}" ${disabledAttr} onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-20 text-center px-1 py-1 rounded-lg text-sm text-slate-700">
-                    </td>
-                    <td class="p-3 text-right font-bold text-blue-600">
-                        US$ ${itemTotal}
-                    </td>
-                    <td class="p-3 text-center">
-                        <button onclick="deleteItem(${index})" ${disabledAttr} class="text-slate-400 hover:text-rose-500 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                `;
-
-                tbody.appendChild(tr);
-            });
-
-            lucide.createIcons();
+        if (item.annualConsumption > mostConsumed.qty) {
+            mostConsumed = { name: item.name, qty: item.annualConsumption };
         }
-   function toggleTheme() {
-    // 1. Alterna o CSS do seu <style> (light-mode)
+        if (item.annualConsumption < leastConsumed.qty) {
+            leastConsumed = { name: item.name, qty: item.annualConsumption };
+        }
+    });
+
+    document.getElementById("currentPoValue").innerText = `US$ ${totalCurrentPo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    document.getElementById("avgDailyCons").innerText = `${totalDailyCons.toFixed(2)} un/dia`;
+
+    const avgCoverage = totalDailyCons > 0 ? Math.round(totalStock / totalDailyCons) : 0;
+    document.getElementById("stockCoverage").innerText = `${avgCoverage} Dias`;
+
+    document.getElementById("mostConsumedName").innerText = mostConsumed.qty >= 0 ? mostConsumed.name : '-';
+    document.getElementById("mostConsumedQty").innerText = `${mostConsumed.qty >= 0 ? mostConsumed.qty : 0} un/ano`;
+
+    document.getElementById("leastConsumedName").innerText = leastConsumed.qty === Infinity ? '-' : leastConsumed.name;
+    document.getElementById("leastConsumedQty").innerText = leastConsumed.qty === Infinity ? '0 un/ano' : `${leastConsumed.qty} un/ano`;
+
+    updateChart(items);
+
+    const tbody = document.getElementById("partsTableBody");
+    tbody.innerHTML = "";
+
+    if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400 font-medium">Nenhuma peça cadastrada para este fabricante. Clique em "Adicionar Peça" para começar.</td></tr>`;
+        return;
+    }
+
+    items.forEach((item, index) => {
+        const dailyCons = (item.annualConsumption / 365).toFixed(2);
+        const coverageDays = dailyCons > 0 ? Math.round(item.stock / dailyCons) : 0;
+        const itemTotal = (item.requested * item.unitPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+        const disabledAttr = !isAuthorized ? "disabled" : "";
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50 transition border-b border-slate-100 cursor-pointer";
+
+        tr.onclick = (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.closest('button')) return;
+            selectPartForChart(index);
+        };
+
+        tr.innerHTML = `
+            <td class="p-3">
+                <input type="text" value="${item.name}" ${disabledAttr} onchange="updateFieldValue(${index}, 'name', this.value)" class="w-full px-2 py-1 rounded-lg text-sm font-semibold text-slate-800">
+            </td>
+            <td class="p-3 text-center">
+                <input type="number" value="${item.stock}" ${disabledAttr} onchange="updateFieldValue(${index}, 'stock', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm font-bold text-slate-700">
+            </td>
+            <td class="p-3 text-center">
+                <input type="number" value="${item.imported}" ${disabledAttr} onchange="updateFieldValue(${index}, 'imported', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm text-slate-600">
+            </td>
+            <td class="p-3 text-center">
+                <input type="number" value="${item.annualConsumption}" ${disabledAttr} onchange="updateFieldValue(${index}, 'annualConsumption', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm text-slate-600">
+            </td>
+            <td class="p-3 text-center text-xs font-medium text-slate-500">
+                ${dailyCons} /d
+            </td>
+            <td class="p-3 text-center">
+                <span class="px-2.5 py-1 rounded-md text-xs font-bold ${coverageDays < 30 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'}">
+                    ${coverageDays} d
+                </span>
+            </td>
+            <td class="p-3 text-center">
+                <input type="number" value="${item.requested}" ${disabledAttr} onchange="updateFieldValue(${index}, 'requested', this.value)" class="w-16 text-center px-1 py-1 rounded-lg text-sm font-bold text-slate-800">
+            </td>
+            <td class="p-3 text-center">
+                <input type="number" step="0.01" value="${item.unitPrice}" ${disabledAttr} onchange="updateFieldValue(${index}, 'unitPrice', this.value)" class="w-20 text-center px-1 py-1 rounded-lg text-sm text-slate-700">
+            </td>
+            <td class="p-3 text-right font-bold text-blue-600">
+                US$ ${itemTotal}
+            </td>
+            <td class="p-3 text-center">
+                <button onclick="deleteItem(${index})" ${disabledAttr} class="text-slate-400 hover:text-rose-500 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    if (window.lucide) lucide.createIcons();
+}
+
+function toggleTheme() {
     const isLight = document.body.classList.toggle('light-mode');
     
-    // 2. Alterna a classe 'dark' no HTML (para componentes Tailwind)
     if (isLight) {
         document.documentElement.classList.remove('dark');
     } else {
         document.documentElement.classList.add('dark');
     }
     
-    // 3. Atualiza o texto do botão
     const themeText = document.getElementById("themeText");
     if (themeText) {
-        // Se tem light-mode, a tela é CLARA, então o botão deve oferecer trocar para ESCURO
         themeText.innerText = isLight ? "Escuro" : "Claro";
     }
 }
