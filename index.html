@@ -340,11 +340,15 @@
     }
 }
         const firebaseConfig = {
-            databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
-        };
+    apiKey: "AIzaSy...", // Não precisa alterar se não souber, o Realtime DB só precisa do databaseURL
+    databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
+};
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+// Inicializa apenas se ainda não foi inicializado
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
 // =========================
 // FIREBASE SAVE (CORRIGIDO)
 // =========================
@@ -553,48 +557,70 @@ function listenToParts(fabricante) {
     });
 }
         
-function handleAddPiece(e) {
-    e.preventDefault();
+function handleAddPiece(event) {
+    // Evita o recarregamento automático do formulário
+    if (event) event.preventDefault();
 
-    // 1. Pega o fabricante selecionado no select do topo
-    const fabSelect = document.getElementById('fabSelect');
-    const currentFab = fabSelect ? fabSelect.value : 'ODEWAY';
+    console.log("Iniciando salvamento com handleAddPiece...");
 
-    // 2. Coleta e converte os valores dos campos do modal
-    const name = document.getElementById('newPartName').value.trim();
-    const stock = parseFloat(document.getElementById('newPartStock').value) || 0;
-    const imported = parseFloat(document.getElementById('newPartImported').value) || 0;
-    const annual = parseFloat(document.getElementById('newPartAnnual').value) || 0;
-    const requested = parseFloat(document.getElementById('newPartRequested').value) || 0;
-    const price = parseFloat(document.getElementById('newPartPrice').value) || 0;
+    // 1. Captura os elementos e valores do modal
+    const elNome = document.getElementById('newPartName');
+    const elEstoque = document.getElementById('newPartStock');
+    const elEntradas = document.getElementById('newPartImported');
+    const elSaidas = document.getElementById('newPartAnnual');
+    const elSolicitada = document.getElementById('newPartRequested');
+    const elValor = document.getElementById('newPartPrice');
+    const elFab = document.getElementById('fabSelect');
 
-    if (!name) {
-        alert('Por favor, informe o nome da peça!');
+    const nome = elNome ? elNome.value.trim() : '';
+    if (!nome) {
+        alert("Por favor, preencha o Nome da Peça!");
         return;
     }
 
-    // 3. Monta o objeto da peça
-    const newPiece = {
-        name: name,
-        stock: stock,
-        imported: imported,
-        annual: annual,
-        requested: requested,
-        price: price,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
+    const fabricante = elFab ? elFab.value : 'ODEWAY';
+    const estoque = parseFloat(elEstoque ? elEstoque.value : 0) || 0;
+    const entradas = parseFloat(elEntradas ? elEntradas.value : 0) || 0;
+    const saidas = parseFloat(elSaidas ? elSaidas.value : 0) || 0;
+    const solicitada = parseFloat(elSolicitada ? elSolicitada.value : 0) || 0;
+    const valor = parseFloat(elValor ? elValor.value : 0) || 0;
+
+    // 2. Estrutura do objeto
+    const novaPeca = {
+        name: nome,
+        stock: estoque,
+        imported: entradas,
+        annual: saidas,
+        requested: solicitada,
+        price: valor
     };
 
-    // 4. Salva no Firebase Database na chave do fabricante atual
-    firebase.database().ref('parts/' + currentFab).push(newPiece)
+    // 3. Adiciona na memória local se existir
+    if (typeof DATABASE !== 'undefined' && DATABASE[fabricante]) {
+        if (!DATABASE[fabricante].pecas) DATABASE[fabricante].pecas = [];
+        DATABASE[fabricante].pecas.push(novaPeca);
+    }
+
+    // 4. Salva no Firebase
+    firebase.database().ref("fabricantes/" + fabricante + "/pecas").push(novaPeca)
         .then(() => {
-            // Limpa o formulário e fecha o modal
-            e.target.reset();
-            closeAddModal();
-            alert('Peça salva com sucesso no banco de dados!');
+            alert("✅ Peça salva com sucesso!");
+            
+            // Limpa os campos do modal
+            if (event && event.target && event.target.reset) {
+                event.target.reset();
+            }
+            
+            // Fecha o modal
+            if (typeof closeAddModal === 'function') closeAddModal();
+            
+            // Atualiza a tela
+            if (typeof render === 'function') render();
+            else location.reload();
         })
-        .catch((error) => {
-            console.error("Erro ao salvar no Firebase:", error);
-            alert('Erro ao salvar no banco de dados: ' + error.message);
+        .catch((err) => {
+            console.error("Erro no Firebase:", err);
+            alert("Erro ao salvar no banco de dados: " + err.message);
         });
 }
 
