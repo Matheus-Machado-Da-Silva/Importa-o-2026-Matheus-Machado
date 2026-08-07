@@ -476,45 +476,48 @@ async function saveCurrentFabricante() {
             document.getElementById("addModal").classList.add("hidden");
         }
 
-        async function handleAddPiece(event) {
+function handleAddPiece(e) {
+    e.preventDefault();
 
-    event.preventDefault();
+    // 1. Pega o fabricante atualmente selecionado
+    const fabSelect = document.getElementById('fabSelect');
+    const currentFab = fabSelect ? fabSelect.value : 'ODEWAY';
 
-    if (!isAuthorized) return;
+    // 2. Pega os valores exatamente pelos IDs do seu HTML
+    const name = document.getElementById('newPartName').value.trim();
+    const stock = parseInt(document.getElementById('newPartStock').value) || 0;
+    const imported = parseInt(document.getElementById('newPartImported').value) || 0;
+    const annual = parseInt(document.getElementById('newPartAnnual').value) || 0;
+    const requested = parseInt(document.getElementById('newPartRequested').value) || 0;
+    const price = parseFloat(document.getElementById('newPartPrice').value) || 0;
 
-    if (!DATABASE[currentFab].items)
-        DATABASE[currentFab].items = [];
-
-    const newPart = {
-
-        name: document.getElementById("newPartName").value.trim(),
-
-        stock: parseFloat(document.getElementById("newPartStock").value) || 0,
-
-        imported: parseFloat(document.getElementById("newPartImported").value) || 0,
-
-        annualConsumption: parseFloat(document.getElementById("newPartAnnual").value) || 0,
-
-        requested: parseFloat(document.getElementById("newPartRequested").value) || 0,
-
-        unitPrice: parseFloat(document.getElementById("newPartPrice").value) || 0
-
-    };
-
-    DATABASE[currentFab].items.push(newPart);
-
-    const ok = await saveCurrentFabricante();
-
-    if (ok) {
-
-        closeAddModal();
-
-        renderDashboard();
-
-        event.target.reset();
-
+    if (!name) {
+        alert('Por favor, informe o nome da peça!');
+        return;
     }
 
+    // 3. Estrutura os dados para salvar
+    const newPiece = {
+        name: name,
+        stock: stock,
+        imported: imported,
+        annual: annual,
+        requested: requested,
+        price: price
+    };
+
+    // 4. Salva no Firebase Database
+    firebase.database().ref('parts/' + currentFab).push(newPiece)
+        .then(() => {
+            // Limpa o formulário e fecha o modal
+            e.target.reset();
+            closeAddModal();
+            alert('Peça adicionada com sucesso!');
+        })
+        .catch((error) => {
+            console.error("Erro ao salvar:", error);
+            alert('Erro ao salvar no banco de dados: ' + error.message);
+        });
 }
 
         function initChart() {
