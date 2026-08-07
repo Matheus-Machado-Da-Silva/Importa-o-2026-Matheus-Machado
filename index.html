@@ -573,11 +573,11 @@ function listenToParts(fabricante) {
     });
 }
         
-function handleAddPiece(event) {
+function salvarPecaDireto(event) {
     // Evita o recarregamento automático do formulário
     if (event) event.preventDefault();
 
-    console.log("Iniciando salvamento com handleAddPiece...");
+    console.log("Iniciando salvamento com salvarPecaDireto...");
 
     // 1. Captura os elementos e valores do modal
     const elNome = document.getElementById('newPartName');
