@@ -279,7 +279,7 @@
 
                 <div class="pt-3 flex justify-end space-x-2">
                     <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs">Salvar Peça</button>
+                    <button type="button" onclick="salvarPecaDireto()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs cursor-pointer">Salvar Peça</button>
                 </div>
             </form>
         </div>
@@ -287,6 +287,58 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        function salvarPecaDireto() {
+    console.log("Iniciando salvamento...");
+
+    const elNome = document.getElementById('newPartName');
+    const elEstoque = document.getElementById('newPartStock');
+    const elEntradas = document.getElementById('newPartImported');
+    const elSaidas = document.getElementById('newPartAnnual');
+    const elSolicitada = document.getElementById('newPartRequested');
+    const elValor = document.getElementById('newPartPrice');
+    const elFab = document.getElementById('fabSelect');
+
+    if (!elNome) {
+        alert("Erro: O campo de nome 'newPartName' não foi encontrado!");
+        return;
+    }
+
+    const nome = elNome.value.trim();
+    if (!nome) {
+        alert("Por favor, preencha o Nome da Peça!");
+        return;
+    }
+
+    const fabricante = elFab ? elFab.value : 'ODEWAY';
+    const estoque = parseFloat(elEstoque ? elEstoque.value : 0) || 0;
+    const entradas = parseFloat(elEntradas ? elEntradas.value : 0) || 0;
+    const saidas = parseFloat(elSaidas ? elSaidas.value : 0) || 0;
+    const solicitada = parseFloat(elSolicitada ? elSolicitada.value : 0) || 0;
+    const valor = parseFloat(elValor ? elValor.value : 0) || 0;
+
+    const novaPeca = {
+        name: nome,
+        stock: estoque,
+        imported: entradas,
+        annual: saidas,
+        requested: solicitada,
+        price: valor
+    };
+
+    if (typeof firebase !== 'undefined' && firebase.database) {
+        firebase.database().ref('parts/' + fabricante).push(novaPeca)
+            .then(() => {
+                alert("✅ Peça salva com sucesso no banco de dados!");
+                if (typeof closeAddModal === 'function') closeAddModal();
+            })
+            .catch((err) => {
+                console.error("Erro Firebase:", err);
+                alert("Erro ao salvar no banco: " + err.message);
+            });
+    } else {
+        alert("Erro: Firebase não está ativo nesta página!");
+    }
+}
         const firebaseConfig = {
             databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
         };
