@@ -344,10 +344,17 @@
     databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
 };
 
-// Inicializa apenas se ainda não foi inicializado
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// FORÇAR INICIALIZAÇÃO COM DATABASE URL
+const firebaseConfig = {
+    databaseURL: "https://dashboard-importacao-default-rtdb.firebaseio.com"
+};
+
+// Se já existir app rodando, deleta e inicia com a URL correta
+if (firebase.apps.length) {
+    firebase.app().delete();
 }
+firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
 // =========================
 // FIREBASE SAVE (CORRIGIDO)
