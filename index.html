@@ -493,25 +493,41 @@ async function saveCurrentFabricante() {
             renderDashboard();
         }
 
-        async function updateFieldValue(index, field, value) {
-
+async function updateFieldValue(index, field, value) {
     if (!isAuthorized) return;
 
-    const item = DATABASE[currentFab].items[index];
+    let items = DATABASE[currentFab] && DATABASE[currentFab].items ? DATABASE[currentFab].items : [];
+    let itemArray = Array.isArray(items) ? items : Object.entries(items).map(([id, val]) => ({ id, ...val }));
 
-    if (field === "name") {
-        item.name = value;
-    } else {
+    const targetItem = itemArray[index];
+    if (!targetItem) return;
+
+    // Trata o valor (se for texto mantém, se for número converte)
+    let finalValue = value;
+    if (field !== "name") {
         const parsed = parseFloat(value) || 0;
-        item[field] = parsed >= 0 ? parsed : 0;
+        finalValue = parsed >= 0 ? parsed : 0;
     }
 
-    const ok = await saveCurrentFabricante();
+    if (targetItem.id) {
+        // Atualiza cirurgicamente direto no Firebase usando o ID único da peça
+        const fabricante = currentFab || 'ODEWAY';
+        let dadosAtualizados = {};
+        dadosAtualizados[field] = finalValue;
 
-    if (ok) {
-        renderDashboard();
+        await firebase.database().ref(`fabricantes/${fabricante}/items/${targetItem.id}`).update(dadosAtualizados);
+        
+        // Atualiza localmente também para refletir na tela
+        targetItem[field] = finalValue;
+        console.log(`Campo ${field} atualizado no Firebase com sucesso!`);
+    } else {
+        // Fallback para array local se não tiver ID
+        targetItem[field] = finalValue;
+        const ok = await saveCurrentFabricante();
+        if (ok) {
+            renderDashboard();
+        }
     }
-
 }
 
    async function deleteItem(index) {
