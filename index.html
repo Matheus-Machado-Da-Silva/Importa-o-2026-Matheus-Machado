@@ -122,7 +122,7 @@
 
         <!-- CARDS INDICADORES (KPIs) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative">
+            <div class="bg-white border border-slate-200 p-5 rounded-2xl card-bg relative" onclick="editarUltimoPedido()" style="cursor: pointer;" title="Clique para editar o último pedido">
                 <i data-lucide="history" class="w-4 h-4 text-blue-500 absolute right-4 top-4"></i>
                 <span class="text-xs subtext font-bold uppercase tracking-wider block">Último Pedido (P.O)</span>
                 <p id="lastPoValue" class="text-2xl font-black mt-1">US$ 0,00</p>
@@ -536,7 +536,50 @@ async function updateFieldValue(index, field, value) {
         }
     }
 }
+async function editarUltimoPedido() {
+    if (!isAuthorized) {
+        alert("Você precisa fazer login para editar este campo!");
+        return;
+    }
 
+    const valorAtual = DATABASE[currentFab] && DATABASE[currentFab].lastPoValue ? DATABASE[currentFab].lastPoValue : 0;
+    const dataAtual = DATABASE[currentFab] && DATABASE[currentFab].lastPoDate ? DATABASE[currentFab].lastPoDate : "-";
+
+    const novoValorStr = prompt("Digite o novo valor do Último Pedido (Ex: 15200.00):", valorAtual);
+    if (novoValorStr === null) return; // Cancelou
+
+    const novaDataStr = prompt("Digite a descrição ou data do pedido (Ex: 2026 Processo 46):", dataAtual);
+    if (novaDataStr === null) return; // Cancelou
+
+    const novoValor = parseFloat(novoValorStr);
+    if (isNaN(novoValor)) {
+        alert("Por favor, insira um valor numérico válido!");
+        return;
+    }
+
+    const fabricante = currentFab || 'ODEWAY';
+
+    // Salva direto no Firebase nos nós correspondentes
+    try {
+        const updates = {};
+        updates[`fabricantes/${fabricante}/lastPoValue`] = novoValor;
+        updates[`fabricantes/${fabricante}/lastPoDate`] = novaDataStr;
+
+        await firebase.database().ref().update(updates);
+
+        // Atualiza o objeto local
+        if (!DATABASE[fabricante]) DATABASE[fabricante] = {};
+        DATABASE[fabricante].lastPoValue = novoValor;
+        DATABASE[fabricante].lastPoDate = novaDataStr;
+
+        alert("✅ Último pedido atualizado com sucesso!");
+        renderDashboard();
+    } catch (error) {
+        console.error("Erro ao atualizar último pedido:", error);
+        alert("Erro ao salvar no Firebase: " + error.message);
+    }
+}
+        
    async function deleteItem(index) {
     if (!isAuthorized) return;
 
