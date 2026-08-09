@@ -502,27 +502,34 @@ async function updateFieldValue(index, field, value) {
     const targetItem = itemArray[index];
     if (!targetItem) return;
 
+    // Normaliza o nome do campo para garantir compatibilidade com o Firebase
+    let dbField = field;
+    if (field === 'imported' || field === 'entradas') dbField = 'imported';
+    if (field === 'annualConsumption' || field === 'saidas') dbField = 'annualConsumption';
+    if (field === 'stock' || field === 'estoque') dbField = 'stock';
+    if (field === 'requested' || field === 'solicitada') dbField = 'requested';
+    if (field === 'unitPrice' || field === 'valor') dbField = 'unitPrice';
+    if (field === 'name' || field === 'nome') dbField = 'name';
+
     // Trata o valor (se for texto mantém, se for número converte)
     let finalValue = value;
-    if (field !== "name") {
+    if (dbField !== "name") {
         const parsed = parseFloat(value) || 0;
         finalValue = parsed >= 0 ? parsed : 0;
     }
 
     if (targetItem.id) {
-        // Atualiza cirurgicamente direto no Firebase usando o ID único da peça
+        // Atualiza diretamente no Firebase usando o ID único da peça
         const fabricante = currentFab || 'ODEWAY';
         let dadosAtualizados = {};
-        dadosAtualizados[field] = finalValue;
+        dadosAtualizados[dbField] = finalValue;
 
         await firebase.database().ref(`fabricantes/${fabricante}/items/${targetItem.id}`).update(dadosAtualizados);
         
-        // Atualiza localmente também para refletir na tela
-        targetItem[field] = finalValue;
-        console.log(`Campo ${field} atualizado no Firebase com sucesso!`);
+        targetItem[dbField] = finalValue;
+        console.log(`Campo ${dbField} atualizado no Firebase com sucesso!`);
     } else {
-        // Fallback para array local se não tiver ID
-        targetItem[field] = finalValue;
+        targetItem[dbField] = finalValue;
         const ok = await saveCurrentFabricante();
         if (ok) {
             renderDashboard();
