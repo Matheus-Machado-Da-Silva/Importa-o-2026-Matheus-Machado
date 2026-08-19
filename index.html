@@ -73,18 +73,16 @@
 
             <div class="flex items-center space-x-3">
                 <!-- Select Fabricante com todos os fornecedores -->
-                <div class="relative">
-                    <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-50 border border-slate-200 text-slate-800 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none pr-10">
-                        <option value="GERAL">GERAL</option> dentro do seu <select id="fabSelect">
-                        <option value="ODEWAY" selected>ODEWAY</option>
-                        <option value="ESWING">ESWING</option>
-                        <option value="CHIC ROBOT">CHIC ROBOT</option>
-                        <option value="YAN YANG">YAN YANG</option>
-                         <option value="JGNE">JGNE</option>
-                         <option value="ZANWHEI">ZANWHEI</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                </div>
+               <!-- Barra de Fabricantes em Abas Horizontais -->
+<div class="flex items-center space-x-2 overflow-x-auto py-1" id="fabTabsContainer">
+    <button onclick="changeFabricante('GERAL')" id="btn-GERAL" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">GERAL</button>
+    <button onclick="changeFabricante('ODEWAY')" id="btn-ODEWAY" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">ODEWAY</button>
+    <button onclick="changeFabricante('ESWING')" id="btn-ESWING" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">ESWING</button>
+    <button onclick="changeFabricante('CHIC ROBOT')" id="btn-CHIC-ROBOT" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">CHIC ROBOT</button>
+    <button onclick="changeFabricante('YAN YANG')" id="btn-YAN-YANG" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">YAN YANG</button>
+    <button onclick="changeFabricante('JGNE')" id="btn-JGNE" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">JGNE</button>
+    <button onclick="changeFabricante('ZANWHEI')" id="btn-ZANWHEI" class="fab-tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">ZANWHEI</button>
+</div>
 
                 <!-- Botão Autenticação -->
                 <button id="authBtn" onclick="toggleAuth()" class="flex items-center space-x-2 bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-100 px-3 py-2 rounded-xl text-xs font-bold transition">
@@ -487,13 +485,28 @@ async function saveCurrentFabricante() {
             lucide.createIcons();
         }
 
-        function changeFabricante(fab) {
-            selectedPartIndex = null;
-            currentFab = fab;
-            document.getElementById("currentFabBadge").innerText = fab;
-            document.getElementById("currentFabTitle").innerText = fab;
-            renderDashboard();
-        }
+       function changeFabricante(fab) {
+    selectedPartIndex = null;
+    currentFab = fab;
+    
+    document.getElementById("currentFabBadge").innerText = fab;
+    document.getElementById("currentFabTitle").innerText = fab;
+    
+    // Atualiza o visual dos botões (abas horizontais)
+    document.querySelectorAll('.fab-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
+    });
+    
+    let btnId = "btn-" + fab.replace(/\s+/g, '-');
+    let activeBtn = document.getElementById(btnId);
+    if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+        activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+    }
+
+    renderDashboard();
+}
 
 async function updateFieldValue(index, field, value) {
     if (!isAuthorized) return;
