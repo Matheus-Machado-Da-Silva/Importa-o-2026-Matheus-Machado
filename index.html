@@ -192,7 +192,7 @@
                     <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-500"></i> Comparativo (Estoque vs Saídas vs Solicitado)
                 </h3>
               <div class="overflow-x-auto w-full pb-4">
-    <div style="min-width: 1200px; height: 350px;">
+    <div id="chartWrapper" style="min-width: 1200px; height: 350px;">
         <canvas id="comparisonChart"></canvas>
     </div>
 </div>
@@ -487,12 +487,24 @@ async function saveCurrentFabricante() {
             lucide.createIcons();
         }
 
-       function changeFabricante(fab) {
+      function changeFabricante(fab) {
     selectedPartIndex = null;
     currentFab = fab;
     
     document.getElementById("currentFabBadge").innerText = fab;
     document.getElementById("currentFabTitle").innerText = fab;
+    
+    // Ajusta o tamanho do gráfico dinamicamente: GERAL fica maior, os outros ficam padrão
+    let chartWrapper = document.getElementById("chartWrapper");
+    if (chartWrapper) {
+        if (fab === "GERAL") {
+            chartWrapper.style.minWidth = "1500px";
+            chartWrapper.style.height = "500px";
+        } else {
+            chartWrapper.style.minWidth = "900px";
+            chartWrapper.style.height = "350px";
+        }
+    }
     
     // Atualiza o visual dos botões (abas horizontais)
     document.querySelectorAll('.fab-tab-btn').forEach(btn => {
