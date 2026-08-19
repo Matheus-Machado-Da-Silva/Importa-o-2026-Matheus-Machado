@@ -75,6 +75,7 @@
                 <!-- Select Fabricante com todos os fornecedores -->
                 <div class="relative">
                     <select id="fabSelect" onchange="changeFabricante(this.value)" class="bg-slate-50 border border-slate-200 text-slate-800 font-bold rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none pr-10">
+                        <option value="GERAL">GERAL</option> dentro do seu <select id="fabSelect">
                         <option value="ODEWAY" selected>ODEWAY</option>
                         <option value="ESWING">ESWING</option>
                         <option value="CHIC ROBOT">CHIC ROBOT</option>
@@ -765,11 +766,29 @@ function updateChart(items) {
 }
 
 function renderDashboard() {
-    const data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
- let items = [];
-if (data.items) {
-    items = Array.isArray(data.items) ? data.items : Object.values(data.items);
-}
+ let data;
+    let items = [];
+
+    if (currentFab === "GERAL") {
+        data = { lastPoValue: 0, lastPoDate: "-" };
+        Object.keys(DATABASE).forEach(fab => {
+            const fabData = DATABASE[fab];
+            if (fabData) {
+                // Soma os valores de PO se houver
+                if (fabData.lastPoValue) data.lastPoValue += fabData.lastPoValue;
+                
+                if (fabData.items) {
+                    const fabItems = Array.isArray(fabData.items) ? fabData.items : Object.values(fabData.items);
+                    items = items.concat(fabItems);
+                }
+            }
+        });
+    } else {
+        data = DATABASE[currentFab] || { lastPoValue: 0, lastPoDate: "-", items: [] };
+        if (data.items) {
+            items = Array.isArray(data.items) ? data.items : Object.values(data.items);
+        }
+    }
 document.getElementById("lastPoValue").innerText = `US$ ${(data.lastPoValue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 document.getElementById("lastPoDate").innerText = data.lastPoDate || "-";
     let totalCurrentPo = 0;
