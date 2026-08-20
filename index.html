@@ -118,7 +118,7 @@
                 <span id="lockBadge" class="text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold flex items-center gap-1.5">
                     <i data-lucide="check-circle" class="w-4 h-4"></i>Modo Edição Ativo
                 </span>
-                <button id="addBtn" onclick="openAddModal()" class="flex items-center space-x-2 bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-bold px-4 py-2 rounded-xl text-xs transition">
+                <button id="addBtn" onclick="openAddModal()" class="admin-only flex items-center space-x-2 bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-bold px-4 py-2 rounded-xl text-xs transition">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Adicionar Peça</span>
                 </button>
@@ -941,7 +941,7 @@ function renderDashboard() {
                 US$ ${itemTotal}
             </td>
             <td class="p-3 text-center">
-                <button onclick="deleteItem(${index})" ${disabledAttr} class="text-slate-400 hover:text-rose-500 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition">
+                <button onclick="deleteItem(${index})" ${disabledAttr} class=admin-only "text-slate-400 hover:text-rose-500 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
             </td>
@@ -988,11 +988,28 @@ function verificarSenha(event) {
         if (event) event.preventDefault();
         
         const senhaInput = document.getElementById("inputPassword").value;
-        const senhaCorreta = "1234"; // <-- Altere aqui para a senha que você deseja
+        
+        const senhaVisualizador = "BRM12345";  // Apenas ver
+        const senhaAdmin = "ADM12345";        // Ver e editar
 
-        if (senhaInput === senhaCorreta) {
+        if (senhaInput === senhaVisualizador) {
+            isAuthorized = false; // Bloqueia edições na tabela e inputs
             document.getElementById("lockScreen").style.display = "none";
             document.getElementById("mainContent").style.display = "block";
+            
+            // Esconde elementos de admin
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            renderDashboard(); // Atualiza a tabela para desativar os campos
+            
+        } else if (senhaInput === senhaAdmin) {
+            isAuthorized = true; // Libera edições
+            document.getElementById("lockScreen").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            
+            // Mostra elementos de admin
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+            renderDashboard(); // Atualiza a tabela para liberar os campos
+            
         } else {
             alert("Senha incorreta! Tente novamente.");
         }
