@@ -968,7 +968,55 @@ async function atualizarCotacaoDolar() {
 }
 
 // Chama a função ao carregar a página
-atualizarCotacaoDolar();        
+atualizarCotacaoDolar(); 
+        // Chama a função ao carregar a página
+    atualizarCotacaoDolar();
+
+    // ---- COLE O CÓDIGO DE SENHAS AQUI ----
+    const SENHA_VISUALIZACAO = "BRM2026";   // Senha apenas para ver
+    const SENHA_EDICAO = "admin2026";       // Senha para ver e editar
+
+    function verificarSenha(event) {
+        event.preventDefault();
+        const senhaDigitada = document.getElementById('inputPassword').value;
+
+        if (senhaDigitada === SENHA_EDICAO) {
+            localStorage.setItem("nivelAcesso", "edicao");
+            aplicarPermissoes();
+        } else if (senhaDigitada === SENHA_VISUALIZACAO) {
+            localStorage.setItem("nivelAcesso", "visualizacao");
+            aplicarPermissoes();
+        } else {
+            alert("Senha incorreta! Tente novamente.");
+            document.getElementById('inputPassword').value = "";
+        }
+    }
+
+    function aplicarPermissoes() {
+        const nivel = localStorage.getItem("nivelAcesso");
+        const lockScreen = document.getElementById('lockScreen');
+
+        if (!nivel) {
+            if(lockScreen) lockScreen.style.display = "flex";
+            return;
+        }
+
+        if(lockScreen) lockScreen.style.display = "none";
+    }
+
+    function solicitarLogout() {
+        localStorage.removeItem("nivelAcesso");
+        location.reload();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        aplicarPermissoes();
+    });
+    // ----------------------------------------
+
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
